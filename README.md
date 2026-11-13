@@ -14,12 +14,12 @@ Buck's working rules and skills for AI agents (Claude Code, Codex) on 3D jobs, p
 
 ## Install (artist)
 
-Status: the package follows the documented format but has not been installed on a workstation yet. `<REPO URL>` is this repo's git address.
+Status: the package follows the documented format but has not been installed on a workstation yet. The repo is private, so each artist needs access to it and a git login on their machine.
 
 Claude Code command line:
 
 ```
-claude plugin marketplace add <REPO URL>
+claude plugin marketplace add https://github.com/keghoang/buck3d.git
 claude plugin install buck3d@buck-studio
 ```
 
@@ -29,7 +29,7 @@ Claude desktop app (Code tab): add this to `%USERPROFILE%\.claude\settings.json`
 {
   "extraKnownMarketplaces": {
     "buck-studio": {
-      "source": { "source": "git", "url": "<REPO URL>", "ref": "main" },
+      "source": { "source": "git", "url": "https://github.com/keghoang/buck3d.git", "ref": "main" },
       "autoUpdate": true
     }
   },
