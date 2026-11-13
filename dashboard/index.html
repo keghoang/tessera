@@ -10,11 +10,16 @@
 <body>
 <div class="wrap">
   <header class="top">
-    <h1>Tessera</h1>
-    <span class="job" id="job"></span>
+    <span class="brand">Tessera</span>
+    <h1 id="job"></h1>
     <span class="tag" id="sample" hidden>sample data</span>
     <span class="right"><span id="collected"></span></span>
   </header>
+
+  <div class="tabrow">
+    <div class="tabs" role="tablist" aria-label="View" id="tabs"></div>
+    <div class="summary" id="summary" aria-label="Sessions now"></div>
+  </div>
 
   <div class="bar-row" aria-label="Filters">
     <div class="seg" role="group" aria-label="Person" id="f-person"></div>
