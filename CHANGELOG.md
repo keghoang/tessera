@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.9.2 (2026-11-13)
+
+- The plugin goes by the code name `tessera` (marketplace `tessera-hub`). Skills show as `tessera:lighting-notes`.
+- The studio name is out of the plugin's name, descriptions, author and every skill description.
+
 ## 0.9.1 (2026-11-13)
 
 - Skills in the plugin drop the `buck-` prefix: `buck3d:lighting-notes`, `buck3d:pipeline-farm`. References between skills use the same form.

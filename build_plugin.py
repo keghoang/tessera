@@ -1,19 +1,23 @@
 #!/usr/bin/env python
-"""Package the buck- skills as one versioned Claude Code plugin inside a marketplace folder.
+"""Package the skills as one versioned Claude Code plugin inside a marketplace folder.
+
+The plugin goes by a code name. Its name, marketplace name, descriptions and author carry no
+studio name, and the studio name is taken out of every skill description (the text shown in
+skill listings). The skill bodies keep the real paths and tool names; they need them to work.
 
     python build_plugin.py <version> [--out <folder>] [--keep-prefix]
 
 `Skills/` stays the single source. This writes:
 
     <out>/.claude-plugin/marketplace.json
-    <out>/buck3d/.claude-plugin/plugin.json
-    <out>/buck3d/skills/<skill>/SKILL.md (+ scripts/)
-    <out>/buck3d/BUCK_AGENT_STARTER.md, INDEX_*.md, CHANGELOG.md
+    <out>/tessera/.claude-plugin/plugin.json
+    <out>/tessera/skills/<skill>/SKILL.md (+ scripts/)
+    <out>/tessera/BUCK_AGENT_STARTER.md, INDEX_*.md, CHANGELOG.md
 
 In the plugin, skill folders and names drop the leading `buck-`, so a skill shows as
-`buck3d:lighting-notes`, and every mention of a skill in the built text is rewritten to
+`tessera:lighting-notes`, and every mention of a skill in the built text is rewritten to
 that form. `Skills/` keeps the `buck-` names, which is what a copied-folder install
-(Codex, a job's Agents folder) uses. --keep-prefix builds `buck3d:buck-lighting-notes`.
+(Codex, a job's Agents folder) uses. --keep-prefix builds `tessera:buck-lighting-notes`.
 """
 import argparse
 import json
@@ -23,8 +27,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-MARKETPLACE = "buck-studio"
-PLUGIN = "buck3d"
+MARKETPLACE = "tessera-hub"
+PLUGIN = "tessera"
 
 
 def main():
@@ -50,11 +54,24 @@ def main():
     names = sorted((p.name for p in (HERE / "Skills").iterdir() if p.is_dir()), key=len, reverse=True)
 
     def rename(text):
-        """buck-lighting-notes -> buck3d:lighting-notes, for every real skill name and the group wildcards."""
+        """buck-lighting-notes -> tessera:lighting-notes, for every real skill name and the group wildcards."""
         text = re.sub(r"\]\((buck-[a-z0-9-]+)/SKILL\.md\)", lambda m: "](skills/%s/SKILL.md)" % m.group(1)[5:], text)
         for full in names:
             text = re.sub(r"(?<![A-Za-z0-9_/\-])%s(?![A-Za-z0-9_-])" % re.escape(full), PLUGIN + ":" + full[5:], text)
         return re.sub(r"(?<![A-Za-z0-9_/\-])buck-(lighting|modeling|pipeline)-\*", PLUGIN + r":\g<1>-*", text)
+
+    def neutral(line):
+        """Take the studio name out of a description line. 'Buck5' (the launcher) is reworded too."""
+        line = re.sub(r"\ba Buck (?=[aeiouAEIOU])", "an ", line)
+        line = re.sub(r"\bBuck5's local API", "the launcher's local API", line)
+        line = re.sub(r"\bBuck5 \(rez\)", "launcher (rez)", line)
+        line = re.sub(r"\bBuck5/Deadline", "the farm", line)
+        line = re.sub(r"\bBuck5", "the launcher", line)
+        line = re.sub(r"\b(?:Buck|BUCK) ", "", line)
+        line = line.replace("the buck- skills", "the skills")
+        if re.search(r"(?i)buck(?!3d)", line.replace(PLUGIN + ":", "")):
+            sys.exit("studio name still in a description: " + line[:160])
+        return line
 
     count = scripts = 0
     for src in sorted(p for p in (HERE / "Skills").iterdir() if p.is_dir()):
@@ -66,6 +83,7 @@ def main():
         if strip:
             text = rename(text)
             text = re.sub(r"(?m)^name: .*$", "name: " + name, text, count=1)
+        text = re.sub(r"(?m)^description: .*$", lambda m: neutral(m.group(0)), text, count=1)
         if (dst / "scripts").is_dir():
             scripts += 1
             text = text.rstrip("\n") + ("\n\n## Where the scripts are\n\nThis skill's folder is `${CLAUDE_SKILL_DIR}`; "
@@ -82,14 +100,14 @@ def main():
     (plugin / ".claude-plugin" / "plugin.json").write_text(json.dumps({
         "name": PLUGIN,
         "version": args.version,
-        "description": "Buck studio skills for AI agents: lighting, modeling and pipeline (Buck5, Aquarium, farm, version records).",
-        "author": {"name": "Buck"},
+        "description": "Working notes and skills for 3D lighting, modeling and pipeline tasks.",
+        "author": {"name": "tessera"},
     }, indent=2) + "\n", encoding="utf-8")
     (out / ".claude-plugin" / "marketplace.json").write_text(json.dumps({
         "name": MARKETPLACE,
-        "owner": {"name": "Buck"},
+        "owner": {"name": "tessera"},
         "plugins": [{"name": PLUGIN, "source": "./" + PLUGIN,
-                     "description": "Buck studio skills for AI agents.", "version": args.version}],
+                     "description": "Working notes and skills for 3D tasks.", "version": args.version}],
     }, indent=2) + "\n", encoding="utf-8")
     print("built %s %s: %d skills (%d with scripts) -> %s" % (PLUGIN, args.version, count, scripts, out))
 
