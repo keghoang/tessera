@@ -10,33 +10,33 @@ A model should satisfy the design, work at the intended camera distance, and sup
 
 | Task | Acceptable | Failure |
 |---|---|---|
-| [Build a v01 model](buck-modeling-v01/SKILL.md) | Editable major forms match intended silhouette, proportions, and scale; inferred details are identified. | Fine detail disguises incorrect primary forms or unsupported design assumptions. |
-| [Develop an approved model for production](buck-modeling-production/SKILL.md) | Approved forms gain purposeful construction/detail and meet agreed rigging, shading, and rendering needs. | Added complexity changes the design or leaves downstream departments unable to use the asset. |
-| [Build a modular asset kit](buck-modeling-modular/SKILL.md) | Parts share compatible dimensions, interfaces, and placement conventions; representative combinations work. | Pieces look correct individually but cannot assemble without manual repair. |
-| [Prepare a modeling handoff](buck-modeling-handoff/SKILL.md) | The delivered version opens correctly and includes the structure, dependencies, and known limits needed by the next artist. | The recipient must reconstruct intent, locate missing files, or discover unusable geometry. |
+| [Build a v01 model](skills/modeling-v01/SKILL.md) | Editable major forms match intended silhouette, proportions, and scale; inferred details are identified. | Fine detail disguises incorrect primary forms or unsupported design assumptions. |
+| [Develop an approved model for production](skills/modeling-production/SKILL.md) | Approved forms gain purposeful construction/detail and meet agreed rigging, shading, and rendering needs. | Added complexity changes the design or leaves downstream departments unable to use the asset. |
+| [Build a modular asset kit](skills/modeling-modular/SKILL.md) | Parts share compatible dimensions, interfaces, and placement conventions; representative combinations work. | Pieces look correct individually but cannot assemble without manual repair. |
+| [Prepare a modeling handoff](skills/modeling-handoff/SKILL.md) | The delivered version opens correctly and includes the structure, dependencies, and known limits needed by the next artist. | The recipient must reconstruct intent, locate missing files, or discover unusable geometry. |
 
 ## Medium — targeted revisions and preparation
 
 | Task | Acceptable | Failure |
 |---|---|---|
-| [Address modeling notes](buck-modeling-notes/SKILL.md) | Requested shape or construction changes are visible; approved proportions and unrelated parts remain intact. | Solving one note breaks an accepted feature or changes unrelated geometry. |
-| [Develop shape variations](buck-modeling-variations/SKILL.md) | Alternatives explore a specific design question with consistent review views. | Variants change unrelated properties or differ only in insignificant detail. |
-| [Prepare geometry for rigging](buck-modeling-rigging/SKILL.md) | Moving/deforming regions, hierarchy, and pivots support the stated motion. | Pieces cannot perform the intended action, or controls are built when only model preparation was requested. |
-| [Prepare UVs for lookdev](buck-modeling-uvs/SKILL.md) | Layout, distortion, density, seams, and overlaps suit the agreed texture workflow. | A UV layout exists but stretches visible textures or breaks required assignments. |
-| [Retopologize for intended use](buck-modeling-retopology/SKILL.md) | Edge flow and mesh structure support the required deformation or editing while retaining intended surface form. | A visually similar mesh has unsuitable edge flow, deforms poorly, or invalidates surface data without a transfer plan. |
-| [Optimize a heavy asset](buck-modeling-optimize/SKILL.md) | Measured complexity or memory improves within agreed visual and downstream tolerances. | A smaller file loses needed detail, editability, or reference compatibility. |
-| [Revise a referenced asset safely](buck-modeling-reference-update/SKILL.md) | The new version works in a representative consuming scene and preserves required identities and behavior. | A correct-looking model breaks assignments, rig connections, or existing animation downstream. |
+| [Address modeling notes](skills/modeling-notes/SKILL.md) | Requested shape or construction changes are visible; approved proportions and unrelated parts remain intact. | Solving one note breaks an accepted feature or changes unrelated geometry. |
+| [Develop shape variations](skills/modeling-variations/SKILL.md) | Alternatives explore a specific design question with consistent review views. | Variants change unrelated properties or differ only in insignificant detail. |
+| [Prepare geometry for rigging](skills/modeling-rigging/SKILL.md) | Moving/deforming regions, hierarchy, and pivots support the stated motion. | Pieces cannot perform the intended action, or controls are built when only model preparation was requested. |
+| [Prepare UVs for lookdev](skills/modeling-uvs/SKILL.md) | Layout, distortion, density, seams, and overlaps suit the agreed texture workflow. | A UV layout exists but stretches visible textures or breaks required assignments. |
+| [Retopologize for intended use](skills/modeling-retopology/SKILL.md) | Edge flow and mesh structure support the required deformation or editing while retaining intended surface form. | A visually similar mesh has unsuitable edge flow, deforms poorly, or invalidates surface data without a transfer plan. |
+| [Optimize a heavy asset](skills/modeling-optimize/SKILL.md) | Measured complexity or memory improves within agreed visual and downstream tolerances. | A smaller file loses needed detail, editability, or reference compatibility. |
+| [Revise a referenced asset safely](skills/modeling-reference-update/SKILL.md) | The new version works in a representative consuming scene and preserves required identities and behavior. | A correct-looking model breaks assignments, rig connections, or existing animation downstream. |
 
 ## Small — focused construction and checks
 
 | Task | Acceptable | Failure |
 |---|---|---|
-| [Split or combine specified parts](buck-modeling-split-combine/SKILL.md) | Resulting pieces have correct boundaries, membership, and retained surface data. | Wrong cuts, lost UVs, or broken component assignments create downstream repair work. |
-| [Set pivots and placement groups](buck-modeling-pivots/SKILL.md) | Simple transform tests demonstrate the intended rotation and assembly behavior. | Pivots are conveniently centered but mechanically wrong, or placement shifts unexpectedly. |
-| [Refine bevels and edge treatment](buck-modeling-bevels/SKILL.md) | Edges produce the intended highlight and silhouette at delivery scale. | Bevels alter proportions, intersect, or add invisible complexity. |
-| [Repair mesh defects](buck-modeling-repair/SKILL.md) | Identified normal, topology, or surface problems are corrected without collateral changes. | Blanket cleanup changes intentional construction or hides the underlying issue. |
-| [Check model against reference](buck-modeling-reference-check/SKILL.md) | Consistent views reveal specific proportion, silhouette, and construction differences. | A flattering angle or persuasive shading hides inaccuracies. |
-| [Check asset readiness](buck-modeling-readiness/SKILL.md) | Scale, hierarchy, naming, geometry, UVs, and intended downstream use are verified to agreed requirements. | Generic cleanup passes despite failure in the actual consuming workflow. |
+| [Split or combine specified parts](skills/modeling-split-combine/SKILL.md) | Resulting pieces have correct boundaries, membership, and retained surface data. | Wrong cuts, lost UVs, or broken component assignments create downstream repair work. |
+| [Set pivots and placement groups](skills/modeling-pivots/SKILL.md) | Simple transform tests demonstrate the intended rotation and assembly behavior. | Pivots are conveniently centered but mechanically wrong, or placement shifts unexpectedly. |
+| [Refine bevels and edge treatment](skills/modeling-bevels/SKILL.md) | Edges produce the intended highlight and silhouette at delivery scale. | Bevels alter proportions, intersect, or add invisible complexity. |
+| [Repair mesh defects](skills/modeling-repair/SKILL.md) | Identified normal, topology, or surface problems are corrected without collateral changes. | Blanket cleanup changes intentional construction or hides the underlying issue. |
+| [Check model against reference](skills/modeling-reference-check/SKILL.md) | Consistent views reveal specific proportion, silhouette, and construction differences. | A flattering angle or persuasive shading hides inaccuracies. |
+| [Check asset readiness](skills/modeling-readiness/SKILL.md) | Scale, hierarchy, naming, geometry, UVs, and intended downstream use are verified to agreed requirements. | Generic cleanup passes despite failure in the actual consuming workflow. |
 
 ## Build a v01 model
 

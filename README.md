@@ -59,4 +59,4 @@ With `autoUpdate` on, a workstation picks up a new version at its next session. 
 
 ## Skill names
 
-Inside the plugin a skill shows as `buck3d:buck-lighting-notes`. `build_plugin.py --strip-prefix` builds them as `buck3d:lighting-notes` instead; the text inside the files keeps the `buck-` names either way.
+In the plugin a skill shows as `buck3d:lighting-notes`. The source folders in `Skills/` keep the `buck-` prefix (`buck-lighting-notes`), which is the name a copied-folder install uses; the build rewrites names and cross-references for the plugin.

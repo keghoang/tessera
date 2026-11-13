@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.9.1 (2026-11-13)
+
+- Skills in the plugin drop the `buck-` prefix: `buck3d:lighting-notes`, `buck3d:pipeline-farm`. References between skills use the same form.
+- First version installed on a workstation.
+
 ## 0.9.0 (2026-11-13)
 
 First packaged release. Not yet installed on any workstation as a plugin.

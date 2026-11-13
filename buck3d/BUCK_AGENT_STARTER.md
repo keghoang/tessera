@@ -27,7 +27,7 @@ The agent saves new versions next to yours, never overwrites a file, leaves a `.
 | `Agents/Artists/<username>/ARTIST.md` | One artist's name, version suffix and preferences. |
 | `Agents/Skills/buck-<group>-<task>/SKILL.md` | How to do one kind of task. Listed at the end of this file and in `INDEX_lighting.md` and `INDEX_modeling.md`. |
 
-The show and artist files add facts and preferences. On permissions they can only make a rule stricter, never looser. Skills describe a task; they never grant permission. If the job has no `Agents` folder or no `SHOW.md`, say so and use `buck-pipeline-setup`.
+The show and artist files add facts and preferences. On permissions they can only make a rule stricter, never looser. Skills describe a task; they never grant permission. If the job has no `Agents` folder or no `SHOW.md`, say so and use `buck3d:pipeline-setup`.
 
 Keeping these files short: a line goes in this file only if an agent got something wrong without it and it is true on every job. A job's facts go in `SHOW.md`, a procedure goes in a skill, and a line that no longer changes what an agent does comes out. Change the version at the top with every edit: the date, plus `.2`, `.3` for further edits the same day.
 
@@ -38,7 +38,7 @@ Work these out yourself before asking the artist anything:
 | Item | Where to read it |
 | --- | --- |
 | Username, machine, site | The operating system and host name. |
-| Job, software versions, colour | `SHOW.md`; Aquarium if `SHOW.md` lacks it (`buck-pipeline-aquarium`). |
+| Job, software versions, colour | `SHOW.md`; Aquarium if `SHOW.md` lacks it (`buck3d:pipeline-aquarium`). |
 | Shots, tasks and task ids | `SHOW.md`, then Aquarium. |
 | Shot sources (animation, layout, camera, lookdev) | The latest files in the shot's and assets' department folders. Tell the artist which versions you picked. |
 | Frame range, resolution, shot camera | The source animation or layout file, and the deliverables in `SHOW.md`. |
@@ -84,7 +84,7 @@ In/                                                       client material, read 
 ### Naming and versions
 
 - Files are named `<Shot or asset>_<task>_v###.<ext>`: `SH010_lgt_v010.mb`, `prop_tower_rig_v003.mb`. Task codes: `mdl`, `rig`, `lkdv`, `anim`, `lgt`, `comp`. Versions are always three digits; "v01" in a request means `v001`.
-- Save to the next free version number, through `save_version.py` in `buck-pipeline-trail`: it cannot overwrite a file. If you must save another way, check that the target doesn't exist immediately before saving.
+- Save to the next free version number, through `save_version.py` in `buck3d:pipeline-trail`: it cannot overwrite a file. If you must save another way, check that the target doesn't exist immediately before saving.
 - Work from the latest version in the work folder, even if someone else saved it; coworkers re-save mid-round. Read its `.trail` and tell the artist who saved it and what changed.
 - If someone else is versioning the same file in parallel, add the suffix from `ARTIST.md` (`lgt_v023_<suffix>`).
 - Agent-made versions go in the same work folder as everyone else's. The `.trail` says who made them.
@@ -128,8 +128,8 @@ An ask names the exact action, the exact files or paths, and what cannot be undo
 - Read anything inside the job.
 - Save a new version of the file you were asked to work on, with its `.trail`.
 - Write anything in the local scratch folder.
-- Run an application headless in the job's Buck5 environment (`buck-pipeline-launch`), after checking free RAM.
-- Submit test renders to the farm (`buck-pipeline-farm`). Tell the artist before releasing the first farm job on a show.
+- Run an application headless in the job's Buck5 environment (`buck3d:pipeline-launch`), after checking free RAM.
+- Submit test renders to the farm (`buck3d:pipeline-farm`). Tell the artist before releasing the first farm job on a show.
 - Make preview images, viewport captures and comparisons.
 
 ### What goes on the server
@@ -156,13 +156,13 @@ One file: the versioned deliverable (`.mb`, `.ma`, `.nk`, ...), plus its `.trail
 
 ## The version record
 
-Every version you save gets a `.trail` file next to it with the same name (`SH010_lgt_v010.mb`, `SH010_lgt_v010.trail`). It says what the version is, what changed, what was checked and what was not, so the next artist or agent doesn't need the chat history. Every check in it is marked pass, fail or not assessed; a check you could not run is "not assessed", never a pass. Write it when you save the version, using `buck-pipeline-trail` for the format.
+Every version you save gets a `.trail` file next to it with the same name (`SH010_lgt_v010.mb`, `SH010_lgt_v010.trail`). It says what the version is, what changed, what was checked and what was not, so the next artist or agent doesn't need the chat history. Every check in it is marked pass, fail or not assessed; a check you could not run is "not assessed", never a pass. Write it when you save the version, using `buck3d:pipeline-trail` for the format.
 
 ## Showing work to the artist
 
 - Post review images in the chat as you go, not only at the end.
 - Make previews through the job's own OCIO config and view (named in `SHOW.md`), never an approximate tonemap. Keep a file's colour config as you found it.
-- For animation and model approvals, show viewport captures (`maya_review_capture.py` in `buck-pipeline-launch`: the same fixed views every time). For lighting, show farm test frames.
+- For animation and model approvals, show viewport captures (`maya_review_capture.py` in `buck3d:pipeline-launch`: the same fixed views every time). For lighting, show farm test frames.
 - Side-by-sides compare the artist's original against your version, labelled, with frame numbers, in the same colour view.
 - If a styleframe is provided, check your result against it, in the same colour view, before reporting for the artist's review.
 - Test on a frame that represents the shot, and judge small details at final resolution.
@@ -191,10 +191,10 @@ Each is a folder in `Agents/Skills/` with a `SKILL.md`. Read the ones the task n
 
 | Skill | Read it when you need to |
 | --- | --- |
-| `buck-pipeline-launch` | Run Maya, Nuke or another application, headless or in batch, in the job's Buck5 environment. |
-| `buck-pipeline-aquarium` | Look up a job's software, colour, shots, tasks or task ids. |
-| `buck-pipeline-farm` | Submit a test or full-range render to the farm and check the result. |
-| `buck-pipeline-trail` | Write or update a version's `.trail`. |
-| `buck-pipeline-setup` | Set up the `Agents` folder on a new job, create or refresh `SHOW.md`, or install the skills. |
-| `buck-lighting-*` | Do a lighting or lookdev task. Start at `INDEX_lighting.md`. |
-| `buck-modeling-*` | Do a modeling task. Start at `INDEX_modeling.md`. |
+| `buck3d:pipeline-launch` | Run Maya, Nuke or another application, headless or in batch, in the job's Buck5 environment. |
+| `buck3d:pipeline-aquarium` | Look up a job's software, colour, shots, tasks or task ids. |
+| `buck3d:pipeline-farm` | Submit a test or full-range render to the farm and check the result. |
+| `buck3d:pipeline-trail` | Write or update a version's `.trail`. |
+| `buck3d:pipeline-setup` | Set up the `Agents` folder on a new job, create or refresh `SHOW.md`, or install the skills. |
+| `buck3d:lighting-*` | Do a lighting or lookdev task. Start at `INDEX_lighting.md`. |
+| `buck3d:modeling-*` | Do a modeling task. Start at `INDEX_modeling.md`. |

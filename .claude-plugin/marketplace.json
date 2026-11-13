@@ -8,7 +8,7 @@
       "name": "buck3d",
       "source": "./buck3d",
       "description": "Buck studio skills for AI agents.",
-      "version": "0.9.0"
+      "version": "0.9.1"
     }
   ]
 }

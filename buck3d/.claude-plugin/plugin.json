@@ -1,6 +1,6 @@
 {
   "name": "buck3d",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Buck studio skills for AI agents: lighting, modeling and pipeline (Buck5, Aquarium, farm, version records).",
   "author": {
     "name": "Buck"
