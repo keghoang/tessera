@@ -2,6 +2,12 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.10.0 (2026-11-13)
+
+- New skill `pipeline-status`: a session reports which shot and task it is on, and whether it is working, waiting on the artist, waiting on the farm or idle. One small file per session in the job's `Agents/Activity` folder, read by the dashboard.
+- The plugin now has hooks: a new message sets the session to working, the end of a turn to idle, a permission prompt to waiting, and closing the session clears it.
+- Starter `2026-11-13.4`: tells the agent to report what it is on.
+
 ## 0.9.3 (2026-11-13)
 
 - Skill descriptions in the plugin are one short line. The "use when" and "not for" text moved to `when_to_use`, which the agent still reads when choosing a skill.

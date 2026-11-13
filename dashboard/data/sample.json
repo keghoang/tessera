@@ -202,8 +202,7 @@
    "shot": "SH010",
    "task": "lgt",
    "doing": "Waiting on farm test frames 1010 and 1088",
-   "step": "4 of 6",
-   "state": "working",
+   "state": "farm",
    "since": "2026-11-13 11:31",
    "updated": "2026-11-13 12:19"
   },
@@ -213,7 +212,6 @@
    "shot": "SH040",
    "task": "lgt",
    "doing": "Transferring lights from SH020 v006",
-   "step": "2 of 5",
    "state": "working",
    "since": "2026-11-13 12:02",
    "updated": "2026-11-13 12:20"
@@ -224,7 +222,6 @@
    "shot": "SH020",
    "task": "comp",
    "doing": "Asked jo: mask the pool by floor matte or by world position?",
-   "step": "3 of 4",
    "state": "waiting",
    "since": "2026-11-13 10:48",
    "updated": "2026-11-13 12:05"
@@ -235,8 +232,7 @@
    "shot": "prop_tower",
    "task": "mdl",
    "doing": "Viewport captures of v008 against v007",
-   "step": "5 of 5",
-   "state": "working",
+   "state": "idle",
    "since": "2026-11-13 11:55",
    "updated": "2026-11-13 12:18"
   }

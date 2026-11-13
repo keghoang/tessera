@@ -70,7 +70,7 @@
         tr.append(first);
         g.tasks.forEach((t) => {
           const v = latest[shot + "/" + t], l = live[shot + "/" + t];
-          const td = el("td", "cell" + (l ? " live" : ""));
+          const td = el("td", "cell" + (l && l.state !== "idle" ? " live" : ""));
           if (!v && !l) { td.append(el("span", "none", "–")); tr.append(td); return; }
           const dim = (v && !mine(v.artist)) && !(l && mine(l.person));
           if (dim) td.classList.add("dim");
@@ -81,7 +81,9 @@
           }
           if (l) {
             const now1 = el("div", "l2 now");
-            now1.append(el("span", "chip " + (l.state === "waiting" ? "warn" : "agent"), l.state === "waiting" ? "waiting on " + l.person : l.agent + " · " + ago(l.since)), document.createTextNode(" " + l.doing));
+            const chip = { waiting: ["warn", "waiting on " + l.person], farm: ["info", "on the farm · " + ago(l.updated)],
+              idle: ["", "idle · " + ago(l.updated)] }[l.state] || ["agent", l.agent + " · " + ago(l.since)];
+            now1.append(el("span", "chip " + chip[0], chip[1]), document.createTextNode(" " + l.doing));
             td.append(now1);
           } else {
             td.append(el("div", "l2 muted", v.changes[0] || "No change note"));
@@ -120,7 +122,7 @@
       const saves = data.versions.filter((v) => v.artist === p).sort((a, b) => (a.date < b.date ? 1 : -1));
       const tr = el("tr", p === state.person ? "sel" : "");
       const on = el("td", "chips");
-      if (running.length) running.forEach((s) => on.append(el("span", "chip agent", s.shot + " " + s.task)));
+      if (running.length) running.forEach((s) => on.append(el("span", "chip " + ({ waiting: "warn", farm: "info", idle: "" }[s.state] ?? "agent"), s.shot + " " + s.task + (s.state === "working" ? "" : " · " + s.state))));
       else if (saves.length) on.append(el("span", "chip", saves[0].shot + " " + saves[0].task));
       tr.append(el("td", "", p), on, el("td", "num muted", saves.length ? ago(saves[0].date) : ""));
       team.append(tr);

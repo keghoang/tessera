@@ -12,6 +12,7 @@ skill listings). The skill bodies keep the real paths and tool names; they need 
     <out>/.claude-plugin/marketplace.json
     <out>/tessera/.claude-plugin/plugin.json
     <out>/tessera/skills/<skill>/SKILL.md (+ scripts/)
+    <out>/tessera/hooks/hooks.json
     <out>/tessera/BUCK_AGENT_STARTER.md, INDEX_*.md, CHANGELOG.md
 
 In the plugin, skill folders and names drop the leading `buck-`, so a skill shows as
@@ -107,6 +108,19 @@ def main():
         if strip and extra.name != "CHANGELOG.md":
             text = rename(text)
         (plugin / extra.name).write_text(text, encoding="utf-8", newline="\n")
+
+    # hooks keep a session's reported state true: working / idle / waiting, and clear it at the end
+    status = "%s/skills/%s/scripts/status.py" % ("${CLAUDE_PLUGIN_ROOT}", "pipeline-status" if strip else "buck-pipeline-status")
+
+    def hook(event):
+        return [{"hooks": [{"type": "command", "timeout": 15,
+                            "command": 'c:/opt/rez/Scripts/python.exe "%s" hook %s' % (status, event)}]}]
+
+    (plugin / "hooks").mkdir()
+    (plugin / "hooks" / "hooks.json").write_text(json.dumps({"hooks": {
+        "UserPromptSubmit": hook("prompt"), "Stop": hook("stop"),
+        "Notification": hook("notify"), "SessionEnd": hook("end"),
+    }}, indent=2) + "\n", encoding="utf-8")
 
     (plugin / ".claude-plugin" / "plugin.json").write_text(json.dumps({
         "name": PLUGIN,

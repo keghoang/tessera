@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-13.3
+Version: 2026-11-13.4
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -158,6 +158,10 @@ One file: the versioned deliverable (`.mb`, `.ma`, `.nk`, ...), plus its `.trail
 
 Every version you save gets a `.trail` file next to it with the same name (`SH010_lgt_v010.mb`, `SH010_lgt_v010.trail`). It says what the version is, what changed, what was checked and what was not, so the next artist or agent doesn't need the chat history. Every check in it is marked pass, fail or not assessed; a check you could not run is "not assessed", never a pass. Write it when you save the version, using `buck-pipeline-trail` for the format.
 
+## Say what you're on
+
+The team sees who is on which shot on the job's dashboard. When you start work on a shot or asset, report it with `status.py` in `buck-pipeline-status`: the shot, the task and one line on what you are doing. Mark yourself waiting when you need the artist or a farm render, and clear it when the task is done. It writes one small file in the job's `Agents/Activity` folder and nothing from the chat. If it can't report, carry on.
+
 ## Showing work to the artist
 
 - Post review images in the chat as you go, not only at the end.
@@ -195,6 +199,7 @@ Each is a folder in `Agents/Skills/` with a `SKILL.md`. Read the ones the task n
 | `buck-pipeline-aquarium` | Look up a job's software, colour, shots, tasks or task ids. |
 | `buck-pipeline-farm` | Submit a test or full-range render to the farm and check the result. |
 | `buck-pipeline-trail` | Write or update a version's `.trail`. |
+| `buck-pipeline-status` | Report which shot and task this session is on, and its state. |
 | `buck-pipeline-setup` | Set up the `Agents` folder on a new job, create or refresh `SHOW.md`, or install the skills. |
 | `buck-lighting-*` | Do a lighting or lookdev task. Start at `INDEX_lighting.md`. |
 | `buck-modeling-*` | Do a modeling task. Start at `INDEX_modeling.md`. |

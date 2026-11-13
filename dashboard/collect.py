@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 """Read one job's shots, latest versions, trails and live agent sessions into the JSON the dashboard draws.
 
-    collect.py --job-root <path to the job folder> --out data/<name>.json [--activity <folder>] [--stale 30]
+    collect.py --job-root <path to the job folder> --out data/<name>.json [--activity <folder>]
 
 It only reads the job: folder listings under Production/shots and Production/Assets,
 the newest versioned work file per shot and task, and the .trail next to it.
-Live sessions come from the heartbeat files written by status.py. The output
+Live sessions come from the files status.py (skill pipeline-status) writes into the job's
+Production/Common/Agents/Activity folder, or --activity. The output
 goes to a local file; open the dashboard at index.html#<name>.
 Python 3.7+, standard library only.
 """
@@ -136,7 +137,7 @@ def scan(root, kind, tree):
     return versions
 
 
-def live_sessions(folder, job, stale_min):
+def live_sessions(folder, job, stale_idle, stale_active):
     out = []
     if not folder or not os.path.isdir(folder):
         return out
@@ -150,9 +151,12 @@ def live_sessions(folder, job, stale_min):
             seen = datetime.datetime.strptime(s["updated"], "%Y-%m-%d %H:%M")
         except (OSError, ValueError, KeyError):
             continue
-        if s.get("job") != job or (now - seen).total_seconds() > stale_min * 60:
+        # an idle session leaves the page soon; a working or waiting one stays until it is cleared,
+        # and the long limit only catches sessions that died without clearing
+        limit = stale_idle if s.get("state") == "idle" else stale_active
+        if s.get("job") != job or (now - seen).total_seconds() > limit * 60:
             continue
-        out.append({k: s.get(k, "") for k in ("person", "agent", "shot", "task", "doing", "step", "state", "since", "updated")})
+        out.append({k: s.get(k, "") for k in ("person", "agent", "shot", "task", "doing", "state", "since", "updated")})
     return out
 
 
@@ -160,8 +164,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--job-root", required=True, help=r"the job folder, for example \\server\work\current\<JOB>")
     ap.add_argument("--out", required=True, help="local JSON file, for example data/<name>.json")
-    ap.add_argument("--activity", help="folder of heartbeat files written by status.py")
-    ap.add_argument("--stale", type=int, default=30, help="minutes after which a silent session is dropped")
+    ap.add_argument("--activity", help="folder of session files, if not the job's Agents/Activity")
+    ap.add_argument("--stale", type=int, default=30, help="minutes an idle session stays on the page")
+    ap.add_argument("--stale-active", type=int, default=720, help="minutes a working or waiting session stays without an update")
     ap.add_argument("--label", help="name shown on the page instead of the job folder name")
     args = ap.parse_args()
     if args.out.replace("/", "\\").startswith("\\\\"):
@@ -193,7 +198,8 @@ def main():
             v["artist"] = own.get(v["path"], "") or "unknown"
         del v["path"], v["suffix"]
 
-    live = live_sessions(args.activity, job, args.stale)
+    activity = args.activity or os.path.join(prod, "Common", "Agents", "Activity")
+    live = live_sessions(activity, job, args.stale, args.stale_active)
     people = sorted({v["artist"] for v in versions} | {s["person"] for s in live})
     now = stamp(datetime.datetime.now().timestamp())
     data = {"sample": False, "job": args.label or job, "collected": now, "now": now, "structure": tree,

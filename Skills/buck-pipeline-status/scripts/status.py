@@ -1,0 +1,232 @@
+#!/usr/bin/env python
+"""Report what an agent session is working on, so the job's dashboard can show it.
+
+    status.py set   --job <JOB> --shot <shot or asset> --task <task> --agent "<agent>"
+                    --doing "<one line: what is happening now>" [--state working]
+    status.py state <working|waiting|farm|idle> [--doing "<one line>"]
+    status.py clear
+    status.py hook  <prompt|stop|notify|end>      (called by the plugin, not by hand)
+
+States:
+    working   the agent is running a task
+    waiting   the agent needs the artist: a question, an approval, a decision
+    farm      the agent is waiting on a farm render
+    idle      the session is open and nothing is running
+
+"set" writes one small JSON file for this session into the job's activity folder
+(<job>/Production/Common/Agents/Activity unless --dir is given) and removes the
+file this session wrote before, so a session shows on one shot and task at a time.
+"state" and "clear" act on that file. The file holds no prompt text and no file
+contents: only the fields above, the person, the machine and two times.
+Python 3.7+, standard library only.
+"""
+from __future__ import print_function
+
+import argparse
+import datetime
+import getpass
+import json
+import os
+import re
+import socket
+import sys
+import time
+
+STATES = ("working", "waiting", "farm", "idle")
+WORK_ROOT = os.environ.get("BUCK_WORK_ROOT", "//buck/work/current")
+
+
+def slug(text):
+    return re.sub(r"[^A-Za-z0-9]+", "-", text).strip("-").lower()
+
+
+def now():
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+
+def session_id(given=None):
+    return slug(given or os.environ.get("CLAUDE_CODE_SESSION_ID") or os.environ.get("CODEX_SESSION_ID") or "nosession")
+
+
+def pointer_dir():
+    base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
+    return os.path.join(base, "tessera", "sessions")
+
+
+def pointer_path(sid):
+    return os.path.join(pointer_dir(), sid + ".json")
+
+
+def read_pointer(sid):
+    try:
+        with open(pointer_path(sid), "r", encoding="utf-8") as fh:
+            return json.load(fh).get("file", "")
+    except (OSError, ValueError):
+        return ""
+
+
+def write_pointer(sid, path):
+    folder = pointer_dir()
+    os.makedirs(folder, exist_ok=True)
+    with open(pointer_path(sid), "w", encoding="utf-8") as fh:
+        json.dump({"file": path}, fh)
+    # forget pointers of sessions that ended without saying so
+    cutoff = time.time() - 7 * 86400
+    for name in os.listdir(folder):
+        p = os.path.join(folder, name)
+        try:
+            if os.path.getmtime(p) < cutoff:
+                os.remove(p)
+        except OSError:
+            pass
+
+
+def write_json(path, data):
+    # Written in place: the job share refuses a rename onto an existing file.
+    # A reader that catches the file half-written skips it until the next read.
+    text = json.dumps(data)
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(text)
+
+
+def remove(path):
+    try:
+        os.remove(path)
+    except OSError:
+        pass
+
+
+def activity_dir(args):
+    """The job's activity folder. Created if the job's Agents folder exists; never anything above it."""
+    if args.dir:
+        return args.dir if os.path.isdir(args.dir) else None
+    agents = os.path.join(WORK_ROOT, args.job, "Production", "Common", "Agents")
+    if not os.path.isdir(agents):
+        return None
+    folder = os.path.join(agents, "Activity")
+    if not os.path.isdir(folder):
+        try:
+            os.mkdir(folder)
+        except OSError:
+            return None
+    return folder
+
+
+def change_state(sid, state, doing=None, only_from=None):
+    path = read_pointer(sid)
+    if not path:
+        return False
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, ValueError):
+        return False
+    if only_from and data.get("state") not in only_from:
+        return False
+    data["state"] = state
+    data["updated"] = now()
+    if doing:
+        data["doing"] = doing[:160]
+    write_json(path, data)
+    return True
+
+
+def hook(event):
+    """Keep the state true without the agent having to remember. Never fails, never prints."""
+    try:
+        payload = json.load(sys.stdin)
+    except Exception:
+        payload = {}
+    sid = session_id(payload.get("session_id"))
+    if event == "prompt":
+        change_state(sid, "working")
+    elif event == "stop":
+        change_state(sid, "idle", only_from=("working",))
+    elif event == "notify":
+        if payload.get("notification_type") != "idle_prompt":
+            change_state(sid, "waiting", only_from=("working",))
+    elif event == "end":
+        path = read_pointer(sid)
+        if path:
+            remove(path)
+        remove(pointer_path(sid))
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest="cmd")
+    p = sub.add_parser("set")
+    p.add_argument("--job", required=True)
+    p.add_argument("--shot", required=True)
+    p.add_argument("--task", required=True)
+    p.add_argument("--agent", required=True)
+    p.add_argument("--doing", required=True)
+    p.add_argument("--state", default="working", choices=STATES)
+    p.add_argument("--dir", help="activity folder, if not the job's own")
+    p.add_argument("--person", default=getpass.getuser().lower())
+    p.add_argument("--session")
+    p = sub.add_parser("state")
+    p.add_argument("state", choices=STATES)
+    p.add_argument("--doing")
+    p.add_argument("--session")
+    p = sub.add_parser("clear")
+    p.add_argument("--session")
+    p = sub.add_parser("hook")
+    p.add_argument("event", choices=("prompt", "stop", "notify", "end"))
+    args = ap.parse_args()
+
+    if args.cmd == "hook":
+        try:
+            hook(args.event)
+        except Exception:
+            pass
+        return 0
+    if args.cmd not in ("set", "state", "clear"):
+        ap.print_help()
+        return 2
+    sid = session_id(args.session)
+
+    if args.cmd == "state":
+        if not change_state(sid, args.state, args.doing):
+            print("NOT ASSESSED: this session has not reported yet; run 'set' first.", file=sys.stderr)
+            return 3
+        print("state", args.state)
+        return 0
+
+    if args.cmd == "clear":
+        path = read_pointer(sid)
+        if path:
+            remove(path)
+        remove(pointer_path(sid))
+        print("cleared")
+        return 0
+
+    folder = activity_dir(args)
+    if not folder:
+        print("NOT ASSESSED: no activity folder for %s (the job has no Agents folder, or it is out of reach). "
+              "Carry on with the task." % args.job, file=sys.stderr)
+        return 3
+    host = socket.gethostname()
+    name = "_".join(slug(x) for x in (args.person, host, args.agent, sid[:8])) + ".json"
+    path = os.path.join(folder, name)
+    previous = read_pointer(sid)
+    since = now()
+    try:
+        with open(previous, "r", encoding="utf-8") as fh:
+            old = json.load(fh)
+        if (old.get("job"), old.get("shot"), old.get("task")) == (args.job, args.shot, args.task):
+            since = old.get("since", since)
+    except (OSError, ValueError):
+        pass
+    if previous and os.path.normcase(os.path.normpath(previous)) != os.path.normcase(os.path.normpath(path)):
+        remove(previous)
+    write_json(path, {"person": args.person, "machine": host, "agent": args.agent, "job": args.job,
+                      "shot": args.shot, "task": args.task, "doing": args.doing[:160], "state": args.state,
+                      "since": since, "updated": now()})
+    write_pointer(sid, path)
+    print("reported", name)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
