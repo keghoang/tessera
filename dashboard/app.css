@@ -194,7 +194,7 @@ table.grid td { padding-block: var(--ds-space-12); }
 .cell .by { color: var(--ds-color-text-secondary); }
 .cell .age { margin-left: auto; font: var(--ds-text-body-sm); color: var(--ds-color-text-tertiary); }
 .cell .none { color: var(--ds-color-border-default); }
-td.cell.live { box-shadow: inset var(--ds-border-width-2) 0 0 var(--ds-color-border-accent); }
-td.cell.live.warn { background: var(--ds-color-bg-warning-subtle); box-shadow: inset var(--ds-border-width-2) 0 0 var(--ds-color-border-warning); }
-td.cell.live.info { background: var(--ds-color-bg-info-subtle); box-shadow: inset var(--ds-border-width-2) 0 0 var(--ds-color-border-info); }
+td.cell.live { border-left: var(--ds-border-width-2) solid var(--ds-color-border-accent); }
+td.cell.live.warn { background: var(--ds-color-bg-warning-subtle); border-left: var(--ds-border-width-2) solid var(--ds-color-border-warning); }
+td.cell.live.info { background: var(--ds-color-bg-info-subtle); border-left: var(--ds-border-width-2) solid var(--ds-color-border-info); }
 .cols { border-top: var(--ds-border-width-1) solid var(--ds-color-border-subtle); padding-top: var(--ds-space-24); }
