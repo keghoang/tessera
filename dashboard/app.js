@@ -46,12 +46,18 @@
     if (c) s.style.setProperty("--p", c);
     return s;
   };
-  const who = (person, agent) => {
-    const s = el("span", "who");
-    s.append(el("i", "dot" + (agent ? " agent" : "")), pill(person));
-    if (agent) s.append(el("span", "muted", "via " + agent));
+  // Who did it. A person is a round pill with their name. An agent is its own actor: a squared pill
+  // with a marker, the agent's name, then whose agent it is, in that person's colour.
+  const actor = (person, agent) => {
+    if (!agent) return pill(person);
+    const s = el("span", "person agent");
+    const c = colourOf(person);
+    if (c) s.style.setProperty("--p", c);
+    s.append(el("i", "mark"), el("span", "", agent), el("span", "owner", person));
+    s.title = person + "'s agent: " + agent;
     return s;
   };
+  const agentOf = (v) => (v.made_by === "agent" ? v.agent || "agent" : "");
 
   $("job").textContent = data.job;
   $("sample").hidden = !data.sample;
@@ -102,13 +108,13 @@
           if (dim) td.classList.add("dim");
           if (v) {
             const l1 = el("div", "l1");
-            l1.append(el("i", "dot" + (v.made_by === "agent" ? " agent" : "")), el("span", "mono ver", ver(v)), pill(v.artist), el("span", "age", ago(v.date)));
+            l1.append(el("span", "mono ver", ver(v)), actor(v.artist, agentOf(v)), el("span", "age", ago(v.date)));
             td.append(l1);
           }
           if (l) {
             const now1 = el("div", "l2 now");
             const chip = { waiting: ["warn", "waiting on " + l.person], farm: ["info", "on the farm"], idle: ["", "idle"] }[l.state] || ["agent", "working"];
-            now1.append(el("span", "chip " + chip[0], chip[1]), el("span", "muted", " " + l.agent + " · " + ago(l.state === "working" ? l.since : l.updated)));
+            now1.append(el("span", "chip " + chip[0], chip[1]), actor(l.person, l.agent), el("span", "muted", ago(l.state === "working" ? l.since : l.updated)));
             td.append(now1, el("div", "l2 doing-line", l.doing));
           } else if (v.changes[0]) {
             td.append(el("div", "l2 muted", v.changes[0]));
@@ -132,27 +138,40 @@
         const li = el("li", "change");
         const what = el("div", "what");
         const head = el("div", "head");
-        head.append(el("span", "mono strong", v.file.replace(/\.[a-z]+$/, "")), who(v.artist, v.made_by === "agent" ? v.agent : ""));
+        head.append(el("span", "mono strong", v.file.replace(/\.[a-z]+$/, "")), actor(v.artist, agentOf(v)));
         what.append(head);
         if (v.changes.length) what.append(el("div", "muted", v.changes.join(" · ")));
         li.append(what, el("span", "when", ago(v.date)));
         chg.append(li);
       });
 
-    // team: what each person has running and when they last saved
+    // team: each person, then each of their agents as a row of its own
     const team = $("team");
     team.textContent = "";
-    data.people.forEach((p) => {
-      const running = data.live.filter((s) => s.person === p);
-      const saves = data.versions.filter((v) => v.artist === p).sort((a, b) => (a.date < b.date ? 1 : -1));
-      const tr = el("tr", p === state.person ? "sel" : "");
-      const on = el("td", "chips");
-      if (running.length) running.forEach((s) => on.append(el("span", "chip " + (TONE[s.state] ?? "agent"), s.shot + " " + s.task + (s.state === "working" ? "" : " · " + s.state))));
-      else if (saves.length) on.append(el("span", "chip", saves[0].shot + " " + saves[0].task));
+    const byDate = (x, y) => (x.date < y.date ? 1 : -1);
+    const row = (cls, nameCell, chips, saves) => {
+      const tr = el("tr", cls);
       const name = el("td");
-      name.append(pill(p));
+      name.append(nameCell);
+      const on = el("td", "chips");
+      chips.forEach((c) => on.append(c));
       tr.append(name, on, el("td", "num muted", saves.length ? ago(saves[0].date) : ""));
       team.append(tr);
+    };
+    data.people.forEach((p) => {
+      const sel = p === state.person ? "sel" : "";
+      const own = data.versions.filter((v) => v.artist === p && !agentOf(v)).sort(byDate);
+      row(sel, pill(p), own.length ? [el("span", "chip", own[0].shot + " " + own[0].task)] : [], own);
+      const agents = [...new Set(data.versions.filter((v) => v.artist === p && agentOf(v)).map(agentOf)
+        .concat(data.live.filter((s) => s.person === p).map((s) => s.agent)))].sort();
+      agents.forEach((a) => {
+        const running = data.live.filter((s) => s.person === p && s.agent === a);
+        const saves = data.versions.filter((v) => v.artist === p && agentOf(v) === a).sort(byDate);
+        const chips = running.length
+          ? running.map((s) => el("span", "chip " + (TONE[s.state] ?? "agent"), s.shot + " " + s.task + " · " + (s.state === "farm" ? "on the farm" : s.state)))
+          : saves.length ? [el("span", "chip", saves[0].shot + " " + saves[0].task)] : [];
+        row((sel + " sub").trim(), actor(p, a), chips, saves);
+      });
     });
   }
 

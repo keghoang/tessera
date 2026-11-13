@@ -213,3 +213,20 @@ td.cell.live.info { background: var(--ds-color-bg-info-subtle); border-left: var
 /* live cell: status on its own line, the task text under it */
 .cell .l2.now { margin-top: var(--ds-space-8); }
 .cell .l2.doing-line { color: var(--ds-color-text-primary); margin-top: var(--ds-space-6); }
+
+/* agents are actors too: squared pill, marker, agent name, then whose agent it is */
+.person.agent {
+  display: inline-flex; align-items: center; gap: var(--ds-space-6);
+  border-radius: var(--ds-radius-4);
+  border: var(--ds-border-width-1) solid color-mix(in srgb, var(--p) 55%, transparent);
+  background: color-mix(in srgb, var(--p) 12%, transparent);
+}
+.person.agent .mark { width: var(--ds-space-6); height: var(--ds-space-6); background: var(--p); transform: rotate(45deg); flex: none; }
+.person.agent .owner { padding-left: var(--ds-space-6); border-left: var(--ds-border-width-1) solid color-mix(in srgb, var(--p) 45%, transparent); opacity: 0.8; }
+.cell .l2.now { display: flex; align-items: center; gap: var(--ds-space-8); flex-wrap: wrap; }
+tr.sub td:first-child { padding-left: var(--ds-space-24); }
+.change .head { align-items: center; }
+
+/* team table: chips stay whole and the cell stays a table cell */
+td.chips { display: table-cell; }
+td.chips .chip { display: inline-block; white-space: nowrap; margin: var(--ds-space-2) var(--ds-space-6) var(--ds-space-2) 0; }
