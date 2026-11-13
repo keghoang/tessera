@@ -1,6 +1,7 @@
 ---
 name: modeling-variations
-description: Builds a small set of labelled shape alternatives for one design decision on an asset. Use when the artist asks for options, alternatives or versions of a form. Not for applying a note whose direction is already chosen (tessera:modeling-notes) or for lighting alternatives (tessera:lighting-variations).
+description: Shape options for one design decision.
+when_to_use: Builds a small set of labelled shape alternatives for one design decision on an asset. Use when the artist asks for options, alternatives or versions of a form. Not for applying a note whose direction is already chosen (tessera:modeling-notes) or for lighting alternatives (tessera:lighting-variations).
 ---
 
 # Develop shape variations — BUCK

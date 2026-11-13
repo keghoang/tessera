@@ -1,6 +1,7 @@
 ---
 name: modeling-v01
-description: Builds the primary forms of a new model for design review, before production finishing. Use when an asset has no model yet, or the artist asks to block out, rough in or start a model. Not for finishing approved forms (tessera:modeling-production), sets of interchangeable pieces (tessera:modeling-modular), or design alternatives (tessera:modeling-variations).
+description: Block out a new model.
+when_to_use: Builds the primary forms of a new model for design review, before production finishing. Use when an asset has no model yet, or the artist asks to block out, rough in or start a model. Not for finishing approved forms (tessera:modeling-production), sets of interchangeable pieces (tessera:modeling-modular), or design alternatives (tessera:modeling-variations).
 ---
 
 # Build a v01 model — BUCK

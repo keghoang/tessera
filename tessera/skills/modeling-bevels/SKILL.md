@@ -1,6 +1,7 @@
 ---
 name: modeling-bevels
-description: Refines bevels and edge treatment on a model so edges and highlights read at the required viewing distance. Use when edges look too sharp, too soft or computer-made, or when highlights break along an edge. Not for general detail work (tessera:modeling-production) or for normal and shading defects (tessera:modeling-repair).
+description: Refine bevels and edges.
+when_to_use: Refines bevels and edge treatment on a model so edges and highlights read at the required viewing distance. Use when edges look too sharp, too soft or computer-made, or when highlights break along an edge. Not for general detail work (tessera:modeling-production) or for normal and shading defects (tessera:modeling-repair).
 ---
 
 # Refine bevels and edge treatment — BUCK

@@ -1,6 +1,7 @@
 ---
 name: lighting-notes
-description: Revises an existing Maya lighting file from review notes, changing only what each note asks and keeping approved qualities and render settings. Use when the artist passes on feedback about lights, shadows, exposure, colour or mood in a shot that already has lighting. Not for a first pass (tessera:lighting-v01), material notes (tessera:lighting-lookdev), new upstream versions (tessera:lighting-sources), or a render that differs for an unknown reason (tessera:lighting-diagnose).
+description: Apply lighting review notes.
+when_to_use: Revises an existing Maya lighting file from review notes, changing only what each note asks and keeping approved qualities and render settings. Use when the artist passes on feedback about lights, shadows, exposure, colour or mood in a shot that already has lighting. Not for a first pass (tessera:lighting-v01), material notes (tessera:lighting-lookdev), new upstream versions (tessera:lighting-sources), or a render that differs for an unknown reason (tessera:lighting-diagnose).
 ---
 
 # Address lighting notes — BUCK

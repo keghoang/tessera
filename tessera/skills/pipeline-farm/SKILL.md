@@ -1,6 +1,7 @@
 ---
 name: pipeline-farm
-description: Submits Maya V-Ray render jobs to the Deadline farm from the command line and checks the result - test frames or a full range, written as job files with no earlier job to copy. Use when job files need writing or submitting, when a farm job failed, errored or rendered in the wrong environment, or when requeueing frames. An artist's request for test frames starts at tessera:lighting-previews and for a final render at tessera:lighting-render; they call this skill. Not for running Maya locally (tessera:pipeline-launch) or for a render that finished but looks wrong (tessera:lighting-diagnose).
+description: Write, submit and check farm render jobs.
+when_to_use: Submits Maya V-Ray render jobs to the Deadline farm from the command line and checks the result - test frames or a full range, written as job files with no earlier job to copy. Use when job files need writing or submitting, when a farm job failed, errored or rendered in the wrong environment, or when requeueing frames. An artist's request for test frames starts at tessera:lighting-previews and for a final render at tessera:lighting-render; they call this skill. Not for running Maya locally (tessera:pipeline-launch) or for a render that finished but looks wrong (tessera:lighting-diagnose).
 ---
 
 # Submit to the farm (Deadline)

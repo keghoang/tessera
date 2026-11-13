@@ -2,6 +2,10 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.9.3 (2026-11-13)
+
+- Skill descriptions in the plugin are one short line. The "use when" and "not for" text moved to `when_to_use`, which the agent still reads when choosing a skill.
+
 ## 0.9.2 (2026-11-13)
 
 - The plugin goes by the code name `tessera` (marketplace `tessera-hub`). Skills show as `tessera:lighting-notes`.

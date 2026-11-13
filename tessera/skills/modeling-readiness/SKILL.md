@@ -1,6 +1,7 @@
 ---
 name: modeling-readiness
-description: Checks a model against the receiving department's actual requirements (rigging, lookdev, lighting or animation) and reports each item as pass, fail or not assessed, without changing the model. Use when the artist asks whether a model is ready, or before a handoff or a publish. Not for fidelity to the design (tessera:modeling-reference-check), writing the handoff (tessera:modeling-handoff), or changing the model to make it ready (tessera:modeling-rigging).
+description: Check a model is ready for the next department.
+when_to_use: Checks a model against the receiving department's actual requirements (rigging, lookdev, lighting or animation) and reports each item as pass, fail or not assessed, without changing the model. Use when the artist asks whether a model is ready, or before a handoff or a publish. Not for fidelity to the design (tessera:modeling-reference-check), writing the handoff (tessera:modeling-handoff), or changing the model to make it ready (tessera:modeling-rigging).
 ---
 
 # Check asset readiness — BUCK

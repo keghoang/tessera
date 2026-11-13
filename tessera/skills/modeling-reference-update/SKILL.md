@@ -1,6 +1,7 @@
 ---
 name: modeling-reference-update
-description: Changes a model that other scenes already reference, keeping the names, hierarchy, pivots and assignments those scenes depend on, and tests it in a consuming scene. Use when a published or referenced asset must be revised. Not for a model nothing consumes yet (tessera:modeling-notes) or for updating the reference inside a lighting shot (tessera:lighting-sources).
+description: Change a model that shots already reference.
+when_to_use: Changes a model that other scenes already reference, keeping the names, hierarchy, pivots and assignments those scenes depend on, and tests it in a consuming scene. Use when a published or referenced asset must be revised. Not for a model nothing consumes yet (tessera:modeling-notes) or for updating the reference inside a lighting shot (tessera:lighting-sources).
 ---
 
 # Revise a referenced asset safely — BUCK

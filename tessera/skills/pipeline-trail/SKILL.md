@@ -1,6 +1,7 @@
 ---
 name: pipeline-trail
-description: Writes and updates the .trail record that sits next to every versioned work file (.mb, .ma, .nk) - what the version is, what changed, each check and its result, farm jobs and review outcome. Use whenever saving a new version, submitting it to the farm, recording a review result, or reading what a coworker's version contains. Not for the farm submission itself (tessera:pipeline-farm).
+description: Save a version and write its .trail record.
+when_to_use: Writes and updates the .trail record that sits next to every versioned work file (.mb, .ma, .nk) - what the version is, what changed, each check and its result, farm jobs and review outcome. Use whenever saving a new version, submitting it to the farm, recording a review result, or reading what a coworker's version contains. Not for the farm submission itself (tessera:pipeline-farm).
 ---
 
 # Write a version's `.trail`

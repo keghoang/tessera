@@ -1,6 +1,7 @@
 ---
 name: lighting-aovs
-description: Sets up render layers, render elements (AOVs) and output separation on a shot from the show's lighting template and what comp needs. Use when comp asks for a pass, matte or cryptomatte, an AOV is missing or wrong, or layers need splitting. Not for look changes (tessera:lighting-notes) or for render time and noise problems (tessera:lighting-optimize).
+description: Render layers, AOVs and mattes for comp.
+when_to_use: Sets up render layers, render elements (AOVs) and output separation on a shot from the show's lighting template and what comp needs. Use when comp asks for a pass, matte or cryptomatte, an AOV is missing or wrong, or layers need splitting. Not for look changes (tessera:lighting-notes) or for render time and noise problems (tessera:lighting-optimize).
 ---
 
 # Prepare render layers and AOVs — BUCK

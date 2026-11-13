@@ -1,6 +1,7 @@
 ---
 name: modeling-production
-description: Develops approved blockout forms into an asset fit for its agreed downstream use - final detail, clean construction, naming and structure. Use when a first model or design is approved and the artist asks to finish, detail or take the model to production. Not for a first blockout (tessera:modeling-v01), review notes on a finished model (tessera:modeling-notes), or edge treatment alone (tessera:modeling-bevels).
+description: Take an approved blockout to final.
+when_to_use: Develops approved blockout forms into an asset fit for its agreed downstream use - final detail, clean construction, naming and structure. Use when a first model or design is approved and the artist asks to finish, detail or take the model to production. Not for a first blockout (tessera:modeling-v01), review notes on a finished model (tessera:modeling-notes), or edge treatment alone (tessera:modeling-bevels).
 ---
 
 # Develop an approved model for production — BUCK

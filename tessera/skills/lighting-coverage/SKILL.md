@@ -1,6 +1,7 @@
 ---
 name: lighting-coverage
-description: Reviews a shot's lighting across its whole frame range and every delivery format, and reports issues without changing the look. Use for whole-shot QA before a full render or delivery - flicker, pops, frames where the lighting breaks, crops in other aspect ratios. Not for fixing what it finds (tessera:lighting-notes) or for tracing one unexplained difference (tessera:lighting-diagnose).
+description: QA lighting across the whole shot.
+when_to_use: Reviews a shot's lighting across its whole frame range and every delivery format, and reports issues without changing the look. Use for whole-shot QA before a full render or delivery - flicker, pops, frames where the lighting breaks, crops in other aspect ratios. Not for fixing what it finds (tessera:lighting-notes) or for tracing one unexplained difference (tessera:lighting-diagnose).
 ---
 
 # Check lighting across the shot — BUCK

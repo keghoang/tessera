@@ -1,6 +1,7 @@
 ---
 name: pipeline-setup
-description: Sets up or maintains the Agents folder on a job - deploys the starter and skills to a new job, creates or refreshes the job's SHOW.md from Aquarium, and installs or updates the skills on an artist's machine. Use when a job has no Agents folder or no SHOW.md, when the artist asks to refresh SHOW.md, or at session start when the installed skills are missing or older than the server's. Not for looking up one fact (tessera:pipeline-aquarium).
+description: Set up a job's Agents folder and install skills.
+when_to_use: Sets up or maintains the Agents folder on a job - deploys the starter and skills to a new job, creates or refreshes the job's SHOW.md from Aquarium, and installs or updates the skills on an artist's machine. Use when a job has no Agents folder or no SHOW.md, when the artist asks to refresh SHOW.md, or at session start when the installed skills are missing or older than the server's. Not for looking up one fact (tessera:pipeline-aquarium).
 ---
 
 # Set up a job's `Agents` folder

@@ -1,6 +1,7 @@
 ---
 name: lighting-transfer
-description: Adapts an approved lighting setup from one shot to another, keeping the destination's own animation, camera and sequence continuity. Use when the artist says to match, copy or carry over the lighting from another shot. Not for a shot with no approved look to copy from (tessera:lighting-v01), or for swapping animation or asset versions inside the same shot (tessera:lighting-sources).
+description: Carry approved lighting to another shot.
+when_to_use: Adapts an approved lighting setup from one shot to another, keeping the destination's own animation, camera and sequence continuity. Use when the artist says to match, copy or carry over the lighting from another shot. Not for a shot with no approved look to copy from (tessera:lighting-v01), or for swapping animation or asset versions inside the same shot (tessera:lighting-sources).
 ---
 
 # Carry lighting to another shot — BUCK

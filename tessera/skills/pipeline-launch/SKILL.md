@@ -1,6 +1,7 @@
 ---
 name: pipeline-launch
-description: Runs Maya, Nuke and other applications headless or in batch inside the job's launcher (rez) environment on a Windows workstation. Use whenever a task needs to open, build, save or render a scene from a script, or when an application reports a missing licence, plugin or colour config. Not for farm submission (tessera:pipeline-farm).
+description: Run Maya or Nuke headless in the job's environment.
+when_to_use: Runs Maya, Nuke and other applications headless or in batch inside the job's launcher (rez) environment on a Windows workstation. Use whenever a task needs to open, build, save or render a scene from a script, or when an application reports a missing licence, plugin or colour config. Not for farm submission (tessera:pipeline-farm).
 ---
 
 # Launch an application in the Buck5 environment

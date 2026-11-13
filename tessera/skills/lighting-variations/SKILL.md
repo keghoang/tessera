@@ -1,6 +1,7 @@
 ---
 name: lighting-variations
-description: Builds a small set of labelled lighting alternatives for one shot so the artist can settle a specific creative question. Use when the artist asks for options, alternatives, explorations or A/B versions of the lighting. Not for applying a note whose direction is already chosen (tessera:lighting-notes) or for material alternatives (tessera:lighting-lookdev).
+description: Lighting options for one creative question.
+when_to_use: Builds a small set of labelled lighting alternatives for one shot so the artist can settle a specific creative question. Use when the artist asks for options, alternatives, explorations or A/B versions of the lighting. Not for applying a note whose direction is already chosen (tessera:lighting-notes) or for material alternatives (tessera:lighting-lookdev).
 ---
 
 # Develop lighting variations — BUCK

@@ -1,6 +1,7 @@
 ---
 name: modeling-optimize
-description: Reduces the polygon count or resource cost of a heavy asset, keeping agreed visual and downstream requirements. Use when a model is slow in the viewport, heavy to load or render, or over budget, or when a lighter previs or background version is asked for. Not for rebuilding edge flow (tessera:modeling-retopology) or for fixing defects (tessera:modeling-repair).
+description: Lighten a heavy model.
+when_to_use: Reduces the polygon count or resource cost of a heavy asset, keeping agreed visual and downstream requirements. Use when a model is slow in the viewport, heavy to load or render, or over budget, or when a lighter previs or background version is asked for. Not for rebuilding edge flow (tessera:modeling-retopology) or for fixing defects (tessera:modeling-repair).
 ---
 
 # Optimize a heavy asset — BUCK

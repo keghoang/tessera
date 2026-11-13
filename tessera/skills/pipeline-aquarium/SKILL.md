@@ -1,6 +1,7 @@
 ---
 name: pipeline-aquarium
-description: Reads a job's facts from Aquarium (the production tracker) through the launcher's local API - project id, software and launcher entries, colour management, sequences, shots, tasks and task ids, deliverables. Use when SHOW.md lacks a fact, when a farm job needs a task id, or when checking whether a shot or task exists. Read-only. Not for changing anything in Aquarium, and not for writing SHOW.md (tessera:pipeline-setup).
+description: Look up job facts and task ids in the tracker.
+when_to_use: Reads a job's facts from Aquarium (the production tracker) through the launcher's local API - project id, software and launcher entries, colour management, sequences, shots, tasks and task ids, deliverables. Use when SHOW.md lacks a fact, when a farm job needs a task id, or when checking whether a shot or task exists. Read-only. Not for changing anything in Aquarium, and not for writing SHOW.md (tessera:pipeline-setup).
 ---
 
 # Look up job facts in Aquarium

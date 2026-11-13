@@ -1,6 +1,7 @@
 ---
 name: modeling-handoff
-description: Delivers an editable model to another modeling artist with its structure, open issues and context written down. Use when a model changes hands, or the artist asks to clean up or hand off a modeling file. Not for checking it against a department's requirements (tessera:modeling-readiness) or for preparing it for rigging (tessera:modeling-rigging).
+description: Hand a model to another modeler.
+when_to_use: Delivers an editable model to another modeling artist with its structure, open issues and context written down. Use when a model changes hands, or the artist asks to clean up or hand off a modeling file. Not for checking it against a department's requirements (tessera:modeling-readiness) or for preparing it for rigging (tessera:modeling-rigging).
 ---
 
 # Prepare a modeling handoff — BUCK

@@ -73,6 +73,17 @@ def main():
             sys.exit("studio name still in a description: " + line[:160])
         return line
 
+    shorts = json.loads((HERE / "Skills" / "short_descriptions.json").read_text(encoding="utf-8"))
+
+    def split_description(line, source_name):
+        """A short line for menus; the full description becomes when_to_use (the agent reads both)."""
+        short = shorts.get(source_name)
+        if not short:
+            sys.exit("no short description for %s in Skills/short_descriptions.json" % source_name)
+        if len(short) > 70 or "buck" in short.lower() or ": " in short:
+            sys.exit("bad short description for %s: %s" % (source_name, short))
+        return "description: " + short + "\nwhen_to_use: " + line[len("description: "):]
+
     count = scripts = 0
     for src in sorted(p for p in (HERE / "Skills").iterdir() if p.is_dir()):
         name = src.name[len("buck-"):] if strip and src.name.startswith("buck-") else src.name
@@ -83,7 +94,7 @@ def main():
         if strip:
             text = rename(text)
             text = re.sub(r"(?m)^name: .*$", "name: " + name, text, count=1)
-        text = re.sub(r"(?m)^description: .*$", lambda m: neutral(m.group(0)), text, count=1)
+        text = re.sub(r"(?m)^description: .*$", lambda m: split_description(neutral(m.group(0)), src.name), text, count=1)
         if (dst / "scripts").is_dir():
             scripts += 1
             text = text.rstrip("\n") + ("\n\n## Where the scripts are\n\nThis skill's folder is `${CLAUDE_SKILL_DIR}`; "

@@ -1,6 +1,7 @@
 ---
 name: modeling-modular
-description: Builds a kit of interchangeable model pieces with shared dimensions, pivots and assembly rules. Use when the artist asks for a kit, a modular set, or pieces that snap together or repeat. Not for a single asset (tessera:modeling-v01, tessera:modeling-production) or for cutting an existing mesh into parts (tessera:modeling-split-combine).
+description: Build a kit of pieces that fit together.
+when_to_use: Builds a kit of interchangeable model pieces with shared dimensions, pivots and assembly rules. Use when the artist asks for a kit, a modular set, or pieces that snap together or repeat. Not for a single asset (tessera:modeling-v01, tessera:modeling-production) or for cutting an existing mesh into parts (tessera:modeling-split-combine).
 ---
 
 # Build a modular asset kit — BUCK

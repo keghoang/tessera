@@ -1,6 +1,7 @@
 ---
 name: lighting-previews
-description: Checks a saved lighting scene, submits a few chosen test frames to the farm and inspects the images. Use whenever a lighting or lookdev change needs to be seen rendered before review. Not for the full production range (tessera:lighting-render) or for the job-file mechanics (tessera:pipeline-farm).
+description: Farm test frames of a lighting change.
+when_to_use: Checks a saved lighting scene, submits a few chosen test frames to the farm and inspects the images. Use whenever a lighting or lookdev change needs to be seen rendered before review. Not for the full production range (tessera:lighting-render) or for the job-file mechanics (tessera:pipeline-farm).
 ---
 
 # Preflight and render previews — BUCK
