@@ -14,38 +14,31 @@ Buck's working rules and skills for AI agents (Claude Code, Codex) on 3D jobs, p
 
 ## Install (artist)
 
-Status: the package follows the documented format but has not been installed on a workstation yet. The repo is private, so each artist needs access to it and a git login on their machine.
+Installed and loading on one workstation (2026-11-13, Claude desktop app, Claude Code 2.1.321). The repo is private, so each artist needs access to it and a git login on their machine.
 
-Claude Code command line:
+The install is two commands with the `claude` command-line tool. The desktop app ships that tool but does not put it on the path; this PowerShell finds it and runs the install:
 
+```powershell
+$claude = (Get-ChildItem "$env:LOCALAPPDATA\Claude-Data" -Recurse -Filter claude.exe -ErrorAction SilentlyContinue | Sort-Object LastWriteTime | Select-Object -Last 1).FullName
+& $claude plugin marketplace add https://github.com/keghoang/buck3d.git
+& $claude plugin install buck3d@buck-studio --scope user
 ```
-claude plugin marketplace add https://github.com/keghoang/buck3d.git
-claude plugin install buck3d@buck-studio
-```
 
-Claude desktop app (Code tab): add this to `%USERPROFILE%\.claude\settings.json`, restart the app, then enable `buck3d` under **+** > **Plugins**.
+If `claude` is already on the path, run the last two lines with `claude` in place of `& $claude`.
 
-```json
-{
-  "extraKnownMarketplaces": {
-    "buck-studio": {
-      "source": { "source": "git", "url": "https://github.com/keghoang/buck3d.git", "ref": "main" },
-      "autoUpdate": true
-    }
-  },
-  "enabledPlugins": { "buck3d@buck-studio": true }
-}
-```
+Then start a new session and type `/buck3d:`. The skills list as `buck3d:lighting-notes`, `buck3d:pipeline-farm` and so on.
+
+What did not work: adding the marketplace and `enabledPlugins` to `%USERPROFILE%\.claude\settings.json` by hand. The app fetched the marketplace but did not install the plugin, and it did not appear in the Plugins panel.
 
 If you installed the skills earlier by copying folders, delete the `buck-*` folders from `%USERPROFILE%\.claude\skills\` after the plugin works, or every skill is listed twice.
 
-IT can do the same for every workstation by putting that JSON in `C:\Program Files\ClaudeCode\managed-settings.json`.
+For every workstation at once, IT can set `extraKnownMarketplaces` and `enabledPlugins` in `C:\Program Files\ClaudeCode\managed-settings.json` (documented to install at the next session; not tried here).
 
 Codex does not read Claude plugins. For Codex, copy the folders in `Skills/` to `%USERPROFILE%\.agents\skills\` (not yet tried).
 
 ## Update
 
-With `autoUpdate` on, a workstation picks up a new version at its next session. By hand: `claude plugin update buck3d@buck-studio`.
+By hand: `claude plugin marketplace update buck-studio`, then `claude plugin update buck3d@buck-studio`, then restart. This route took a workstation from 0.9.0 to 0.9.1. Automatic updates are off by default for a private marketplace and are switched on per marketplace in the app's plugin settings (not tried).
 
 ## Release (maintainer)
 
