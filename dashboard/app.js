@@ -26,11 +26,24 @@
   const fromHash = (location.hash.split("/")[1] || "").toLowerCase();
   const state = { person: "all", q: "", kind: kinds.find((k) => k.toLowerCase() === fromHash) || kinds[0] };
   const TONE = { working: "agent", waiting: "warn", farm: "info", idle: "" };
-  // one colour per person, fixed by their place in the job's people list
+  // One colour per person, never repeated within a job. Eight hues spread over the part of the wheel
+  // the states don't use (amber = waiting, teal = working, blue = on the farm); after eight people the
+  // next eight take the hues in between at another lightness, and so on.
+  const SLOT = [0, 4, 2, 6, 1, 5, 3, 7];
+  const TIER = [[72, 62], [58, 78], [62, 45]];             // saturation, lightness
+  const colourOf = (person) => {
+    const i = data.people.indexOf(person);
+    if (i < 0) return "";
+    const round = Math.floor(i / 8);
+    const at = ((SLOT[i % 8] + (round % 2) * 0.5) * 31.25 + round * 3.7) % 250;  // 250 degrees are free
+    const hue = at < 95 ? 60 + at : (230 + (at - 95)) % 360;                      // 60-155, then 230-25
+    const [s, l] = TIER[round % 3];
+    return "hsl(" + hue.toFixed(1) + " " + s + "% " + l + "%)";
+  };
   const pill = (person) => {
     const s = el("span", "person", person);
-    const i = data.people.indexOf(person);
-    if (i >= 0) s.style.setProperty("--p", "var(--person-" + ((i % 6) + 1) + ")");
+    const c = colourOf(person);
+    if (c) s.style.setProperty("--p", c);
     return s;
   };
   const who = (person, agent) => {
@@ -170,7 +183,7 @@
 
   ["all"].concat(data.people).forEach((p, i) => {
     const b = el("button", "", p === "all" ? "Everyone" : "");
-    if (p !== "all") { const sw = pill(""); sw.classList.add("swatch"); sw.style.setProperty("--p", "var(--person-" + ((data.people.indexOf(p) % 6) + 1) + ")"); b.append(sw, document.createTextNode(p)); }
+    if (p !== "all") { const sw = pill(""); sw.classList.add("swatch"); sw.style.setProperty("--p", colourOf(p)); b.append(sw, document.createTextNode(p)); }
     b.type = "button";
     b.dataset.v = p;
     b.setAttribute("aria-pressed", String(i === 0));

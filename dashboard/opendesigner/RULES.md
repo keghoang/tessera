@@ -16,3 +16,4 @@ The owner's notes on this project, from `engine.py feedback --kind note`. Read t
 | N-05 | Split the page into Shots and Assets tabs. Visual hierarchy is too flat: the job, the sequence names and live work must stand out from the resting cells. | 1 | 2026-11-13 |
 | N-06 | People get a colour-coded pill, one colour per person, everywhere a name shows. Sample people are Kien, Michele, Kim, Chloe. | 1 | 2026-11-13 |
 | N-07 | In a live cell the status and the task the agent is doing are two separate lines. | 1 | 2026-11-13 |
+| N-08 | Person colours never repeat within a job. | 1 | 2026-11-13 |
