@@ -230,3 +230,7 @@ tr.sub td:first-child { padding-left: var(--ds-space-24); }
 /* team table: chips stay whole and the cell stays a table cell */
 td.chips { display: table-cell; }
 td.chips .chip { display: inline-block; white-space: nowrap; margin: var(--ds-space-2) var(--ds-space-6) var(--ds-space-2) 0; }
+
+/* the team table carries agent rows now, so it gets more room */
+.cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+@media (max-width: 60rem) { .cols { grid-template-columns: minmax(0, 1fr); } }
