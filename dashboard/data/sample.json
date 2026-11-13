@@ -18,7 +18,7 @@
    "version": 14,
    "made_by": "agent",
    "agent": "Claude Code",
-   "artist": "sam",
+   "artist": "Kien",
    "date": "2026-11-13 11:42",
    "request": "Warm the key, bring the rim back to v011 strength.",
    "changes": [
@@ -33,7 +33,7 @@
    "version": 9,
    "made_by": "human",
    "agent": "",
-   "artist": "jo",
+   "artist": "Michele",
    "date": "2026-11-13 10:15",
    "request": "",
    "changes": []
@@ -45,7 +45,7 @@
    "version": 6,
    "made_by": "agent",
    "agent": "Claude Code",
-   "artist": "sam",
+   "artist": "Kien",
    "date": "2026-11-12 18:03",
    "request": "Match SH010 at the cut.",
    "changes": [
@@ -60,7 +60,7 @@
    "version": 3,
    "made_by": "agent",
    "agent": "Codex",
-   "artist": "ria",
+   "artist": "Kim",
    "date": "2026-11-12 16:40",
    "request": "First lighting pass.",
    "changes": [
@@ -75,7 +75,7 @@
    "version": 21,
    "made_by": "human",
    "agent": "",
-   "artist": "ria",
+   "artist": "Kim",
    "date": "2026-11-12 11:20",
    "request": "",
    "changes": []
@@ -87,7 +87,7 @@
    "version": 1,
    "made_by": "agent",
    "agent": "Claude Code",
-   "artist": "sam",
+   "artist": "Kien",
    "date": "2026-11-13 09:05",
    "request": "Block in lighting from SH020.",
    "changes": [
@@ -101,7 +101,7 @@
    "version": 8,
    "made_by": "agent",
    "agent": "Claude Code",
-   "artist": "jo",
+   "artist": "Michele",
    "date": "2026-11-13 08:30",
    "request": "Handle thinner, base narrower.",
    "changes": [
@@ -116,7 +116,7 @@
    "version": 3,
    "made_by": "human",
    "agent": "",
-   "artist": "ria",
+   "artist": "Kim",
    "date": "2026-11-11 15:12",
    "request": "Rig from mdl v006.",
    "changes": [
@@ -130,7 +130,7 @@
    "version": 11,
    "made_by": "agent",
    "agent": "Claude Code",
-   "artist": "sam",
+   "artist": "Kien",
    "date": "2026-11-11 14:02",
    "request": "Copper less plastic.",
    "changes": [
@@ -145,7 +145,7 @@
    "version": 19,
    "made_by": "human",
    "agent": "",
-   "artist": "jo",
+   "artist": "Michele",
    "date": "2026-11-10 17:45",
    "request": "",
    "changes": []
@@ -157,7 +157,7 @@
    "version": 12,
    "made_by": "agent",
    "agent": "Codex",
-   "artist": "jo",
+   "artist": "Michele",
    "date": "2026-11-13 11:05",
    "request": "Light pool under the hero, keep room exposure.",
    "changes": [
@@ -171,7 +171,7 @@
    "version": 4,
    "made_by": "human",
    "agent": "",
-   "artist": "ria",
+   "artist": "Chloe",
    "date": "2026-11-13 10:50",
    "request": "",
    "changes": []
@@ -183,21 +183,22 @@
    "version": 2,
    "made_by": "human",
    "agent": "",
-   "artist": "ria",
+   "artist": "Chloe",
    "date": "2026-11-12 15:30",
    "request": "",
    "changes": []
   }
  ],
  "people": [
-  "sam",
-  "jo",
-  "ria"
+  "Chloe",
+  "Kien",
+  "Kim",
+  "Michele"
  ],
  "now": "2026-11-13 12:20",
  "live": [
   {
-   "person": "sam",
+   "person": "Kien",
    "agent": "Claude Code",
    "shot": "SH010",
    "task": "lgt",
@@ -207,7 +208,7 @@
    "updated": "2026-11-13 12:19"
   },
   {
-   "person": "sam",
+   "person": "Kien",
    "agent": "Claude Code",
    "shot": "SH040",
    "task": "lgt",
@@ -217,17 +218,17 @@
    "updated": "2026-11-13 12:20"
   },
   {
-   "person": "jo",
+   "person": "Michele",
    "agent": "Codex",
    "shot": "SH020",
    "task": "comp",
-   "doing": "Asked jo: mask the pool by floor matte or by world position?",
+   "doing": "Asked Michele: mask the pool by floor matte or by world position?",
    "state": "waiting",
    "since": "2026-11-13 10:48",
    "updated": "2026-11-13 12:05"
   },
   {
-   "person": "jo",
+   "person": "Michele",
    "agent": "Claude Code",
    "shot": "prop_tower",
    "task": "mdl",

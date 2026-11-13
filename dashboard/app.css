@@ -198,3 +198,23 @@ td.cell.live { border-left: var(--ds-border-width-2) solid var(--ds-color-border
 td.cell.live.warn { background: var(--ds-color-bg-warning-subtle); border-left: var(--ds-border-width-2) solid var(--ds-color-border-warning); }
 td.cell.live.info { background: var(--ds-color-bg-info-subtle); border-left: var(--ds-border-width-2) solid var(--ds-color-border-info); }
 .cols { border-top: var(--ds-border-width-1) solid var(--ds-color-border-subtle); padding-top: var(--ds-space-24); }
+
+/* people: one hue each. The system has no categorical colours, and the status colours already mean
+   working, waiting and on the farm, so these six sit outside them. */
+:root {
+  --person-1: #8B5CF6; /* od-ignore: person hue, no categorical token */
+  --person-2: #EC4899; /* od-ignore: person hue, no categorical token */
+  --person-3: #84CC16; /* od-ignore: person hue, no categorical token */
+  --person-4: #EF5A5A; /* od-ignore: person hue, no categorical token */
+  --person-5: #6366F1; /* od-ignore: person hue, no categorical token */
+  --person-6: #A8A29E; /* od-ignore: person hue, no categorical token */
+}
+.person {
+  --p: var(--ds-color-border-strong);
+  font: var(--ds-text-label-md); padding: var(--ds-space-2) var(--ds-space-8); border-radius: var(--ds-radius-full);
+  background: color-mix(in srgb, var(--p) 22%, transparent);
+  color: color-mix(in srgb, var(--p) 55%, var(--ds-color-text-primary));
+  white-space: nowrap;
+}
+.person.swatch { padding: 0; width: var(--ds-space-8); height: var(--ds-space-8); display: inline-block; background: var(--p); margin-right: var(--ds-space-6); }
+.seg button { display: inline-flex; align-items: center; }

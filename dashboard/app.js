@@ -26,9 +26,16 @@
   const fromHash = (location.hash.split("/")[1] || "").toLowerCase();
   const state = { person: "all", q: "", kind: kinds.find((k) => k.toLowerCase() === fromHash) || kinds[0] };
   const TONE = { working: "agent", waiting: "warn", farm: "info", idle: "" };
+  // one colour per person, fixed by their place in the job's people list
+  const pill = (person) => {
+    const s = el("span", "person", person);
+    const i = data.people.indexOf(person);
+    if (i >= 0) s.style.setProperty("--p", "var(--person-" + ((i % 6) + 1) + ")");
+    return s;
+  };
   const who = (person, agent) => {
     const s = el("span", "who");
-    s.append(el("i", "dot" + (agent ? " agent" : "")), el("span", "", person));
+    s.append(el("i", "dot" + (agent ? " agent" : "")), pill(person));
     if (agent) s.append(el("span", "muted", "via " + agent));
     return s;
   };
@@ -82,7 +89,7 @@
           if (dim) td.classList.add("dim");
           if (v) {
             const l1 = el("div", "l1");
-            l1.append(el("i", "dot" + (v.made_by === "agent" ? " agent" : "")), el("span", "mono ver", ver(v)), el("span", "by", v.artist), el("span", "age", ago(v.date)));
+            l1.append(el("i", "dot" + (v.made_by === "agent" ? " agent" : "")), el("span", "mono ver", ver(v)), pill(v.artist), el("span", "age", ago(v.date)));
             td.append(l1);
           }
           if (l) {
@@ -130,7 +137,9 @@
       const on = el("td", "chips");
       if (running.length) running.forEach((s) => on.append(el("span", "chip " + (TONE[s.state] ?? "agent"), s.shot + " " + s.task + (s.state === "working" ? "" : " · " + s.state))));
       else if (saves.length) on.append(el("span", "chip", saves[0].shot + " " + saves[0].task));
-      tr.append(el("td", "", p), on, el("td", "num muted", saves.length ? ago(saves[0].date) : ""));
+      const name = el("td");
+      name.append(pill(p));
+      tr.append(name, on, el("td", "num muted", saves.length ? ago(saves[0].date) : ""));
       team.append(tr);
     });
   }
@@ -161,7 +170,8 @@
   });
 
   ["all"].concat(data.people).forEach((p, i) => {
-    const b = el("button", "", p === "all" ? "Everyone" : p);
+    const b = el("button", "", p === "all" ? "Everyone" : "");
+    if (p !== "all") { const sw = pill(""); sw.classList.add("swatch"); sw.style.setProperty("--p", "var(--person-" + ((data.people.indexOf(p) % 6) + 1) + ")"); b.append(sw, document.createTextNode(p)); }
     b.type = "button";
     b.dataset.v = p;
     b.setAttribute("aria-pressed", String(i === 0));

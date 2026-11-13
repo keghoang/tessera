@@ -14,3 +14,4 @@ The owner's notes on this project, from `engine.py feedback --kind note`. Read t
 | N-03 | Not a review or approval tool: show who is working on what, what is in progress now (agent telemetry) and the last changes; no review, approval or check-result status | 1 | 2026-11-13 |
 | N-04 | Shots front and centre: the page is organised around the job's own structure (sequence > shot, asset category > asset); every shot is listed, and live work shows inside its shot | 1 | 2026-11-13 |
 | N-05 | Split the page into Shots and Assets tabs. Visual hierarchy is too flat: the job, the sequence names and live work must stand out from the resting cells. | 1 | 2026-11-13 |
+| N-06 | People get a colour-coded pill, one colour per person, everywhere a name shows. Sample people are Kien, Michele, Kim, Chloe. | 1 | 2026-11-13 |
