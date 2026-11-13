@@ -218,3 +218,7 @@ td.cell.live.info { background: var(--ds-color-bg-info-subtle); border-left: var
 }
 .person.swatch { padding: 0; width: var(--ds-space-8); height: var(--ds-space-8); display: inline-block; background: var(--p); margin-right: var(--ds-space-6); }
 .seg button { display: inline-flex; align-items: center; }
+
+/* live cell: status on its own line, the task text under it */
+.cell .l2.now { margin-top: var(--ds-space-8); }
+.cell .l2.doing-line { color: var(--ds-color-text-primary); margin-top: var(--ds-space-6); }
