@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tessera Dashboard</title>
+<link rel="stylesheet" href="opendesigner/build/css/tokens.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Tessera</h1>
+    <span class="job" id="job"></span>
+    <span class="tag" id="sample" hidden>sample data</span>
+    <span class="right"><span id="collected"></span></span>
+  </header>
+
+  <div class="bar-row" aria-label="Filters">
+    <div class="seg" role="group" aria-label="Person" id="f-person"></div>
+    <input type="search" id="q" placeholder="Shot or asset" aria-label="Filter by shot or asset name">
+  </div>
+
+  <div id="groups" class="col"></div>
+
+  <div class="cols">
+    <section class="col" aria-labelledby="h-chg">
+      <h2 id="h-chg">Last changes</h2>
+      <ul class="list" id="changes"></ul>
+    </section>
+    <section class="col" aria-labelledby="h-team">
+      <h2 id="h-team">Team</h2>
+      <div class="tablewrap"><table>
+        <thead><tr><th>Person</th><th>On now</th><th class="num">Last save</th></tr></thead>
+        <tbody id="team"></tbody>
+      </table></div>
+    </section>
+  </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
