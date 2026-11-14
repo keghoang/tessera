@@ -39,8 +39,8 @@ def stamp(ts):
 
 
 def latest_work_file(dept_dir):
-    """Newest versioned work file under <dept>/<app>/work, or None."""
-    best = None
+    """Newest versioned work file under <dept>/<app>/work plus up to five earlier ones, or None."""
+    best, every = None, []
     for app in subdirs(dept_dir):
         work = os.path.join(dept_dir, app, "work")
         try:
@@ -55,9 +55,13 @@ def latest_work_file(dept_dir):
             if not m:
                 continue
             key = (int(m.group("ver")), e.stat().st_mtime)
+            every.append((key, e.path, m))
             if best is None or key > best[0]:
                 best = (key, e.path, m)
-    return best
+    if best is None:
+        return None
+    earlier = sorted((x for x in every if x[1] != best[1]), reverse=True)[:5]
+    return best + (earlier,)
 
 
 def read_trail(scene_path):
@@ -85,6 +89,16 @@ def read_trail(scene_path):
     changes = [l[2:].strip() for l in section("Changes").splitlines() if l.startswith("- ") and "TODO" not in l]
     request = " ".join(l.strip() for l in section("Request").splitlines() if l.strip() and "TODO" not in l)
     return {"head": head, "changes": [c for c in changes if c], "request": request}
+
+
+def history_entry(key, path, m):
+    """An earlier version, for the detail panel: who made it comes from its trail or its name suffix only."""
+    trail = read_trail(path)
+    head = trail["head"] if trail else {}
+    made_by = head.get("made_by", "human") if trail else "human"
+    return {"version": key[0], "date": stamp(key[1]), "made_by": made_by,
+            "agent": head.get("agent", "") if made_by == "agent" else "",
+            "artist": head.get("artist", "") or m.group("suffix") or ""}
 
 
 def owners(paths):
@@ -122,11 +136,12 @@ def scan(root, kind, tree):
                 found = latest_work_file(os.path.join(root, group, item, dept))
                 if not found:
                     continue
-                (ver, mtime), path, m = found
+                (ver, mtime), path, m, earlier = found
                 task = TASK_OF.get(dept.lower(), m.group("task").lower())
                 tasks.add(task)
                 versions.append({"file": os.path.basename(path), "path": path, "shot": item, "task": task, "version": ver,
-                                 "suffix": m.group("suffix") or "", "date": stamp(mtime)})
+                                 "suffix": m.group("suffix") or "", "date": stamp(mtime),
+                                 "history": [history_entry(k, p, hm) for k, p, hm in earlier]})
         if items:
             blocks.append({"kind": kind, "name": group, "items": items, "tasks": tasks})
     all_tasks = set().union(*[b["tasks"] for b in blocks]) if blocks else set()

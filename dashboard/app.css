@@ -234,3 +234,53 @@ td.chips .chip { display: inline-block; white-space: nowrap; margin: var(--ds-sp
 /* the team table carries agent rows now, so it gets more room */
 .cols { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 @media (max-width: 60rem) { .cols { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- one-line cells with a click-through panel; three display modes ---- */
+/* three text levels: .v/.t1 primary, .t2 secondary, .t3 tertiary. One actor per cell. Time or state at the right. */
+.r { display: flex; align-items: center; gap: var(--ds-space-8); min-width: 0; }
+.r .end { margin-left: auto; }
+.r + .r { margin-top: var(--ds-space-6); }
+.v { font-family: var(--ds-font-family-mono); font-weight: var(--ds-font-weight-heading); color: var(--ds-color-text-primary); }
+.v.none { color: var(--ds-color-text-disabled); }
+.t1 { font: var(--ds-text-body-sm); color: var(--ds-color-text-primary); }
+.t2 { font: var(--ds-text-body-sm); color: var(--ds-color-text-secondary); }
+.t3 { font: var(--ds-text-label-md); color: var(--ds-color-text-tertiary); white-space: nowrap; }
+.st { font: var(--ds-text-label-sm); letter-spacing: var(--ds-font-tracking-caps-label); text-transform: uppercase; white-space: nowrap; color: var(--ds-color-text-tertiary); }
+.st.working { color: var(--ds-color-text-accent); }
+.st.farm { color: var(--ds-color-text-info); }
+.st.waiting { color: var(--ds-color-text-warning); }
+table.grid td { padding-block: var(--ds-space-8); border-left: var(--ds-border-width-2) solid transparent; }
+table.grid td.shot { border-left: 0; }
+table.grid td.cell[role="button"] { cursor: pointer; }
+table.grid td.cell[role="button"]:hover { background: var(--ds-color-bg-neutral-subtle); }
+td.cell.live.working { background: var(--ds-color-bg-accent-subtle); border-left-color: var(--ds-color-border-accent); }
+td.cell.live.farm { background: var(--ds-color-bg-info-subtle); border-left-color: var(--ds-color-border-info); }
+td.cell.live.waiting { background: var(--ds-color-bg-warning-subtle); border-left-color: var(--ds-color-border-warning); }
+td.cell.sel { outline: var(--ds-border-width-2) solid var(--ds-color-border-focus); outline-offset: calc(-1 * var(--ds-border-width-2)); }
+.cell .more { margin-top: var(--ds-space-4); display: none; }
+body[data-mode="standard"] .cell .more.livetext, body[data-mode="full"] .cell .more { display: block; }
+body[data-mode="compact"] table.grid td { padding-block: var(--ds-space-6); }
+.bar-row #f-mode { margin-left: auto; }
+.bar-row input[type="search"] { margin-left: 0; }
+
+.main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--ds-space-16); align-items: start; }
+.main.open { grid-template-columns: minmax(0, 1fr) 21rem; }
+.panel {
+  position: sticky; top: var(--ds-space-16); margin-top: var(--ds-space-40);
+  border: var(--ds-border-width-1) solid var(--ds-color-border-subtle); border-radius: var(--ds-radius-8);
+  background: var(--ds-color-surface-raised); padding: var(--ds-space-16);
+  display: flex; flex-direction: column; gap: var(--ds-space-12);
+}
+.panel[hidden] { display: none; }
+.panel .phead { display: flex; align-items: baseline; gap: var(--ds-space-8); }
+.panel h3 { margin: 0; font: var(--ds-text-title-sm); font-family: var(--ds-font-family-mono); }
+.panel .x { margin-left: auto; font: var(--ds-text-label-md); color: var(--ds-color-text-secondary); background: none; border: 0; cursor: pointer; padding: var(--ds-space-2) var(--ds-space-4); }
+.panel .x:hover { color: var(--ds-color-text-primary); }
+.panel h4 { margin: 0 0 var(--ds-space-6); font: var(--ds-text-label-sm); letter-spacing: var(--ds-font-tracking-caps-label); text-transform: uppercase; color: var(--ds-color-text-tertiary); }
+.panel .sec + .sec { border-top: var(--ds-border-width-1) solid var(--ds-color-border-separator); padding-top: var(--ds-space-12); }
+.panel .sec > .t1, .panel .sec > .t2, .panel .sec > .t3 { margin-top: var(--ds-space-6); white-space: normal; }
+.panel .chg { margin: var(--ds-space-6) 0 0; padding-left: var(--ds-space-16); font: var(--ds-text-body-sm); color: var(--ds-color-text-secondary); }
+@media (max-width: 60rem) { .main.open { grid-template-columns: minmax(0, 1fr); } .panel { position: static; margin-top: 0; } }
+
+/* a narrow cell wraps its state or age under the version instead of clipping it */
+.cell .r { flex-wrap: wrap; row-gap: var(--ds-space-4); }

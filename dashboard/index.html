@@ -23,10 +23,14 @@
 
   <div class="bar-row" aria-label="Filters">
     <div class="seg" role="group" aria-label="Person" id="f-person"></div>
+    <div class="seg" role="group" aria-label="Display" id="f-mode"></div>
     <input type="search" id="q" placeholder="Shot or asset" aria-label="Filter by shot or asset name">
   </div>
 
-  <div id="groups" class="col"></div>
+  <div class="main" id="main">
+    <div id="groups" class="col"></div>
+    <aside class="panel" id="panel" aria-label="Details" hidden></aside>
+  </div>
 
   <div class="cols">
     <section class="col" aria-labelledby="h-chg">
