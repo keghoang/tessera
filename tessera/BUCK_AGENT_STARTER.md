@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-13.6
+Version: 2026-11-13.7
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -160,7 +160,7 @@ Every version you save gets a `.trail` file next to it with the same name (`SH01
 
 ## Say what you're on
 
-The team sees who is on which shot on the job's dashboard. When you start work on a shot or asset, report it with `status.py` in `tessera:pipeline-status`: the shot, the task and one line on what you are doing. Mark yourself waiting when you need the artist or a farm render, and report the outcome when the task is done. The line has a fixed form per state (`Adjusting ...`, `Waiting for <name>'s input`, `Rendering ...`, `Saved ...`); the script refuses anything else and says why. It writes one small file in the job's `Agents/Activity` folder and nothing from the chat. If it can't report, carry on.
+The team sees who is on which shot on the job's dashboard. When you start work on a shot or asset, report it with `status.py` in `tessera:pipeline-status`: the shot, the task and one line on what you are doing. Mark yourself waiting when you need the artist or a farm render, and report the outcome when the task is done. The line has a fixed form per state (`Adjusting ...`, `Need <name>'s input`, `Rendering ...`, `Saved ...`); the script refuses anything else and says why. It writes one small file in the job's `Agents/Activity` folder and nothing from the chat. If it can't report, carry on.
 
 ## Showing work to the artist
 

@@ -222,7 +222,7 @@
    "agent": "Codex",
    "shot": "SH020",
    "task": "comp",
-   "doing": "Waiting for Michele's input: pool mask by floor matte or world position",
+   "doing": "Need Michele's input: pool mask by floor matte or world position",
    "state": "waiting",
    "since": "2026-11-13 10:48",
    "updated": "2026-11-13 12:05"

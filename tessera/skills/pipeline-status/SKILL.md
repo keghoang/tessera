@@ -15,7 +15,7 @@ The team's dashboard lists every shot and who is on it. Saved versions show ther
 | Command | When |
 | --- | --- |
 | `status.py set --job <JOB> --shot <shot or asset> --task <task> --agent "<agent>" --doing "<one line>"` | Starting work on a shot or asset, and again when what you are doing changes in a way a teammate would care about. |
-| `status.py state waiting --doing "Waiting for <name>'s input: <what you need>"` | Before you ask the artist a question or for an approval. |
+| `status.py state waiting --doing "Need <name>'s input: <what you need>"` | Before you ask the artist a question or for an approval. |
 | `status.py state farm --doing "<what is rendering>"` | You submitted a farm job and are waiting for it. |
 | `status.py state working --doing "<what you are doing now>"` | You carry on after a wait. |
 | `status.py state idle --doing "<the outcome>"` | The task is finished and the session stays open. |
@@ -32,7 +32,7 @@ One fixed form per state. The script refuses a line that breaks it, tells you wh
 | State | The line starts with | Example |
 | --- | --- | --- |
 | `working` | an -ing verb | `Adjusting key light ratio on the hero` |
-| `waiting` | `Waiting for <name>'s input`, then optionally `: <what is needed>` | `Waiting for Kien's input: rim light option A or B` |
+| `waiting` | `Need <name>'s input`, then optionally `: <what is needed>` | `Need Kien's input: rim light option A or B` |
 | `farm` | `Rendering` | `Rendering test frames 1010, 1088` |
 | `idle` | `Saved` or `Finished` | `Saved v015: key light notes applied` |
 

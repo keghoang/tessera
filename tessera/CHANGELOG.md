@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.10.3 (2026-11-13)
+
+- A waiting line now reads `Need <name>'s input`, optionally followed by `: <what is needed>`.
+- Starter `2026-11-13.7`.
+
 ## 0.10.2 (2026-11-13)
 
 - A waiting line now reads `Waiting for <name>'s input`, optionally followed by `: <what is needed>`. It no longer starts with `Needs`.
