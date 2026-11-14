@@ -3,7 +3,7 @@
 
     status.py set   --job <JOB> --shot <shot or asset> --task <task> --agent "<agent>"
                     --doing "<one line: what is happening now>" [--state working]
-    status.py state <working|waiting|farm|idle> [--doing "<one line>"]
+    status.py state <working|waiting|farm|idle> --doing "<one line>"
     status.py clear
     status.py hook  <prompt|stop|notify|end>      (called by the plugin, not by hand)
 
@@ -12,6 +12,14 @@ States:
     waiting   the agent needs the artist: a question, an approval, a decision
     farm      the agent is waiting on a farm render
     idle      the session is open and nothing is running
+
+The --doing line has a fixed form per state, and a line that breaks it is refused:
+    working   starts with an -ing verb     "Adjusting key light ratio on the hero"
+    waiting   starts with "Needs"          "Needs a pick: rim light option A or B"
+    farm      starts with "Rendering"      "Rendering test frames 1010, 1088"
+    idle      starts with "Saved" or "Finished"   "Saved v015: key light notes applied"
+English, one line, at most 72 characters, no full stop at the end, no paths, no "I",
+no step counts, no vague verbs (Working on, Processing, Handling, Continuing).
 
 "set" writes one small JSON file for this session into the job's activity folder
 (<job>/Production/Common/Agents/Activity unless --dir is given) and removes the
@@ -34,6 +42,57 @@ import time
 
 STATES = ("working", "waiting", "farm", "idle")
 WORK_ROOT = os.environ.get("BUCK_WORK_ROOT", "//buck/work/current")
+
+
+MAX_LINE = 72
+VAGUE = ("working", "processing", "handling", "continuing", "doing", "trying", "starting", "proceeding", "performing")
+EXAMPLE = {"working": "Adjusting key light ratio on the hero", "waiting": "Needs a pick: rim light option A or B",
+           "farm": "Rendering test frames 1010, 1088", "idle": "Saved v015: key light notes applied"}
+
+
+def line_problem(state, text):
+    """Why this --doing line is not allowed for this state, or None. One fixed form per state."""
+    words = text.split()
+    first = words[0] if words else ""
+    if not text or text != text.strip() or "\n" in text or "\r" in text:
+        return "write one line with no leading or trailing space"
+    if len(text) > MAX_LINE:
+        return "keep it to %d characters (this one is %d)" % (MAX_LINE, len(text))
+    if any(ord(c) < 32 or ord(c) > 126 for c in text):
+        return "plain English letters and punctuation only"
+    if len(words) < 3:
+        return "say what is being done and to what, in at least three words"
+    if not first[0].isupper():
+        return "start with a capital letter"
+    if text.endswith((".", "!", "...")):
+        return "no full stop or other mark at the end"
+    if "\\" in text or "://" in text or re.search(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/", text) or re.search(r"\.(mb|ma|nk|py|exr|json)\b", text):
+        return "no file paths or file names; name the thing in production terms"
+    if re.search(r"(?i)\b(i|i'll|i'm|i've|let me|my|we|we'll|our)\b", text):
+        return "no first person; describe the work, not the agent"
+    if re.search(r"(?i)\bstep \d|\b\d+ ?(of|/) ?\d+\b|\d ?%", text):
+        return "no step counts or percentages"
+    if state == "working":
+        if not re.match(r"^[A-Z][a-z]+ing$", first):
+            return "a working line starts with an -ing verb"
+        if first.lower() in VAGUE:
+            return "'%s' says nothing; use the verb for what is actually happening" % first
+    elif state == "waiting" and first != "Needs":
+        return "a waiting line starts with 'Needs' and says what is needed from the artist"
+    elif state == "farm" and first != "Rendering":
+        return "a farm line starts with 'Rendering' and says what is rendering"
+    elif state == "idle" and first not in ("Saved", "Finished"):
+        return "an idle line starts with 'Saved' or 'Finished' and gives the outcome"
+    return None
+
+
+def check_line(state, text):
+    problem = line_problem(state, text)
+    if problem:
+        print("REJECTED: %s.\n  line:    %s\n  example: %s\nFix the line and run the command again."
+              % (problem, text, EXAMPLE[state]), file=sys.stderr)
+        return False
+    return True
 
 
 def slug(text):
@@ -167,7 +226,7 @@ def main():
     p.add_argument("--session")
     p = sub.add_parser("state")
     p.add_argument("state", choices=STATES)
-    p.add_argument("--doing")
+    p.add_argument("--doing", required=True)
     p.add_argument("--session")
     p = sub.add_parser("clear")
     p.add_argument("--session")
@@ -185,6 +244,9 @@ def main():
         ap.print_help()
         return 2
     sid = session_id(args.session)
+
+    if args.cmd in ("set", "state") and not check_line(args.state, args.doing):
+        return 4
 
     if args.cmd == "state":
         if not change_state(sid, args.state, args.doing):

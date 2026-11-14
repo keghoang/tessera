@@ -2,6 +2,12 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.10.1 (2026-11-13)
+
+- The status line has a fixed form per state: working starts with an -ing verb, waiting with `Needs`, farm with `Rendering`, idle with `Saved` or `Finished`. One line, 72 characters, no paths, no first person, no step counts, no vague verbs. `status.py` refuses a line that breaks it and says which rule.
+- `status.py state` now requires `--doing`.
+- Starter `2026-11-13.5`.
+
 ## 0.10.0 (2026-11-13)
 
 - New skill `pipeline-status`: a session reports which shot and task it is on, and whether it is working, waiting on the artist, waiting on the farm or idle. One small file per session in the job's `Agents/Activity` folder, read by the dashboard.

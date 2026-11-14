@@ -202,7 +202,7 @@
    "agent": "Claude Code",
    "shot": "SH010",
    "task": "lgt",
-   "doing": "Waiting on farm test frames 1010 and 1088",
+   "doing": "Rendering test frames 1010 and 1088",
    "state": "farm",
    "since": "2026-11-13 11:31",
    "updated": "2026-11-13 12:19"
@@ -222,7 +222,7 @@
    "agent": "Codex",
    "shot": "SH020",
    "task": "comp",
-   "doing": "Asked Michele: mask the pool by floor matte or by world position?",
+   "doing": "Needs a pick: mask the pool by floor matte or world position",
    "state": "waiting",
    "since": "2026-11-13 10:48",
    "updated": "2026-11-13 12:05"
@@ -232,7 +232,7 @@
    "agent": "Claude Code",
    "shot": "prop_tower",
    "task": "mdl",
-   "doing": "Viewport captures of v008 against v007",
+   "doing": "Saved v008: handle radius and base width notes applied",
    "state": "idle",
    "since": "2026-11-13 11:55",
    "updated": "2026-11-13 12:18"

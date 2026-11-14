@@ -17,13 +17,34 @@ The team's dashboard lists every shot and who is on it. Saved versions show ther
 | `status.py set --job <JOB> --shot <shot or asset> --task <task> --agent "<agent>" --doing "<one line>"` | Starting work on a shot or asset, and again when what you are doing changes in a way a teammate would care about. |
 | `status.py state waiting --doing "<what you need from the artist>"` | Before you ask the artist a question or for an approval. |
 | `status.py state farm --doing "<what is rendering>"` | You submitted a farm job and are waiting for it. |
-| `status.py state working` | You carry on after a wait. |
-| `status.py clear` | The task is finished, or the artist moves you off the job. |
+| `status.py state working --doing "<what you are doing now>"` | You carry on after a wait. |
+| `status.py state idle --doing "<the outcome>"` | The task is finished and the session stays open. |
+| `status.py clear` | The artist moves you off the job, or the session is ending. |
 
 - `--task` is the short task name used in file names: `lgt`, `comp`, `anim`, `lyt`, `mdl`, `rig`, `lkdv`, `fx`.
 - `--shot` is the shot or asset folder name, spelled as on disk.
-- `--doing` is one plain line a teammate can read: "Key light notes on the hero", not a step count and not the prompt.
 - A session shows on one shot and task at a time. A new `set` replaces the old one.
+
+## The `--doing` line
+
+One fixed form per state. The script refuses a line that breaks it, tells you which rule, and you run the command again with a corrected line.
+
+| State | The line starts with | Example |
+| --- | --- | --- |
+| `working` | an -ing verb | `Adjusting key light ratio on the hero` |
+| `waiting` | `Needs` | `Needs a pick: rim light option A or B` |
+| `farm` | `Rendering` | `Rendering test frames 1010, 1088` |
+| `idle` | `Saved` or `Finished` | `Saved v015: key light notes applied` |
+
+For every line:
+
+- English, one line, sentence case, at most 72 characters, no full stop at the end.
+- Name the thing in production terms a teammate knows: key light, floor matte, door hinge. No node names, file names or paths.
+- Say what is happening to the shot, not what the agent is thinking. No "I", no "Let me".
+- Use the verb for the real action. `Working on`, `Processing`, `Handling` and `Continuing` are refused.
+- No step counts or percentages.
+- The script checks the form. Whether the line is true and specific is on you: `Adjusting things on the shot` passes the check and tells a teammate nothing.
+- Change the line only when what is happening changes.
 
 ## What it writes
 
@@ -33,7 +54,7 @@ One small JSON file per session in `<job>/Production/Common/Agents/Activity/`: p
 
 - Never put client-sensitive detail, a name the artist didn't give, or anything from the chat in `--doing` beyond what is being done to the shot.
 - If the script says `NOT ASSESSED` (the job has no `Agents` folder, or the server is out of reach), carry on with the task. Reporting never blocks work.
-- In Claude Code with the plugin installed, the state moves by itself: a new message from the artist sets `working`, the end of a turn sets `idle`, a permission prompt sets `waiting`, closing the session clears it. You still call `set` once per shot, and `state waiting` or `state farm` when that is the truth at the end of your turn. In any other agent, set every state yourself.
+- In Claude Code with the plugin installed, the state moves by itself: a new message from the artist sets `working`, the end of a turn sets `idle`, a permission prompt sets `waiting`, closing the session clears it. You still call `set` once per shot, `state waiting` or `state farm` when that is the truth at the end of your turn, and `state idle` with the outcome line when the task is finished: the end-of-turn hook changes the state but cannot write the outcome. In any other agent, set every state yourself.
 
 ## Where the scripts are
 
