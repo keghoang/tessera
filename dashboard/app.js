@@ -48,13 +48,14 @@
   };
   // Who did it. A person is a round pill with their name. An agent is its own actor: a squared pill
   // with a marker, the agent's name, then whose agent it is, in that person's colour.
+  const short = (agent) => (agent === "Claude Code" ? "Claude" : agent);   // shown name only; the data keeps the full name
   const actor = (person, agent) => {
     if (!agent) return pill(person);
     const s = el("span", "person agent");
     const c = colourOf(person);
     if (c) s.style.setProperty("--p", c);
-    s.append(el("i", "mark"), el("span", "", agent), el("span", "owner", person));
-    s.title = person + "'s agent: " + agent;
+    s.append(el("i", "mark"), el("span", "", short(agent)), el("span", "owner", person));
+    s.title = person + "'s agent: " + short(agent);
     return s;
   };
   const agentOf = (v) => (v.made_by === "agent" ? v.agent || "agent" : "");
