@@ -37,11 +37,13 @@
     mode: MODES.includes(parts[2]) ? parts[2] : MODES.includes(store("tessera-mode")) ? store("tessera-mode") : "compact",
   };
   const address = () => history.replaceState(null, "", "#" + [name, state.kind.toLowerCase(), state.mode].concat(state.sel ? [state.sel.replace("/", ":")] : []).join("/"));
-  const PLACES = ["side", "drawer", "dock", "popover"];
-  const asked = new URLSearchParams(location.search).get("panel");
-  const PLACE = PLACES.includes(asked) ? asked : "side";
-  document.body.dataset.panel = PLACE;
-  const ALWAYS = PLACE === "side" || PLACE === "dock";   // these two keep the panel on screen with nothing selected
+  // "Active now" always fills the side column. Where one cell's full detail shows is still being
+  // chosen; trial switch: index.html?detail=over|split|dock|popover
+  const PLACES = ["over", "split", "dock", "popover"];
+  const asked = new URLSearchParams(location.search).get("detail");
+  const PLACE = PLACES.includes(asked) ? asked : "over";
+  document.body.dataset.detail = PLACE;
+  const ALWAYS = PLACE === "split" || PLACE === "dock";   // these two keep the detail box on screen with nothing open
   const LABEL = { working: "working", waiting: "waiting", farm: "on the farm", idle: "idle" };
 
   // One colour per person, never repeated within a job. Eight hues spread over the part of the wheel
@@ -84,39 +86,44 @@
 
   // ---- the panel: everything about one cell ----
   function drawPanel() {
-    const p = $("panel");
-    p.textContent = "";
-    p.hidden = !state.sel && !ALWAYS;
-    p.style.left = p.style.top = "";
-    if (!state.sel && !ALWAYS) return;
-    if (!state.sel) {
-      const head = el("div", "phead");
-      head.append(el("h3", "plain", "Active now"), el("span", "count", String(data.live.length)));
-      p.append(head);
-      const order = { waiting: 0, working: 1, farm: 2, idle: 3 };
-      data.live.slice().sort((a, b) => order[a.state] - order[b.state]).forEach((l) => {
-        const b = el("button", "sess " + l.state);
-        b.type = "button";
-        b.append(row(el("span", "v", l.shot), el("span", "t3", l.task), end(el("span", "st " + l.state, LABEL[l.state] + " · " + since(l)))),
-          row(actor(l.person, l.agent)), el("div", "t1", l.doing));
-        b.addEventListener("click", () => {
-          if (kindOf[l.shot] && kindOf[l.shot] !== state.kind) {
-            state.kind = kindOf[l.shot];
-            $("tabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.k === state.kind)));
-          }
-          state.sel = l.shot + "/" + l.task;
-          draw();
-        });
-        p.append(b);
+    // the side column: every live session, the ones needing a person first
+    const side = $("panel");
+    side.textContent = "";
+    const top = el("div", "phead");
+    top.append(el("h3", "plain", "Active now"), el("span", "count", String(data.live.length)));
+    side.append(top);
+    const order = { waiting: 0, working: 1, farm: 2, idle: 3 };
+    data.live.slice().sort((x, y) => order[x.state] - order[y.state]).forEach((l) => {
+      const key = l.shot + "/" + l.task;
+      const b = el("button", "sess " + l.state + (key === state.sel ? " sel" : ""));
+      b.type = "button";
+      b.append(row(el("span", "v", l.shot), el("span", "t3", l.task), end(el("span", "st " + l.state, LABEL[l.state] + " · " + since(l)))),
+        row(actor(l.person, l.agent)), el("div", "t1", l.doing));
+      b.addEventListener("click", () => {
+        if (kindOf[l.shot] && kindOf[l.shot] !== state.kind) {
+          state.kind = kindOf[l.shot];
+          $("tabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.k === state.kind)));
+        }
+        state.sel = state.sel === key ? "" : key;
+        draw();
       });
-      if (!data.live.length) p.append(el("div", "t3", "Nothing running"));
-      p.append(el("div", "t3 hint", "Click a cell for its versions and notes"));
+      side.append(b);
+    });
+    if (!data.live.length) side.append(el("div", "t3", "Nothing running"));
+
+    // one cell's full detail
+    const p = $("detail");
+    p.textContent = "";
+    p.style.left = p.style.top = "";
+    p.hidden = !state.sel && !ALWAYS;
+    if (!state.sel) {
+      if (ALWAYS) { const h = el("div", "phead"); h.append(el("h3", "plain", "Details")); p.append(h, el("div", "t3", "Click a cell for its versions and notes")); }
       return;
     }
     const [shot, task] = state.sel.split("/");
     const v = latest[state.sel], l = live[state.sel];
     const head = el("div", "phead");
-    const x = el("button", "x", "Back");
+    const x = el("button", "x", "Close");
     x.type = "button";
     x.addEventListener("click", () => { state.sel = ""; draw(); });
     head.append(el("h3", "", shot + " · " + task), x);
@@ -204,7 +211,7 @@
     if (!groups.children.length) groups.append(el("p", "muted", "Nothing matches."));
     drawPanel();
     if (PLACE === "popover" && state.sel) {
-      const cell = document.querySelector("td.cell.sel"), p = $("panel");
+      const cell = document.querySelector("td.cell.sel"), p = $("detail");
       if (cell) {
         const c = cell.getBoundingClientRect(), w = p.offsetWidth, gap = 8;
         const left = c.right + gap + w < window.innerWidth ? c.right + gap : c.left - gap - w;

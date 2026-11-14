@@ -350,3 +350,41 @@ body[data-panel="popover"] .panel {
   position: absolute; width: 20rem; height: auto; max-height: 28rem; margin: 0; z-index: 5;
   box-shadow: var(--ds-elevation-overlay, var(--ds-elevation-raised)); border-color: var(--ds-color-border-default);
 }
+
+/* ---- side column: Active now, always. The detail box placement is a trial (index.html?detail=...) ---- */
+.sidecol {
+  position: sticky; top: var(--ds-space-16); margin-top: var(--ds-space-40);
+  height: calc(100vh - var(--ds-space-32)); max-height: 44rem;
+  display: flex; flex-direction: column; gap: var(--ds-space-12); min-height: 0;
+}
+.sidecol > .panel { position: static; margin: 0; height: auto; max-height: none; flex: 1 1 0; min-height: 0; }
+.panel .sess.sel { outline: var(--ds-border-width-2) solid var(--ds-color-border-focus); outline-offset: calc(-1 * var(--ds-border-width-2)); }
+.panel.detail[hidden] { display: none; }
+/* over: the detail covers the side column while a cell is open */
+body[data-detail="over"] .sidecol > .panel.detail { position: absolute; inset: 0; z-index: 2; }
+/* split: Active now above, details below, both always there */
+body[data-detail="split"] .sidecol { max-height: none; }
+/* dock: details along the bottom, always there */
+body[data-detail="dock"] { padding-bottom: 13rem; }
+body[data-detail="dock"] .sidecol { height: calc(100vh - 14rem - var(--ds-space-32)); }
+body[data-detail="dock"] .sidecol > .panel.detail {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 12rem; flex: none; z-index: 5;
+  border-radius: 0; border-width: var(--ds-border-width-1) 0 0 0;
+  flex-direction: row; align-items: stretch; gap: var(--ds-space-16); overflow-x: auto; overflow-y: hidden;
+  padding-inline: max(var(--ds-space-24), calc((100vw - 96rem) / 2 + var(--ds-space-24)));
+}
+body[data-detail="dock"] .panel.detail .phead { flex: 0 0 9rem; flex-direction: column; align-items: flex-start; }
+body[data-detail="dock"] .panel.detail .phead .x { margin-left: 0; padding-left: 0; }
+body[data-detail="dock"] .panel.detail .sec { flex: 1 1 0; min-width: 16rem; overflow-y: auto; scrollbar-width: thin; }
+body[data-detail="dock"] .panel.detail .sec + .sec { border-top: 0; padding-top: 0; border-left: var(--ds-border-width-1) solid var(--ds-color-border-separator); padding-left: var(--ds-space-16); }
+/* popover: details float beside the open cell */
+body[data-detail="popover"] .sidecol > .panel.detail {
+  position: absolute; width: 20rem; height: auto; max-height: 28rem; flex: none; z-index: 5;
+  box-shadow: var(--ds-elevation-overlay); border-color: var(--ds-color-border-default);
+}
+body[data-detail="popover"] .sidecol { position: static; }
+body[data-detail="popover"] .sidecol > .panel:not(.detail) { position: sticky; top: var(--ds-space-16); }
+@media (max-width: 60rem) { .sidecol { position: static; height: auto; max-height: none; margin-top: 0; } }
+
+body[data-detail="dock"] .sidecol > .panel.detail { top: auto; }
+body[data-detail="split"] .sidecol { height: calc(100vh - 16rem); }
