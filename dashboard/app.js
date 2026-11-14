@@ -27,16 +27,21 @@
   const kinds = [...new Set(data.structure.map((g) => g.kind))];
   const kindOf = {};
   data.structure.forEach((g) => g.items.forEach((s) => { kindOf[s] = g.kind; }));
-  // address: #<name>/<shots|assets>/<compact|standard|full>/<shot>:<task>  (the last two are optional)
+  // address: #<name>/<shots|assets>/<compact|full>/<shot>:<task>  (the last two are optional)
   const parts = location.hash.split("/").map(decodeURIComponent);
   const fromHash = (parts[1] || "").toLowerCase();
-  const MODES = ["compact", "standard", "full"];
+  const MODES = ["compact", "full"];
   const state = {
     person: "all", q: "", sel: (parts[3] || "").replace(":", "/"),
     kind: kinds.find((k) => k.toLowerCase() === fromHash) || kinds[0],
-    mode: MODES.includes(parts[2]) ? parts[2] : MODES.includes(store("tessera-mode")) ? store("tessera-mode") : "standard",
+    mode: MODES.includes(parts[2]) ? parts[2] : MODES.includes(store("tessera-mode")) ? store("tessera-mode") : "compact",
   };
   const address = () => history.replaceState(null, "", "#" + [name, state.kind.toLowerCase(), state.mode].concat(state.sel ? [state.sel.replace("/", ":")] : []).join("/"));
+  const PLACES = ["side", "drawer", "dock", "popover"];
+  const asked = new URLSearchParams(location.search).get("panel");
+  const PLACE = PLACES.includes(asked) ? asked : "side";
+  document.body.dataset.panel = PLACE;
+  const ALWAYS = PLACE === "side" || PLACE === "dock";   // these two keep the panel on screen with nothing selected
   const LABEL = { working: "working", waiting: "waiting", farm: "on the farm", idle: "idle" };
 
   // One colour per person, never repeated within a job. Eight hues spread over the part of the wheel
@@ -81,13 +86,37 @@
   function drawPanel() {
     const p = $("panel");
     p.textContent = "";
-    $("main").classList.toggle("open", !!state.sel);
-    p.hidden = !state.sel;
-    if (!state.sel) return;
+    p.hidden = !state.sel && !ALWAYS;
+    p.style.left = p.style.top = "";
+    if (!state.sel && !ALWAYS) return;
+    if (!state.sel) {
+      const head = el("div", "phead");
+      head.append(el("h3", "plain", "Active now"), el("span", "count", String(data.live.length)));
+      p.append(head);
+      const order = { waiting: 0, working: 1, farm: 2, idle: 3 };
+      data.live.slice().sort((a, b) => order[a.state] - order[b.state]).forEach((l) => {
+        const b = el("button", "sess " + l.state);
+        b.type = "button";
+        b.append(row(el("span", "v", l.shot), el("span", "t3", l.task), end(el("span", "st " + l.state, LABEL[l.state] + " · " + since(l)))),
+          row(actor(l.person, l.agent)), el("div", "t1", l.doing));
+        b.addEventListener("click", () => {
+          if (kindOf[l.shot] && kindOf[l.shot] !== state.kind) {
+            state.kind = kindOf[l.shot];
+            $("tabs").querySelectorAll("button").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.k === state.kind)));
+          }
+          state.sel = l.shot + "/" + l.task;
+          draw();
+        });
+        p.append(b);
+      });
+      if (!data.live.length) p.append(el("div", "t3", "Nothing running"));
+      p.append(el("div", "t3 hint", "Click a cell for its versions and notes"));
+      return;
+    }
     const [shot, task] = state.sel.split("/");
     const v = latest[state.sel], l = live[state.sel];
     const head = el("div", "phead");
-    const x = el("button", "x", "Close");
+    const x = el("button", "x", "Back");
     x.type = "button";
     x.addEventListener("click", () => { state.sel = ""; draw(); });
     head.append(el("h3", "", shot + " · " + task), x);
@@ -152,9 +181,11 @@
           const who = l ? actor(l.person, l.agent) : actor(v.artist, agentOf(v));
           const right = l ? end(el("span", "st " + l.state, LABEL[l.state] + " · " + since(l))) : end(el("span", "t3", ago(v.date)));
           td.append(row(v ? el("span", "v", ver(v)) : el("span", "v none", "v–"), who, right));
-          // line two, by display mode: the live task line (standard, full) or the last change (full)
+          // line two (Full only): the live task line or the last change. Always there, so rows keep one height.
           const more = l ? l.doing : v.changes[0];
-          if (more) td.append(el("div", "more " + (l ? "t1 livetext" : "t2 note"), more));
+          const m2 = el("div", "more " + (l ? "t1" : "t2"), more || "");
+          if (more) m2.title = more;
+          td.append(m2);
           td.tabIndex = 0;
           td.setAttribute("role", "button");
           td.setAttribute("aria-label", shot + " " + t + ", details");
@@ -172,6 +203,15 @@
     });
     if (!groups.children.length) groups.append(el("p", "muted", "Nothing matches."));
     drawPanel();
+    if (PLACE === "popover" && state.sel) {
+      const cell = document.querySelector("td.cell.sel"), p = $("panel");
+      if (cell) {
+        const c = cell.getBoundingClientRect(), w = p.offsetWidth, gap = 8;
+        const left = c.right + gap + w < window.innerWidth ? c.right + gap : c.left - gap - w;
+        p.style.left = Math.max(gap, left) + window.scrollX + "px";
+        p.style.top = c.top + window.scrollY + "px";
+      }
+    }
 
     // last changes, newest first
     const chg = $("changes");
@@ -263,7 +303,28 @@
     if (n) $("summary").append(el("span", "chip " + tone, n + " " + LABEL[s]));
   });
   seg($("f-person"), [["all", "Everyone"]].concat(data.people.map((p) => [p, p, colourOf(p)])), "all", (v) => { state.person = v; });
-  seg($("f-mode"), [["compact", "Compact"], ["standard", "Standard"], ["full", "Full"]], state.mode, (v) => { state.mode = v; store("tessera-mode", v); });
+  const ICON = {
+    compact: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>',
+    full: '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M2 3h12M2 6h7M2 10h12M2 13h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>',
+  };
+  [["compact", "Compact: one line per cell"], ["full", "Full: second line with the task or last change"]].forEach(([value, label]) => {
+    const b = el("button", "icon");
+    b.type = "button";
+    b.dataset.v = value;
+    b.title = label;
+    b.setAttribute("aria-label", label);
+    b.setAttribute("aria-pressed", String(value === state.mode));
+    b.innerHTML = ICON[value];
+    $("f-mode").append(b);
+  });
+  $("f-mode").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    $("f-mode").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+    state.mode = b.dataset.v;
+    store("tessera-mode", state.mode);
+    draw();
+  });
   $("q").addEventListener("input", (e) => { state.q = e.target.value.trim().toLowerCase(); draw(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && state.sel) { state.sel = ""; draw(); } });
   draw();

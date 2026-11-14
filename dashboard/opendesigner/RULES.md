@@ -19,3 +19,4 @@ The owner's notes on this project, from `engine.py feedback --kind note`. Read t
 | N-08 | Person colours never repeat within a job. | 1 | 2026-11-13 |
 | N-09 | It must be obvious whether a person or their agent did or is doing something: agents are shown as actors of their own, like a person. | 1 | 2026-11-13 |
 | N-10 | Cells are one line (version, who holds it, state or age); details open in a side panel on click; display modes Compact, Standard, Full add a second line of context. | 1 | 2026-11-13 |
+| N-11 | Boxes must not change size and opening details must not reflow the table: fixed row heights, two display modes (compact, full) as icon buttons, quiet scrollbars, tight table. | 1 | 2026-11-13 |
