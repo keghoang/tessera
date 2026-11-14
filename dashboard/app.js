@@ -153,14 +153,14 @@
     const field = (label, node) => { const f = el("div", "field"); f.append(el("h4", "", label), node); d.append(f); };
     if (!cur.ver) {
       d.append(row(el("span", "vtitle", "In progress"), stateLabel(l), actor(l.person, l.agent), end(el("span", "t3", "for " + since(l)))));
-      field("Doing", el("div", "t1", l.doing));
+      field("Current task", el("div", "t1", l.doing));
       d.append(el("div", "t3 foot", "Not saved yet. It becomes a version in this list when it is."));
     } else {
       const x = cur.ver;
       d.append(row(el("span", "vtitle v", ver(x)), x.artist ? actor(x.artist, agentOf(x)) : el("span", "t3", "unknown"), end(el("span", "t3", x.date + " · " + ago(x.date) + " ago"))));
-      if (x.request) field("Request", el("div", "t2", x.request));
+      if (x.request) field("Notes", el("div", "t2", x.request));
       if ((x.changes || []).length) { const ul = el("ul", "chg"); x.changes.forEach((c) => ul.append(el("li", "", c))); field("Changes", ul); }
-      else d.append(el("div", "t3 foot", x.has_trail === false ? "No .trail next to this version, so there are no notes." : "No change note."));
+      else d.append(el("div", "t3 foot", x.has_trail === false ? "No .trail next to this version." : "No changes recorded."));
     }
     p.append(list, d);
   }
