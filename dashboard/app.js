@@ -27,21 +27,22 @@
   const kinds = [...new Set(data.structure.map((g) => g.kind))];
   const kindOf = {};
   data.structure.forEach((g) => g.items.forEach((s) => { kindOf[s] = g.kind; }));
-  // address: #<name>/<shots|assets>/<compact|full>/<shot>:<task>  (the last two are optional)
+  // address: #<name>/<shots|assets>/<compact|full>/<shot>:<task>/<now|version number>  (the last two are optional)
   const parts = location.hash.split("/").map(decodeURIComponent);
   const fromHash = (parts[1] || "").toLowerCase();
   const MODES = ["compact", "full"];
   const state = {
     person: "all", q: "", sel: (parts[3] || "").replace(":", "/"),
+    item: parts[4] || "", itemFor: parts[4] ? (parts[3] || "").replace(":", "/") : "",
     kind: kinds.find((k) => k.toLowerCase() === fromHash) || kinds[0],
     mode: MODES.includes(parts[2]) ? parts[2] : MODES.includes(store("tessera-mode")) ? store("tessera-mode") : "compact",
   };
-  const address = () => history.replaceState(null, "", "#" + [name, state.kind.toLowerCase(), state.mode].concat(state.sel ? [state.sel.replace("/", ":")] : []).join("/"));
+  const address = () => history.replaceState(null, "", "#" + [name, state.kind.toLowerCase(), state.mode].concat(state.sel ? [state.sel.replace("/", ":")].concat(state.item ? [state.item] : []) : []).join("/"));
   // "Active now" always fills the side column. Where one cell's full detail shows is still being
-  // chosen; trial switch: index.html?detail=over|split|dock|popover
+  // chosen: the bottom dock is the default; others can still be tried with index.html?detail=over|split|popover
   const PLACES = ["over", "split", "dock", "popover"];
   const asked = new URLSearchParams(location.search).get("detail");
-  const PLACE = PLACES.includes(asked) ? asked : "over";
+  const PLACE = PLACES.includes(asked) ? asked : "dock";
   document.body.dataset.detail = PLACE;
   const ALWAYS = PLACE === "split" || PLACE === "dock";   // these two keep the detail box on screen with nothing open
   const LABEL = { working: "working", waiting: "waiting", farm: "on the farm", idle: "idle" };
@@ -128,18 +129,40 @@
     x.addEventListener("click", () => { state.sel = ""; draw(); });
     head.append(el("h3", "", shot + " · " + task), x);
     p.append(head);
-    const sec = (title, ...kids) => { const s = el("div", "sec"); s.append(el("h4", "", title), ...kids); p.append(s); };
-    if (l) sec("Now", row(stateLabel(l), actor(l.person, l.agent), end(el("span", "t3", since(l)))), el("div", "t1", l.doing));
-    if (v) {
-      const kids = [row(el("span", "v", ver(v)), actor(v.artist, agentOf(v)), end(el("span", "t3", ago(v.date))))];
-      if (v.request) kids.push(el("div", "t2 ask", v.request));
-      if (v.changes.length) { const ul = el("ul", "chg"); v.changes.forEach((c) => ul.append(el("li", "", c))); kids.push(ul); }
-      else kids.push(el("div", "t3", v.has_trail === false ? "No .trail next to this version" : "No change note"));
-      sec("Latest version", ...kids);
-      if ((v.history || []).length) {
-        sec("Earlier", ...v.history.map((h) => row(el("span", "v", ver(h)), h.artist ? actor(h.artist, agentOf(h)) : el("span", "t3", "unknown"), end(el("span", "t3", ago(h.date))))));
-      }
+    // One list, newest first: the work in progress (if any), then every saved version.
+    // Picking a row shows that one thing on the right. Nothing else is in the box.
+    const items = [];
+    if (l) items.push({ id: "now" });
+    if (v) [v].concat(v.history || []).forEach((x) => items.push({ id: String(x.version), ver: x }));
+    if (state.itemFor !== state.sel || !items.some((it) => it.id === state.item)) { state.item = items[0].id; state.itemFor = state.sel; }
+    const list = el("div", "vlist");
+    list.setAttribute("role", "listbox");
+    list.setAttribute("aria-label", "Versions");
+    items.forEach((it) => {
+      const b = el("button", "vrow" + (it.id === state.item ? " sel" : "") + (it.ver ? "" : " now " + l.state));
+      b.type = "button";
+      b.setAttribute("role", "option");
+      b.setAttribute("aria-selected", String(it.id === state.item));
+      if (it.ver) b.append(el("span", "v", ver(it.ver)), it.ver.artist ? actor(it.ver.artist, agentOf(it.ver)) : el("span", "t3", "unknown"), end(el("span", "t3", ago(it.ver.date))));
+      else b.append(el("span", "st " + l.state, "in progress"), actor(l.person, l.agent), end(el("span", "t3", since(l))));
+      b.addEventListener("click", () => { state.item = it.id; drawPanel(); address(); });
+      list.append(b);
+    });
+    const d = el("div", "vdetail");
+    const cur = items.find((it) => it.id === state.item);
+    const field = (label, node) => { const f = el("div", "field"); f.append(el("h4", "", label), node); d.append(f); };
+    if (!cur.ver) {
+      d.append(row(el("span", "vtitle", "In progress"), stateLabel(l), actor(l.person, l.agent), end(el("span", "t3", "for " + since(l)))));
+      field("Doing", el("div", "t1", l.doing));
+      d.append(el("div", "t3 foot", "Not saved yet. It becomes a version in this list when it is."));
+    } else {
+      const x = cur.ver;
+      d.append(row(el("span", "vtitle v", ver(x)), x.artist ? actor(x.artist, agentOf(x)) : el("span", "t3", "unknown"), end(el("span", "t3", x.date + " · " + ago(x.date) + " ago"))));
+      if (x.request) field("Request", el("div", "t2", x.request));
+      if ((x.changes || []).length) { const ul = el("ul", "chg"); x.changes.forEach((c) => ul.append(el("li", "", c))); field("Changes", ul); }
+      else d.append(el("div", "t3 foot", x.has_trail === false ? "No .trail next to this version, so there are no notes." : "No change note."));
     }
+    p.append(list, d);
   }
 
   // ---- the grid ----

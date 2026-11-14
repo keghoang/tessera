@@ -388,3 +388,31 @@ body[data-detail="popover"] .sidecol > .panel:not(.detail) { position: sticky; t
 
 body[data-detail="dock"] .sidecol > .panel.detail { top: auto; }
 body[data-detail="split"] .sidecol { height: calc(100vh - 16rem); }
+
+/* ---- the detail box: a version list, and the picked one beside it ---- */
+.vlist { display: flex; flex-direction: column; gap: var(--ds-space-2); min-height: 0; }
+.vrow {
+  display: flex; align-items: center; gap: var(--ds-space-8); width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer;
+  background: none; border: 0; border-left: var(--ds-border-width-2) solid transparent; border-radius: var(--ds-radius-4);
+  padding: var(--ds-space-4) var(--ds-space-8); flex: none;
+}
+.vrow .end { margin-left: auto; }
+.vrow:hover { background: var(--ds-color-bg-neutral-subtle); }
+.vrow.sel { background: var(--ds-color-bg-accent-subtle); border-left-color: var(--ds-color-border-accent); }
+.vdetail { display: flex; flex-direction: column; gap: var(--ds-space-8); min-width: 0; min-height: 0; }
+.vdetail .vtitle { font-size: var(--ds-font-size-17); font-weight: var(--ds-font-weight-heading); }
+.vdetail .field h4 { margin: 0 0 var(--ds-space-2); }
+.vdetail .chg { margin: 0; }
+.vdetail .t1, .vdetail .t2 { white-space: normal; }
+.vdetail .foot { white-space: normal; }
+/* in the dock: title | list | detail, three fixed regions */
+body[data-detail="dock"] { padding-bottom: 15rem; }
+body[data-detail="dock"] .sidecol { height: calc(100vh - 16rem - var(--ds-space-32)); }
+body[data-detail="dock"] .sidecol > .panel.detail { height: 14rem; gap: var(--ds-space-24); }
+body[data-detail="dock"] .panel.detail .phead { flex: 0 0 8rem; }
+body[data-detail="dock"] .panel.detail .vlist {
+  flex: 0 0 19rem; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ds-color-border-default) transparent;
+  border-left: var(--ds-border-width-1) solid var(--ds-color-border-separator); border-right: var(--ds-border-width-1) solid var(--ds-color-border-separator);
+  padding-inline: var(--ds-space-12);
+}
+body[data-detail="dock"] .panel.detail .vdetail { flex: 1 1 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--ds-color-border-default) transparent; max-width: 52rem; }

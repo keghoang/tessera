@@ -31,23 +31,36 @@
      "date": "2026-11-12 16:42",
      "made_by": "human",
      "agent": "",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 12,
      "date": "2026-11-11 21:42",
      "made_by": "agent",
      "agent": "Claude Code",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "Address the first round of notes.",
+     "changes": [
+      "Fill reduced 0.3 stops",
+      "Shadow softness matched to the styleframe"
+     ],
+     "has_trail": true
     },
     {
      "version": 11,
      "date": "2026-11-11 02:42",
      "made_by": "human",
      "agent": "",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "SH010_comp_v009.nk",
@@ -66,23 +79,39 @@
      "date": "2026-11-12 15:15",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     },
     {
      "version": 7,
      "date": "2026-11-11 20:15",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 6,
      "date": "2026-11-11 01:15",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     }
-   ]
+   ],
+   "has_trail": false
   },
   {
    "file": "SH020_lgt_v006.mb",
@@ -104,23 +133,36 @@
      "date": "2026-11-11 23:03",
      "made_by": "human",
      "agent": "",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 4,
      "date": "2026-11-11 04:03",
      "made_by": "agent",
      "agent": "Claude Code",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     },
     {
      "version": 3,
      "date": "2026-11-10 09:03",
      "made_by": "human",
      "agent": "",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "SH030_lgt_v003.mb",
@@ -142,16 +184,29 @@
      "date": "2026-11-11 21:40",
      "made_by": "human",
      "agent": "",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     },
     {
      "version": 1,
      "date": "2026-11-11 02:40",
      "made_by": "agent",
      "agent": "Codex",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "SH030_anim_v021.mb",
@@ -170,23 +225,39 @@
      "date": "2026-11-11 16:20",
      "made_by": "human",
      "agent": "",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     },
     {
      "version": 19,
      "date": "2026-11-10 21:20",
      "made_by": "human",
      "agent": "",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 18,
      "date": "2026-11-10 02:20",
      "made_by": "human",
      "agent": "",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     }
-   ]
+   ],
+   "has_trail": false
   },
   {
    "file": "SH040_lgt_v001.mb",
@@ -201,7 +272,8 @@
    "changes": [
     "Lights transferred from SH020 v006"
    ],
-   "history": []
+   "history": [],
+   "has_trail": true
   },
   {
    "file": "prop_tower_mdl_v008.mb",
@@ -223,23 +295,36 @@
      "date": "2026-11-12 13:30",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 6,
      "date": "2026-11-11 18:30",
      "made_by": "agent",
      "agent": "Claude Code",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "Address the first round of notes.",
+     "changes": [
+      "Fill reduced 0.3 stops",
+      "Shadow softness matched to the styleframe"
+     ],
+     "has_trail": true
     },
     {
      "version": 5,
      "date": "2026-11-10 23:30",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "prop_tower_rig_v003.mb",
@@ -260,16 +345,26 @@
      "date": "2026-11-10 20:12",
      "made_by": "human",
      "agent": "",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     },
     {
      "version": 1,
      "date": "2026-11-10 01:12",
      "made_by": "human",
      "agent": "",
-     "artist": "Kim"
+     "artist": "Kim",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "set_lab_lkdv_v011.mb",
@@ -291,23 +386,42 @@
      "date": "2026-11-10 19:02",
      "made_by": "human",
      "agent": "",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "Address the first round of notes.",
+     "changes": [
+      "Fill reduced 0.3 stops",
+      "Shadow softness matched to the styleframe"
+     ],
+     "has_trail": true
     },
     {
      "version": 9,
      "date": "2026-11-10 00:02",
      "made_by": "agent",
      "agent": "Claude Code",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "Address the first round of notes.",
+     "changes": [
+      "Fill reduced 0.3 stops",
+      "Shadow softness matched to the styleframe"
+     ],
+     "has_trail": true
     },
     {
      "version": 8,
      "date": "2026-11-09 05:02",
      "made_by": "human",
      "agent": "",
-     "artist": "Kien"
+     "artist": "Kien",
+     "request": "Address the first round of notes.",
+     "changes": [
+      "Fill reduced 0.3 stops",
+      "Shadow softness matched to the styleframe"
+     ],
+     "has_trail": true
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "set_lab_mdl_v019.mb",
@@ -326,23 +440,39 @@
      "date": "2026-11-09 22:45",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "First pass from the template.",
+     "changes": [
+      "Scene assembled from upstream",
+      "Template render settings applied"
+     ],
+     "has_trail": true
     },
     {
      "version": 17,
      "date": "2026-11-09 03:45",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 16,
      "date": "2026-11-08 08:45",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "First pass from the template.",
+     "changes": [
+      "Scene assembled from upstream",
+      "Template render settings applied"
+     ],
+     "has_trail": true
     }
-   ]
+   ],
+   "has_trail": false
   },
   {
    "file": "SH020_comp_v012.nk",
@@ -363,23 +493,36 @@
      "date": "2026-11-12 16:05",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 10,
      "date": "2026-11-11 21:05",
      "made_by": "agent",
      "agent": "Codex",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "Pick up the new upstream version.",
+     "changes": [
+      "References updated",
+      "Overrides carried across"
+     ],
+     "has_trail": true
     },
     {
      "version": 9,
      "date": "2026-11-11 02:05",
      "made_by": "human",
      "agent": "",
-     "artist": "Michele"
+     "artist": "Michele",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": true
   },
   {
    "file": "SH050_anim_v004.mb",
@@ -398,23 +541,36 @@
      "date": "2026-11-12 15:50",
      "made_by": "human",
      "agent": "",
-     "artist": "Chloe"
+     "artist": "Chloe",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     },
     {
      "version": 2,
      "date": "2026-11-11 20:50",
      "made_by": "human",
      "agent": "",
-     "artist": "Chloe"
+     "artist": "Chloe",
+     "request": "First pass from the template.",
+     "changes": [
+      "Scene assembled from upstream",
+      "Template render settings applied"
+     ],
+     "has_trail": true
     },
     {
      "version": 1,
      "date": "2026-11-11 01:50",
      "made_by": "human",
      "agent": "",
-     "artist": "Chloe"
+     "artist": "Chloe",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": false
   },
   {
    "file": "TT010_anim_v002.mb",
@@ -433,9 +589,13 @@
      "date": "2026-11-11 20:30",
      "made_by": "human",
      "agent": "",
-     "artist": "Chloe"
+     "artist": "Chloe",
+     "request": "",
+     "changes": [],
+     "has_trail": false
     }
-   ]
+   ],
+   "has_trail": false
   }
  ],
  "people": [

@@ -92,13 +92,15 @@ def read_trail(scene_path):
 
 
 def history_entry(key, path, m):
-    """An earlier version, for the detail panel: who made it comes from its trail or its name suffix only."""
+    """An earlier version, for the version list: its notes come from its trail, who made it from the trail or the name suffix."""
     trail = read_trail(path)
     head = trail["head"] if trail else {}
     made_by = head.get("made_by", "human") if trail else "human"
     return {"version": key[0], "date": stamp(key[1]), "made_by": made_by,
             "agent": head.get("agent", "") if made_by == "agent" else "",
-            "artist": head.get("artist", "") or m.group("suffix") or ""}
+            "artist": head.get("artist", "") or m.group("suffix") or "",
+            "changes": trail["changes"] if trail else [], "request": trail["request"] if trail else "",
+            "has_trail": bool(trail)}
 
 
 def owners(paths):
