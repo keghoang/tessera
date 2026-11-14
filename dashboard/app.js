@@ -113,7 +113,7 @@
           }
           if (l) {
             const now1 = el("div", "l2 now");
-            const chip = { waiting: ["warn", "waiting on " + l.person], farm: ["info", "on the farm"], idle: ["", "idle"] }[l.state] || ["agent", "working"];
+            const chip = { waiting: ["warn", "waiting"], farm: ["info", "on the farm"], idle: ["", "idle"] }[l.state] || ["agent", "working"];
             now1.append(el("span", "chip " + chip[0], chip[1]), actor(l.person, l.agent), el("span", "muted", ago(l.state === "working" ? l.since : l.updated)));
             td.append(now1, el("div", "l2 doing-line", l.doing));
           } else if (v.changes[0]) {

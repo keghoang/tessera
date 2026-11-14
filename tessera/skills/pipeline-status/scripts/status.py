@@ -15,7 +15,8 @@ States:
 
 The --doing line has a fixed form per state, and a line that breaks it is refused:
     working   starts with an -ing verb     "Adjusting key light ratio on the hero"
-    waiting   starts with "Needs"          "Needs a pick: rim light option A or B"
+    waiting   "Waiting for <name>'s input", then optionally ": <what is needed>"
+                                           "Waiting for Kien's input: rim light option A or B"
     farm      starts with "Rendering"      "Rendering test frames 1010, 1088"
     idle      starts with "Saved" or "Finished"   "Saved v015: key light notes applied"
 English, one line, at most 72 characters, no full stop at the end, no paths, no "I",
@@ -46,7 +47,7 @@ WORK_ROOT = os.environ.get("BUCK_WORK_ROOT", "//buck/work/current")
 
 MAX_LINE = 72
 VAGUE = ("working", "processing", "handling", "continuing", "doing", "trying", "starting", "proceeding", "performing")
-EXAMPLE = {"working": "Adjusting key light ratio on the hero", "waiting": "Needs a pick: rim light option A or B",
+EXAMPLE = {"working": "Adjusting key light ratio on the hero", "waiting": "Waiting for Kien's input: rim light option A or B",
            "farm": "Rendering test frames 1010, 1088", "idle": "Saved v015: key light notes applied"}
 
 
@@ -75,10 +76,12 @@ def line_problem(state, text):
     if state == "working":
         if not re.match(r"^[A-Z][a-z]+ing$", first):
             return "a working line starts with an -ing verb"
+        if first == "Waiting":
+            return "waiting is a state of its own: use 'state waiting' (the artist) or 'state farm' (a render)"
         if first.lower() in VAGUE:
             return "'%s' says nothing; use the verb for what is actually happening" % first
-    elif state == "waiting" and first != "Needs":
-        return "a waiting line starts with 'Needs' and says what is needed from the artist"
+    elif state == "waiting" and not re.match(r"^Waiting for [A-Z][A-Za-z.-]*'s input(: \S.*)?$", text):
+        return "a waiting line reads \"Waiting for <name>'s input\", optionally followed by ': <what is needed>'"
     elif state == "farm" and first != "Rendering":
         return "a farm line starts with 'Rendering' and says what is rendering"
     elif state == "idle" and first not in ("Saved", "Finished"):

@@ -2,6 +2,12 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.10.2 (2026-11-13)
+
+- A waiting line now reads `Waiting for <name>'s input`, optionally followed by `: <what is needed>`. It no longer starts with `Needs`.
+- A working line can't start with `Waiting`.
+- Starter `2026-11-13.6`.
+
 ## 0.10.1 (2026-11-13)
 
 - The status line has a fixed form per state: working starts with an -ing verb, waiting with `Needs`, farm with `Rendering`, idle with `Saved` or `Finished`. One line, 72 characters, no paths, no first person, no step counts, no vague verbs. `status.py` refuses a line that breaks it and says which rule.
