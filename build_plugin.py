@@ -116,8 +116,14 @@ def main():
         return [{"hooks": [{"type": "command", "timeout": 15,
                             "command": 'c:/opt/rez/Scripts/python.exe "%s" hook %s' % (status, event)}]}]
 
+    # at session start: point the agent at the job's rules, or at the first-session setup
+    start = "%s/skills/%s/scripts/start.py" % ("${CLAUDE_PLUGIN_ROOT}", "start" if strip else "buck-start")
+    session_start = [{"hooks": [{"type": "command", "timeout": 10,
+                                 "command": 'c:/opt/rez/Scripts/python.exe "%s" hook' % start}]}]
+
     (plugin / "hooks").mkdir()
     (plugin / "hooks" / "hooks.json").write_text(json.dumps({"hooks": {
+        "SessionStart": session_start,
         "UserPromptSubmit": hook("prompt"), "Stop": hook("stop"),
         "Notification": hook("notify"), "SessionEnd": hook("end"),
     }}, indent=2) + "\n", encoding="utf-8")

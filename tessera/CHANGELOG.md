@@ -2,6 +2,12 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.11.0 (2026-11-14)
+
+- New skill `start`: an artist's first session on a machine. A welcome that confirms the username, machine and job it picked up, a five-row workstation check, and a fixed briefing on the skills and how the assistant works. The words come from `start.py`, so they are the same for everyone. It creates the artist's `ARTIST.md` if there is none and runs once per machine.
+- New session-start hook: with no setup on the machine it points the agent at `start`; otherwise it names the artist's last job and its starter, so the paste-this-first message is no longer needed with the plugin.
+- Starter `2026-11-14.1`.
+
 ## 0.10.3 (2026-11-13)
 
 - A waiting line now reads `Need <name>'s input`, optionally followed by `: <what is needed>`.

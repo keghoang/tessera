@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-13.7
+Version: 2026-11-14.1
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -8,7 +8,10 @@ Lines marked `TODO(Workflow)` are not confirmed yet. When you reach one, tell th
 
 ## For artists
 
-Keep Buck5 running, start your agent (Claude Code or Codex), and paste this as your first message:
+Keep Buck5 running and start your agent.
+
+- **Claude, with the plugin installed:** just say what you need. The first time on a machine it runs a two-minute setup (`tessera:start`); after that it picks up your job by itself.
+- **Codex, or no plugin:** paste this as your first message:
 
 ```
 Read \\buck\work\current\<JOB>\Production\Common\Agents\BUCK_AGENT_STARTER.md and follow it. I'm <username>. Today: <shot or asset>, <task>.
@@ -44,7 +47,7 @@ Work these out yourself before asking the artist anything:
 | Frame range, resolution, shot camera | The source animation or layout file, and the deliverables in `SHOW.md`. |
 | Styleframes | `Production/Design/Styleframe/` in the job. If it is empty, ask. |
 | Where the shot stands | The newest file in the work folder and its `.trail`. |
-| Suffix, preferences | The artist's `ARTIST.md`. If there is none, offer to create it from `Artists/ARTIST_TEMPLATE.md`. |
+| Suffix, preferences | The artist's `ARTIST.md`. If there is none, run `tessera:start`, which creates it. |
 | Local scratch folder | `D:\Agents\<agent>\<job folder name>\`, where `<agent>` is your name without spaces (`ClaudeCode`, `Codex`). Create it if missing. Use another folder only if `ARTIST.md` names one; if there is no `D:` drive, ask. |
 | What the task should deliver | The skills for the task. Read every one the request needs. |
 
@@ -201,5 +204,6 @@ Each is a folder in `Agents/Skills/` with a `SKILL.md`. Read the ones the task n
 | `tessera:pipeline-trail` | Write or update a version's `.trail`. |
 | `tessera:pipeline-status` | Report which shot and task this session is on, and its state. |
 | `tessera:pipeline-setup` | Set up the `Agents` folder on a new job, create or refresh `SHOW.md`, or install the skills. |
+| `tessera:start` | Welcome an artist on their first session: confirm who and which job, check the workstation, brief them. |
 | `tessera:lighting-*` | Do a lighting or lookdev task. Start at `INDEX_lighting.md`. |
 | `tessera:modeling-*` | Do a modeling task. Start at `INDEX_modeling.md`. |

@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 10,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/start/scripts/start.py\" hook"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
