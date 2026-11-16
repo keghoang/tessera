@@ -23,6 +23,7 @@ import json
 import os
 import re
 import socket
+import subprocess
 import sys
 
 WORK_ROOT = os.environ.get("BUCK_WORK_ROOT", "//buck/work/current")
@@ -86,6 +87,24 @@ def newest_env():
         return {k: env.get(k, "") for k in ("BUCK_PROJECT", "BUCK5_DAEMON_HOST")}
     except (OSError, ValueError):
         return {}
+
+
+def site():
+    """BUCK_LOCATION from the environment Buck5 built for its latest launch ("LA"). Empty if it can't be read."""
+    if os.environ.get("BUCK_LOCATION"):
+        return os.environ["BUCK_LOCATION"]
+    files = glob.glob(os.path.join(buck5_dir(), "rez", "*.rxt"))
+    rez = "c:/opt/rez/Scripts/rez/rez-env.exe"
+    if not files or not os.path.isfile(rez):
+        return ""
+    try:
+        # a command with spaces in it hangs here; "set" with one name does not
+        out = subprocess.run([rez, "--input", max(files, key=os.path.getmtime), "--", "cmd", "/c", "set", "BUCK_LOCATION"],
+                             capture_output=True, text=True, timeout=20, stdin=subprocess.DEVNULL).stdout
+        m = re.search(r"BUCK_LOCATION=(\S+)", out)
+        return m.group(1) if m else ""
+    except (OSError, subprocess.SubprocessError):
+        return ""
 
 
 def username(given=None):
@@ -213,6 +232,9 @@ def welcome(args):
            "This is your first session here, so a quick setup first.", "", "I picked up:",
            "- **Your Buck5 username:** %s" % user,
            "- **Machine:** `%s`" % socket.gethostname()]
+    where = site()
+    if where:
+        out.append("- **Site:** %s" % where)
     if job:
         out += ["- **Job:** %s" % job, "", "Is that right?", "- a. Yes", "- b. Wrong job", "- c. Wrong username"]
     else:

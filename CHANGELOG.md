@@ -2,6 +2,10 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.11.1 (2026-11-15)
+
+- The welcome also shows the artist's site, read from `BUCK_LOCATION` in the environment Buck5 built for its latest launch. The line is left out if it can't be read.
+
 ## 0.11.0 (2026-11-14)
 
 - New skill `start`: an artist's first session on a machine. A welcome that confirms the username, machine and job it picked up, a five-row workstation check, and a fixed briefing on the skills and how the assistant works. The words come from `start.py`, so they are the same for everyone. It creates the artist's `ARTIST.md` if there is none and runs once per machine.
