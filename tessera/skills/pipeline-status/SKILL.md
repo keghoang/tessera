@@ -8,6 +8,12 @@ when_to_use: Reports which shot or asset and task this agent session is on, and 
 
 The team's dashboard lists every shot and who is on it. Saved versions show there by themselves. Work in progress shows only if the session says so. This is how it says so.
 
+## First step of every task
+
+Report before you work, not after. As soon as you know the shot or asset and the task, run `set` with what you are about to do, and only then open a file, launch an application or submit anything. Every new request in the session starts the same way: `set` if the shot or task changed, `state working` with a new line if only the work changed. A line left over from the last request is wrong the moment a new one arrives.
+
+In Claude Code with the plugin, every message from the artist comes with a note saying what this session currently reports. Read it, and correct it first if it isn't what you are about to do.
+
 ## Script
 
 `scripts/status.py`, next to this file. Run it with any Python 3.7 or newer (`c:\opt\rez\Scripts\python.exe` is on every Buck workstation).
@@ -55,7 +61,7 @@ One small JSON file per session in `<job>/Production/Common/Agents/Activity/`: p
 
 - Never put client-sensitive detail, a name the artist didn't give, or anything from the chat in `--doing` beyond what is being done to the shot.
 - If the script says `NOT ASSESSED` (the job has no `Agents` folder, or the server is out of reach), carry on with the task. Reporting never blocks work.
-- In Claude Code with the plugin installed, the state moves by itself: a new message from the artist sets `working`, the end of a turn sets `idle`, a permission prompt sets `waiting`, closing the session clears it. You still call `set` once per shot, `state waiting` or `state farm` when that is the truth at the end of your turn, and `state idle` with the outcome line when the task is finished: the end-of-turn hook changes the state but cannot write the outcome. In any other agent, set every state yourself.
+- In Claude Code with the plugin installed, the state moves by itself: a new message from the artist sets `working`, the end of a turn sets `idle`, a permission prompt sets `waiting`, closing the session clears it. You still call `set` as the first step of every task, `state working` with a new line as the first step of every later request, `state waiting` or `state farm` when that is the truth at the end of your turn, and `state idle` with the outcome line when the task is finished: the end-of-turn hook changes the state but cannot write the outcome. In any other agent, set every state yourself.
 
 ## Where the scripts are
 

@@ -18,6 +18,10 @@ Production quality: the standard of a delivered shot, at every stage. A first pa
 
 Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Don't ask whether to save and don't stop for it: show the result, add one line that it is saved locally, and carry on. Refinement rounds and test renders never make a version; farm tests run from a test scene in the artist's own folder (the starter's "Farm test scenes").
 
+## 0. Report what you're on, first
+
+Before anything else on the shot, run `status.py set` (`tessera:pipeline-status`) with the shot, the task and one line on what you are about to do. Do it again at the start of every new request, even on the same shot. Then proceed. If it can't report, carry on.
+
 ## 1. Find where the shot stands
 
 Before asking anything, look:

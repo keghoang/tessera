@@ -2,6 +2,12 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.15.0 (2026-11-15)
+
+- Reporting to the dashboard is now the first step of every task: the agent reports the shot or asset, the task and what it is about to do before it opens a file, launches an application or submits anything, and again at the start of every later request.
+- In Claude Code, every message from the artist now carries a note with what the session currently reports and the command to correct it, so a line left over from the last request gets replaced before work starts.
+- Starter `2026-11-15.5`.
+
 ## 0.14.1 (2026-11-15)
 
 - Versioning without stop-and-go: the agent saves locally as it sees fit, with no permission and no question. A version goes on the server only when the artist says "save" or "version up", or asks for something that needs one (a full-range render, a handoff). The agent no longer proposes a save or waits for one; it adds one line that the work is saved locally and carries on.

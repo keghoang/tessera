@@ -193,8 +193,35 @@ def change_state(sid, state, doing=None, only_from=None):
     return True
 
 
+def first_step_note(sid):
+    script = os.path.abspath(__file__).replace("\\", "/")
+    run = 'c:/opt/rez/Scripts/python.exe "%s"' % script
+    data = {}
+    path = read_pointer(sid)
+    if path:
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+        except (OSError, ValueError):
+            data = {}
+    if data:
+        return ("tessera: the dashboard shows this session on %s %s: \"%s\". If this message is work on a job, "
+                "your first step, before any other tool call, is to make that true for what you are about to do: "
+                "%s state working --doing \"<-ing verb ...>\", or %s set ... if the shot, asset or task changed. "
+                "Skip it only if the line already says exactly that."
+                % (data.get("shot", "?"), data.get("task", "?"), data.get("doing", ""), run, run))
+    return ("tessera: this session reports nothing to the dashboard yet. If this message is work on a job, "
+            "your first step, before any other tool call on that work, is: %s set --job <JOB> --shot <shot or asset> "
+            "--task <task> --agent \"Claude Code\" --doing \"<-ing verb ...>\". If you must find the shot or task first, "
+            "do only that, report, then proceed. Not job work: ignore this." % run)
+
+
 def hook(event):
-    """Keep the state true without the agent having to remember. Never fails, never prints."""
+    """Keep the state true without the agent having to remember. Never fails.
+
+    On a new message it also prints one note, which the agent reads before it acts:
+    what this session reports now, and that correcting it comes first.
+    """
     try:
         payload = json.load(sys.stdin)
     except Exception:
@@ -202,6 +229,7 @@ def hook(event):
     sid = session_id(payload.get("session_id"))
     if event == "prompt":
         change_state(sid, "working")
+        print(first_step_note(sid))
     elif event == "stop":
         change_state(sid, "idle", only_from=("working",))
     elif event == "notify":

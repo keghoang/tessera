@@ -26,6 +26,10 @@ Use the Blender connection whenever it is in the session. If the tools are missi
 
 The Blender file and the Maya scene it is moved into are local working files. Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Don't ask whether to save and don't stop for it: show the result, add one line that it is saved locally, and carry on.
 
+## 0. Report what you're on, first
+
+Before anything else on the asset, run `status.py set` (`buck-pipeline-status`) with the asset, the task and one line on what you are about to do. Do it again at the start of every new request, even on the same asset. Then proceed. If it can't report, carry on.
+
 ## 1. Find where the asset stands
 
 Before asking anything, look:
