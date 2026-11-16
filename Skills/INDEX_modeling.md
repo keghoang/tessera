@@ -115,3 +115,4 @@ Scale validation to the receiving workflow:
 - **Referenced revisions:** Test in a consuming scene before claiming compatibility with existing rigging, animation, or lookdev.
 
 Every saved version gets a `.trail` identifying the workfile, source version, changes, checks performed, and unresolved issues. Preserve the agreed ownership of model, rig, and lookdev changes.
+- Saving a version on the server needs the artist's go-ahead, once per request (the starter's versioning rule). Where a skill says "save the next version", that is when it happens; until then the work lives in the local scratch folder.

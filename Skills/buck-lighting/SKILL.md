@@ -13,6 +13,10 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_lighting.md` (sh
 
 Production quality: the standard of a delivered shot, at every stage. A first pass is the first version, not a rougher one. Go below that only when the artist asks for a rough, a blocking pass or a quick look.
 
+## Working copy and versions
+
+Work in a local copy in the scratch folder. A server version is saved once per request, at the end, on the artist's go-ahead: show the result, then propose the version name and what is in it. Refinement rounds and test renders never make a version; farm tests run from a test scene in the artist's own folder (the starter's "Farm test scenes").
+
 ## 1. Find where the shot stands
 
 Before asking anything, look:
@@ -49,7 +53,7 @@ If the request fits none of these, do it under the starter's rules and say that 
 
 Never show the first thing you made. Every time you build or change something, run this loop before the artist sees it:
 
-1. **Look.** Get test frames with `buck-lighting-previews` on frames that represent the shot, and open them. Judge images, never parameters or a clean log.
+1. **Look.** Get test frames with `buck-lighting-previews` on frames that represent the shot, from a test scene and not a new version, and open them. Judge images, never parameters or a clean log.
 2. **Compare.** Put it beside the target (the styleframe, the approved shot it should match, or the previous approved version) in the same view and the same colour view.
 3. **List the gaps.** Write down every visible difference from the target and everything that falls short of the bar above, most visible first.
 4. **Fix** the gaps that matter, then go back to step 1.

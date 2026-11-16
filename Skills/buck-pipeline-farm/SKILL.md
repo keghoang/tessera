@@ -7,12 +7,14 @@ description: Submits Maya V-Ray render jobs to the Buck Deadline farm from the c
 
 Renders go to the farm, not the artist's workstation. Only files saved on the server can be submitted.
 
+**A test doesn't need a version.** For a test of work that isn't saved as a version yet, copy the working scene to `Production/Work/<the artist's folder>/agent_tests/<Shot>/` as `<Shot>_<task>_test###.<ext>` (the starter's rule) and submit that with `--kind test`. Its frames render into a `render` folder beside it. A full range always renders a real version from the shot's `work` folder.
+
 ## Before you submit
 
 - **Test renders are free; a full range is "tell, then submit".** For a full range, state the scene, layers, frame range and machines (pool and group, or a machine list). Tell the artist before releasing the first farm job on a show.
 - **Tests use the scene's own resolution and quality.** If render time is too high, offer the artist a choice: 25%, 50% or 75% resolution, or reduced sampling. None of these is the default.
 - **Reduced settings go on the farm job, never in the saved scene.** Resolution is `ImageWidth` and `ImageHeight` in the plugin file. Reduced sampling has no confirmed job-level method yet (`TODO(Workflow)`); ask the artist how they want it done.
-- **Test frames go to the same render folder as the finals.** The full-range render overwrites them.
+- **Test frames of a saved version go to the same render folder as the finals.** The full-range render overwrites them. Test frames of a test scene go beside the test scene.
 - **Render settings and AOVs come from the show's lighting template** (render settings and AOV reference): the scene named in `SHOW.md` that every shot copies them from. If `SHOW.md` names none, ask the artist which scene to use, then record it in `SHOW.md`. Default V-Ray sampling when the template doesn't set it: min subdivs 1, max subdivs 24, noise threshold 0.06.
 - Use the machine list and priority from `SHOW.md` or the artist's `ARTIST.md` if either gives one.
 

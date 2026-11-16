@@ -22,6 +22,10 @@ Production quality: the standard of a delivered asset. A blockout is the first s
 
 Use the Blender connection whenever it is in the session. If the tools are missing, or Blender isn't open and connected, say so in one line and tell the artist what is needed (`buck-start` checks it). Build in Maya instead only if the artist says to.
 
+## Working copy and versions
+
+Work in local files in the scratch folder: the Blender file, and the Maya scene it is moved into. A server version is saved once per request, at the end, on the artist's go-ahead: show the result, then propose the version name and what is in it. Refinement rounds never make a version.
+
 ## 1. Find where the asset stands
 
 Before asking anything, look:
@@ -63,7 +67,7 @@ If the request fits none of these, do it under the starter's rules and say that 
 
 Never show the first thing you made. Every time you build or change something, run this loop before the artist sees it:
 
-1. **Look.** While building in Blender, take a viewport screenshot through the connection after each change. For a Maya file, capture the fixed review views with `maya_review_capture.py` in `buck-pipeline-launch`, from the saved file. Open the images. Judge images, never parameters or a clean log.
+1. **Look.** While building in Blender, take a viewport screenshot through the connection after each change. For a Maya file, capture the fixed review views with `maya_review_capture.py` in `buck-pipeline-launch`, from the local working scene. Open the images. Judge images, never parameters or a clean log.
 2. **Compare.** Put it beside the target (the design reference, matched view for view) in the same view and the same colour view.
 3. **List the gaps.** Write down every visible difference from the target and everything that falls short of the bar above, most visible first.
 4. **Fix** the gaps that matter, then go back to step 1.

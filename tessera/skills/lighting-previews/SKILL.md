@@ -13,7 +13,7 @@ Produce verified preview images that answer a specific lighting review question.
 
 ## Ingredients
 
-- Saved lighting scene on the production server and intended camera/layers/AOVs.
+- A scene the farm can reach, and the intended camera/layers/AOVs: an existing saved version, or for work not yet saved as a version, a test scene copied to the artist's folder under `Production/Work/` (the starter's "Farm test scenes"). A test is never a reason to save a new version.
 - Review question, selected frames, preview quality, and required formats.
 - Buck5 Deadline submission context and the show's test-render rules in `SHOW.md`.
 
@@ -25,9 +25,9 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_lighting.md`. Th
 
 1. Reopen in the project environment and check references, caches, textures, camera, range, layers, AOVs, and effective resolution.
 2. Choose frames that expose the review question and likely failure cases. Use existing adequate renders where possible.
-3. Derive destinations from the shot/version through Buck5's Deadline setup. Preview frames go to the version's own render folder, where the full render will overwrite them; never write into another version's folder. Document preview overrides.
+3. Derive destinations from the shot/version through Buck5's Deadline setup. Preview frames of a saved version go to that version's own render folder, where the full render will overwrite them; never write into another version's folder. Preview frames of a test scene go to the `render` folder beside it. Document preview overrides.
 4. Write the job with `tessera:pipeline-farm`, using its comment and farm defaults and the show's rules where `SHOW.md` has them.
-5. Submit as a test render with `tessera:pipeline-farm` (free under the starter's tiers); record IDs, exact scene/version, frames, and destinations in the version's `.trail`. Follow the jobs in the active task and diagnose failures before any authorized retry.
+5. Submit as a test render with `tessera:pipeline-farm` (free under the starter's tiers); record IDs, exact scene/version, frames, and destinations in the version's `.trail`; for a test scene, keep them in your notes and put them in the trail of the version that results. Follow the jobs in the active task and diagnose failures before any authorized retry.
 6. Inspect actual output dimensions, channels, pixel content, and display treatment; present the resulting images with relevant limitations.
 
 ## Expected outcome

@@ -33,7 +33,7 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md`. Th
 
 1. Match primary silhouette and proportions before adding detail.
 2. Separate meaningful assemblies and label inferred hidden construction.
-3. Capture neutral matched views and save a recoverable work version.
+3. Capture neutral matched views and keep a recoverable working copy in the scratch folder.
 4. Refine before showing: run the self-refinement loop in `tessera:modeling` against the reference, view for view, until the forms hold up.
 5. For edits, save and reopen the intended deliverable in the project environment. Review the saved model rather than relying only on the live session. For inspection-only tasks, keep the source unchanged.
 

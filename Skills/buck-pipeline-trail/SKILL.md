@@ -28,7 +28,7 @@ Use these to save a version and start its trail. They are in the `scripts` folde
 | `trail.py event --file <scene> --text "<what happened>"` | Appends a dated line to Events. |
 | `trail.py check --file <scene>` | Fails if a `TODO` placeholder is left, a check has no result, or `job`, `source`, `app` or `scripts` is empty. Run it before reporting to the artist. |
 
-Always save versions through `save_version`; it is the only thing that actually stops an overwrite. All of these ran on 2026-11-13, `save_maya` on Maya 2026.3.
+Save a version only on the artist's go-ahead (the starter: one version per request, proposed after the result is shown; "save" or "version up" in the request counts). Always save versions through `save_version`; it is the only thing that actually stops an overwrite. All of these ran on 2026-11-13, `save_maya` on Maya 2026.3.
 
 ## Rules
 

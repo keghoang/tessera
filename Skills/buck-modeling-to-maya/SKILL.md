@@ -25,7 +25,7 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md`. Th
 ## Export and import
 
 1. Export FBX from Blender to the local scratch folder, selected asset only: Y up, -Z forward, scale applied so 1 Blender metre becomes 100 Maya centimetres, smoothing written per face, no cameras or lights, no animation.
-2. In headless Maya, in the job's Buck5 environment and the show's Maya version, import into a new scene. If the project has a model template or an existing asset to match, match its root group and naming.
+2. In headless Maya, in the job's Buck5 environment and the show's Maya version, import into a new scene and keep it as a local working scene in the scratch folder. If the project has a model template or an existing asset to match, match its root group and naming.
 3. Delete what the import adds that the project's assets don't have (FBX display layers, empty sets, default materials named after Blender's).
 
 ## Checks in Maya
@@ -48,10 +48,10 @@ A failed check is fixed in Blender and exported again, not patched in Maya, so t
 
 ## Save and show
 
-1. Save the next free `<asset>_mdl_v###.mb` in the asset's `Modeling/maya/work/` folder with `save_version.py` (`buck-pipeline-trail`), and write its `.trail`: name the Blender file it came from, the checks and their results.
-2. Capture the fixed review views from the saved Maya file (`maya_review_capture.py` in `buck-pipeline-launch`). The artist reviews the Maya captures, not Blender screenshots.
-3. Compare the Maya captures with the same views in Blender. A visible difference is a failed check.
+1. Capture the fixed review views from the local Maya scene (`maya_review_capture.py` in `buck-pipeline-launch`). The artist reviews the Maya captures, not Blender screenshots.
+2. Compare the Maya captures with the same views in Blender. A visible difference is a failed check.
+3. Show the captures and propose the version. On the artist's go-ahead, save the next free `<asset>_mdl_v###.mb` in the asset's `Modeling/maya/work/` folder with `save_version.py` (`buck-pipeline-trail`), and write its `.trail`: name the Blender file it came from, the checks and their results.
 
 ## Completion and boundaries
 
-Complete when the saved Maya file reopens in the project environment and every check is pass or explicitly not assessed. The `.blend` never goes on the server. Publishing is the artist's, through Buck5.
+Complete when the artist has given the go-ahead, the saved Maya file reopens in the project environment and every check is pass or explicitly not assessed. The `.blend` never goes on the server. Publishing is the artist's, through Buck5.

@@ -2,6 +2,13 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.14.0 (2026-11-15)
+
+- Saving a version on the server now needs the artist's go-ahead. The agent works in a local copy, shows the result, then proposes the version name and what is in it. "Save" or "version up" in the request counts as the go-ahead, for one version. One version per request; refinement rounds and experiments stay local.
+- Farm tests no longer need a version: the working scene is copied to the artist's own folder under `Production/Work/.../agent_tests/<Shot>/` and its frames render beside it. `farm_submit.py` accepts such a scene with `--kind test` only.
+- Model review captures come from the local working scene; the Maya file goes on the server after the go-ahead.
+- Starter `2026-11-15.3`.
+
 ## 0.13.0 (2026-11-15)
 
 - Modeling: new models are built in Blender through the Blender connection and delivered as Maya files. The Blender file stays in the local scratch folder. An asset that already lives in Maya stays in Maya.

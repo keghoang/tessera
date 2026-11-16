@@ -36,11 +36,15 @@ def fwd(path):
 
 def build(args, layer):
     scene = fwd(args.scene)
-    if "/maya/work/" not in scene or "/Production/" not in scene:
-        sys.exit("FAIL: the scene must be a saved server file under <task>/maya/work/: %s" % scene)
+    test_scene = "/Production/Work/" in scene and "/agent_tests/" in scene
+    if test_scene and args.kind != "test":
+        sys.exit("FAIL: a test scene can only be submitted with --kind test: %s" % scene)
+    if not test_scene and ("/maya/work/" not in scene or "/Production/" not in scene):
+        sys.exit("FAIL: the scene must be a saved version under <task>/maya/work/, or a test scene under "
+                 "Production/Work/<artist>/agent_tests/: %s" % scene)
     scene_name = os.path.splitext(os.path.basename(scene))[0]
-    task_root = scene.split("/maya/work/")[0] + "/maya"
-    render_root = task_root + "/render/"
+    # a test scene renders beside itself; a version renders into its task's render folder
+    render_root = (os.path.dirname(scene) + "/render/") if test_scene else (scene.split("/maya/work/")[0] + "/maya/render/")
     job_root = scene.split("/Production/")[0] + "/Production"
     job_name = job_root.split("/")[-2]
     width = int(round(args.width * args.scale))
@@ -63,7 +67,7 @@ def build(args, layer):
         "OutputFilename0=%s.####.exr" % layer,
         "ExtraInfoKeyValue0=BUCK5_TASK_ID=%s" % args.task_id,
         "ExtraInfoKeyValue1=BUCK_AGENT=%s" % args.agent,
-        "ExtraInfoKeyValue2=BUCK_TRAIL=%s" % (os.path.splitext(scene)[0] + ".trail"),
+        "ExtraInfoKeyValue2=BUCK_TRAIL=%s" % ("" if test_scene else os.path.splitext(scene)[0] + ".trail"),
         "ExtraInfoKeyValue3=BUCK_JOB_KIND=%s" % args.kind,
         "EnvironmentKeyValue0=USE_BUCK_ENVIRONMENT_FILE=1",
         "EnvironmentKeyValue1=BUCK_ENVIRONMENT_BLACKLIST=",
