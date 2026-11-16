@@ -2,6 +2,7 @@
 name: modeling-rigging
 description: Prepare a model for rigging.
 when_to_use: Organises a model so it supports specified motion - part separation, hierarchy, naming, pivots and deformation-ready geometry - without building a rig. Use when the artist asks to prepare, set up or get a model ready for rigging or animation, changing the model to do it. Not for pivots and placement groups alone (tessera:modeling-pivots), a full retopology (tessera:modeling-retopology), or building controls.
+user-invocable: false
 ---
 
 # Prepare geometry for rigging — BUCK

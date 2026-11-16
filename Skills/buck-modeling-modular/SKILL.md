@@ -1,6 +1,6 @@
 ---
 name: buck-modeling-modular
-description: Builds a kit of interchangeable Buck model pieces with shared dimensions, pivots and assembly rules. Use when the artist asks for a kit, a modular set, or pieces that snap together or repeat. Not for a single asset (buck-modeling-v01, buck-modeling-production) or for cutting an existing mesh into parts (buck-modeling-split-combine).
+description: Builds a kit of interchangeable Buck model pieces with shared dimensions, pivots and assembly rules. Use when the artist asks for a kit, a modular set, or pieces that snap together or repeat. Not for a single asset (buck-modeling-first-pass, buck-modeling-production) or for cutting an existing mesh into parts (buck-modeling-split-combine).
 ---
 
 # Build a modular asset kit — BUCK

@@ -1,6 +1,7 @@
 {
  "about": "One short line per skill for menus in the plugin. The full description in each SKILL.md becomes when_to_use, which the agent still reads when choosing a skill. Keep each under 70 characters and free of the studio name.",
- "buck-lighting-v01": "First lighting pass on a shot.",
+ "buck-lighting": "Light a shot, from first pass to final.",
+ "buck-lighting-first-pass": "First lighting pass on a shot.",
  "buck-lighting-transfer": "Carry approved lighting to another shot.",
  "buck-lighting-render": "Full-range farm render of an approved version.",
  "buck-lighting-handoff": "Hand a lighting scene to another artist.",
@@ -13,7 +14,8 @@
  "buck-lighting-coverage": "QA lighting across the whole shot.",
  "buck-lighting-diagnose": "Find why a render looks wrong.",
  "buck-lighting-previews": "Farm test frames of a lighting change.",
- "buck-modeling-v01": "Block out a new model.",
+ "buck-modeling": "Model an asset, from first blockout to final.",
+ "buck-modeling-first-pass": "Block out a new model.",
  "buck-modeling-production": "Take an approved blockout to final.",
  "buck-modeling-modular": "Build a kit of pieces that fit together.",
  "buck-modeling-handoff": "Hand a model to another modeler.",

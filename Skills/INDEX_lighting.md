@@ -1,12 +1,14 @@
 # BUCK lighting skills
 
+Start at `buck-lighting`: it works out where the shot stands and picks from these.
+
 Ordered from broadest deliverable to narrowest operation. Size describes scope, not render time or difficulty. Larger assignments can use smaller skills without expanding their authorization.
 
 ## 1. Large — complete shot deliverables
 
 | Task | Use when |
 |---|---|
-| [Set up v01 lighting](buck-lighting-v01/SKILL.md) | A shot needs its first reviewable lighting pass. |
+| [Set up a first lighting pass](buck-lighting-first-pass/SKILL.md) | A shot needs its first reviewable lighting pass. |
 | [Carry lighting to another shot](buck-lighting-transfer/SKILL.md) | An approved treatment needs adapting to a destination shot. |
 | [Submit and verify production renders](buck-lighting-render/SKILL.md) | An approved version is ready for an authorized full render. |
 | [Hand off lighting](buck-lighting-handoff/SKILL.md) | Another artist needs a usable scene and continuation context. |

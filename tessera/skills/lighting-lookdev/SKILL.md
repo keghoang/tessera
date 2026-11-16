@@ -2,6 +2,7 @@
 name: lighting-lookdev
 description: Material, texture and surface notes.
 when_to_use: Refines materials, textures and surface detail on assets or shots toward an agreed visual target, keeping the approved design. Use for shader, texture, bump, displacement or surface notes, and for work in lookdev (lkdv) files. Not for light placement, exposure or mood notes (tessera:lighting-notes) or for changing a model's shape (tessera:modeling-notes).
+user-invocable: false
 ---
 
 # Refine lookdev — BUCK

@@ -2,6 +2,7 @@
 name: modeling-pivots
 description: Set pivots and placement groups.
 when_to_use: Sets pivots, transform origins and placement groups on a model according to how the parts really assemble or move. Use when pivots are off, transforms need freezing or zeroing, or parts need groups for placement or animation. Not for changing mesh boundaries (tessera:modeling-split-combine) or for the wider rigging preparation (tessera:modeling-rigging).
+user-invocable: false
 ---
 
 # Set pivots and placement groups — BUCK

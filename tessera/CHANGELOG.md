@@ -2,6 +2,14 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.12.0 (2026-11-15)
+
+- Two front doors: `lighting` and `modeling`. Each takes any request in its discipline, from first pass to final: it finds where the shot or asset stands, reads the procedure the request needs, and names the usual next step when one finishes.
+- The 30 detailed lighting and modeling skills are now procedures behind those doors. The agent still loads them; the `/tessera:` menu no longer lists them.
+- `lighting-v01` and `modeling-v01` are renamed `lighting-first-pass` and `modeling-first-pass`. A first pass is a step, not the finish.
+- The first-session briefing shows `/tessera:lighting` and `/tessera:modeling` as its examples.
+- Starter `2026-11-15.1`.
+
 ## 0.11.1 (2026-11-15)
 
 - The welcome also shows the artist's site, read from `BUCK_LOCATION` in the environment Buck5 built for its latest launch. The line is left out if it can't be read.

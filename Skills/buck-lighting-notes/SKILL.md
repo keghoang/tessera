@@ -1,6 +1,6 @@
 ---
 name: buck-lighting-notes
-description: Revises an existing Buck Maya lighting file from review notes, changing only what each note asks and keeping approved qualities and render settings. Use when the artist passes on feedback about lights, shadows, exposure, colour or mood in a shot that already has lighting. Not for a first pass (buck-lighting-v01), material notes (buck-lighting-lookdev), new upstream versions (buck-lighting-sources), or a render that differs for an unknown reason (buck-lighting-diagnose).
+description: Revises an existing Buck Maya lighting file from review notes, changing only what each note asks and keeping approved qualities and render settings. Use when the artist passes on feedback about lights, shadows, exposure, colour or mood in a shot that already has lighting. Not for a first pass (buck-lighting-first-pass), material notes (buck-lighting-lookdev), new upstream versions (buck-lighting-sources), or a render that differs for an unknown reason (buck-lighting-diagnose).
 ---
 
 # Address lighting notes — BUCK

@@ -2,6 +2,7 @@
 name: modeling-uvs
 description: Create or repair UVs.
 when_to_use: Creates or repairs UVs on a model for the agreed texturing workflow, without changing its form. Use when lookdev needs UVs, when UVs overlap, stretch or are missing, or when a UDIM layout is asked for. Not for the materials and textures themselves (tessera:lighting-lookdev) or for mesh defects (tessera:modeling-repair).
+user-invocable: false
 ---
 
 # Prepare UVs for lookdev — BUCK

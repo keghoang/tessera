@@ -1,9 +1,11 @@
 ---
-name: buck-modeling-v01
-description: Builds the primary forms of a new Buck model for design review, before production finishing. Use when an asset has no model yet, or the artist asks to block out, rough in or start a model. Not for finishing approved forms (buck-modeling-production), sets of interchangeable pieces (buck-modeling-modular), or design alternatives (buck-modeling-variations).
+name: modeling-first-pass
+description: Block out a new model.
+when_to_use: Builds the primary forms of a new model for design review, before production finishing. Use when an asset has no model yet, or the artist asks to block out, rough in or start a model. Not for finishing approved forms (tessera:modeling-production), sets of interchangeable pieces (tessera:modeling-modular), or design alternatives (tessera:modeling-variations).
+user-invocable: false
 ---
 
-# Build a v01 model — BUCK
+# Build a first model — BUCK
 
 ## Definition
 

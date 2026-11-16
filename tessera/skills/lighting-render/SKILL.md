@@ -2,6 +2,7 @@
 name: lighting-render
 description: Full-range farm render of an approved version.
 when_to_use: Submits an approved lighting version for its full production range and verifies the delivered image sequences. Use when the artist approves a version and asks to send, submit or render the whole shot, the final or the full range, or asks whether a finished render is complete. Not for a few test frames (tessera:lighting-previews), slow or noisy renders (tessera:lighting-optimize), or the job-file mechanics (tessera:pipeline-farm).
+user-invocable: false
 ---
 
 # Submit and verify production renders — BUCK

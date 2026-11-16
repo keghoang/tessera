@@ -1,6 +1,6 @@
 ---
 name: buck-modeling-production
-description: Develops approved blockout forms into a Buck asset fit for its agreed downstream use - final detail, clean construction, naming and structure. Use when a first model or design is approved and the artist asks to finish, detail or take the model to production. Not for a first blockout (buck-modeling-v01), review notes on a finished model (buck-modeling-notes), or edge treatment alone (buck-modeling-bevels).
+description: Develops approved blockout forms into a Buck asset fit for its agreed downstream use - final detail, clean construction, naming and structure. Use when a first model or design is approved and the artist asks to finish, detail or take the model to production. Not for a first blockout (buck-modeling-first-pass), review notes on a finished model (buck-modeling-notes), or edge treatment alone (buck-modeling-bevels).
 ---
 
 # Develop an approved model for production — BUCK

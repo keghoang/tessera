@@ -1,9 +1,9 @@
 ---
-name: buck-lighting-v01
+name: buck-lighting-first-pass
 description: Sets up the first lighting pass on a Buck Maya shot - assembles the scene from animation, layout and lookdev, applies the show's lighting template (render settings and AOV reference), and saves a reviewed, editable first version. Use when a shot has no lighting file yet, or the artist asks to start, set up or block in lighting. Not for copying an approved look from another shot (buck-lighting-transfer), revising an existing file from notes (buck-lighting-notes), or full-range rendering (buck-lighting-render).
 ---
 
-# Set up v01 lighting — BUCK
+# Set up a first lighting pass — BUCK
 
 ## Definition
 

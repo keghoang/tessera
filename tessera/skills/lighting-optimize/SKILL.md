@@ -2,6 +2,7 @@
 name: lighting-optimize
 description: Cut render time, noise or memory.
 when_to_use: Reduces render time, noise or memory use on a shot against a measured baseline, keeping agreed image quality and required outputs. Use when frames are slow, noisy, running out of memory or failing on the farm for resources. Not for a render that looks wrong for an unknown reason (tessera:lighting-diagnose) or for changing which AOVs render (tessera:lighting-aovs).
+user-invocable: false
 ---
 
 # Optimize render performance — BUCK

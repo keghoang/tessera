@@ -1,7 +1,8 @@
 ---
 name: modeling-notes
 description: Apply model review notes.
-when_to_use: Applies review notes to an existing model, changing only what each note asks and keeping accepted forms, UVs and assignments. Use when the artist passes on feedback about a model's shape, proportion or detail. Not for a new model (tessera:modeling-v01), alternatives (tessera:modeling-variations), or an asset that shots already reference (tessera:modeling-reference-update).
+when_to_use: Applies review notes to an existing model, changing only what each note asks and keeping accepted forms, UVs and assignments. Use when the artist passes on feedback about a model's shape, proportion or detail. Not for a new model (tessera:modeling-first-pass), alternatives (tessera:modeling-variations), or an asset that shots already reference (tessera:modeling-reference-update).
+user-invocable: false
 ---
 
 # Address modeling notes — BUCK

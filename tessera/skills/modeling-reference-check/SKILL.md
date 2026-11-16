@@ -2,6 +2,7 @@
 name: modeling-reference-check
 description: Compare a model against its reference.
 when_to_use: Compares a model against its reference from fixed, matching views and reports the differences without changing the model. Use when the artist asks whether a model matches the design, drawing or photo. Not for technical requirements (tessera:modeling-readiness) or for making the fixes (tessera:modeling-notes).
+user-invocable: false
 ---
 
 # Check model against reference — BUCK

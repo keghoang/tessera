@@ -2,6 +2,7 @@
 name: lighting-diagnose
 description: Find why a render looks wrong.
 when_to_use: Finds why a render differs from its scene, an earlier version or an approved output, and verifies the smallest fix. Use when a render looks wrong and the cause is unknown - missing objects or lights, shifted colour, black or NaN pixels, farm and local results that disagree, two versions that should match and don't. Not for artistic notes (tessera:lighting-notes) or for renders that are only slow or noisy (tessera:lighting-optimize).
+user-invocable: false
 ---
 
 # Diagnose a render discrepancy — BUCK

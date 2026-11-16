@@ -2,6 +2,7 @@
 name: modeling-split-combine
 description: Split or combine mesh parts.
 when_to_use: Splits or combines specified mesh parts of a model without unintended changes to UVs, normals, assignments or placement. Use when the artist asks to separate, detach, merge or regroup pieces. Not for setting pivots (tessera:modeling-pivots) or for designing a kit (tessera:modeling-modular).
+user-invocable: false
 ---
 
 # Split or combine specified parts — BUCK

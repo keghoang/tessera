@@ -2,6 +2,7 @@
 name: lighting-handoff
 description: Hand a lighting scene to another artist.
 when_to_use: Packages an existing lighting scene for another artist - verified dependencies, named controls, render status and open issues. Use when a shot changes hands, or the artist asks to clean up or hand off a lighting file. Not for changing the look (tessera:lighting-notes) or for QA across the frame range (tessera:lighting-coverage).
+user-invocable: false
 ---
 
 # Hand off lighting — BUCK

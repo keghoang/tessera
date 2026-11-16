@@ -35,10 +35,9 @@ INTRO = ("I'm your 3D assistant on this job, and I already know my way around BU
          "of what changed. Brief me like a teammate and I'll find the rest myself.")
 
 BRIEF = """**Skills**
-Kien has set up a set of common skills for the team. Each one is a tested way of doing one kind of task, for example:
-- `/tessera:lighting-v01`: first lighting pass on a shot
-- `/tessera:lighting-notes`: apply review notes
-- `/tessera:modeling-repair`: fix mesh and normal defects
+Kien has set up a set of common skills for the team, for example:
+- `/tessera:lighting`: light a shot, from first pass to final
+- `/tessera:modeling`: model an asset, from first blockout to final
 
 **How to use them**
 - Type `/tessera:` and pick from the list, or

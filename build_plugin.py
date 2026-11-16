@@ -85,7 +85,7 @@ def main():
             sys.exit("bad short description for %s: %s" % (source_name, short))
         return "description: " + short + "\nwhen_to_use: " + line[len("description: "):]
 
-    count = scripts = 0
+    count = scripts = hidden = 0
     for src in sorted(p for p in (HERE / "Skills").iterdir() if p.is_dir()):
         name = src.name[len("buck-"):] if strip and src.name.startswith("buck-") else src.name
         dst = plugin / "skills" / name
@@ -96,6 +96,10 @@ def main():
             text = rename(text)
             text = re.sub(r"(?m)^name: .*$", "name: " + name, text, count=1)
         text = re.sub(r"(?m)^description: .*$", lambda m: split_description(neutral(m.group(0)), src.name), text, count=1)
+        if re.match(r"(buck-)?(lighting|modeling)-.+", src.name):
+            # a procedure behind a front door: the agent still loads it, the artist's menu doesn't list it
+            text = re.sub(r"(?m)^when_to_use: .*$", lambda m: m.group(0) + "\nuser-invocable: false", text, count=1)
+            hidden += 1
         if (dst / "scripts").is_dir():
             scripts += 1
             text = text.rstrip("\n") + ("\n\n## Where the scripts are\n\nThis skill's folder is `${CLAUDE_SKILL_DIR}`; "
@@ -140,7 +144,7 @@ def main():
         "plugins": [{"name": PLUGIN, "source": "./" + PLUGIN,
                      "description": "Working notes and skills for 3D tasks.", "version": args.version}],
     }, indent=2) + "\n", encoding="utf-8")
-    print("built %s %s: %d skills (%d with scripts) -> %s" % (PLUGIN, args.version, count, scripts, out))
+    print("built %s %s: %d skills (%d with scripts, %d hidden from the menu) -> %s" % (PLUGIN, args.version, count, scripts, hidden, out))
 
 
 if __name__ == "__main__":

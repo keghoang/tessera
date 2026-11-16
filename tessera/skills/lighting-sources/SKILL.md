@@ -2,6 +2,7 @@
 name: lighting-sources
 description: Update animation, camera or asset versions in a shot.
 when_to_use: Updates the animation, camera, caches or asset references in an existing Maya lighting scene, keeping the lighting work and compatible overrides. Use when a new animation, layout, model or lookdev version arrives, or references are missing or out of date. Not for look changes (tessera:lighting-notes) or for lighting a different shot (tessera:lighting-transfer).
+user-invocable: false
 ---
 
 # Update animation, camera, or assets — BUCK

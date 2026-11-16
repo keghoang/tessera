@@ -1,5 +1,7 @@
 # BUCK modeling skills
 
+Start at `tessera:modeling`: it works out where the asset stands and picks from these.
+
 Task definitions ordered from broad deliverables to focused operations. Size describes scope, not difficulty. Each task has a distinct result and acceptance criteria; these skills are not yet production-tested.
 
 ## What modeling should deliver
@@ -10,7 +12,7 @@ A model should satisfy the design, work at the intended camera distance, and sup
 
 | Task | Acceptable | Failure |
 |---|---|---|
-| [Build a v01 model](skills/modeling-v01/SKILL.md) | Editable major forms match intended silhouette, proportions, and scale; inferred details are identified. | Fine detail disguises incorrect primary forms or unsupported design assumptions. |
+| [Build a first model](skills/modeling-first-pass/SKILL.md) | Editable major forms match intended silhouette, proportions, and scale; inferred details are identified. | Fine detail disguises incorrect primary forms or unsupported design assumptions. |
 | [Develop an approved model for production](skills/modeling-production/SKILL.md) | Approved forms gain purposeful construction/detail and meet agreed rigging, shading, and rendering needs. | Added complexity changes the design or leaves downstream departments unable to use the asset. |
 | [Build a modular asset kit](skills/modeling-modular/SKILL.md) | Parts share compatible dimensions, interfaces, and placement conventions; representative combinations work. | Pieces look correct individually but cannot assemble without manual repair. |
 | [Prepare a modeling handoff](skills/modeling-handoff/SKILL.md) | The delivered version opens correctly and includes the structure, dependencies, and known limits needed by the next artist. | The recipient must reconstruct intent, locate missing files, or discover unusable geometry. |
@@ -38,7 +40,7 @@ A model should satisfy the design, work at the intended camera distance, and sup
 | [Check model against reference](skills/modeling-reference-check/SKILL.md) | Consistent views reveal specific proportion, silhouette, and construction differences. | A flattering angle or persuasive shading hides inaccuracies. |
 | [Check asset readiness](skills/modeling-readiness/SKILL.md) | Scale, hierarchy, naming, geometry, UVs, and intended downstream use are verified to agreed requirements. | Generic cleanup passes despite failure in the actual consuming workflow. |
 
-## Build a v01 model
+## Build a first model
 
 **Definition:** Create an editable first model that establishes the asset's silhouette, proportions, scale, and construction for design review. Detail should be sufficient to judge the design; production finish is a separate task unless included.
 

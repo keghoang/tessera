@@ -2,6 +2,7 @@
 name: modeling-repair
 description: Fix mesh and normal defects.
 when_to_use: Fixes identified geometry and normal defects on a model - non-manifold edges, flipped or locked normals, doubled faces, holes, z-fighting - without blanket destructive cleanup. Use when a defect is reported or shows up in renders or checks. Not for rebuilding topology (tessera:modeling-retopology) or for finding defects in the first place (tessera:modeling-readiness).
+user-invocable: false
 ---
 
 # Repair mesh defects — BUCK

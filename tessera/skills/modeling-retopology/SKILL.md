@@ -2,6 +2,7 @@
 name: modeling-retopology
 description: Rebuild topology, keep the shape.
 when_to_use: Replaces unsuitable topology on a model with structure that supports the required editing, subdivision or deformation, keeping the shape. Use for scanned, sculpted, generated or triangulated meshes, or when edge flow blocks deformation. Not for reducing cost alone (tessera:modeling-optimize) or for fixing isolated defects (tessera:modeling-repair).
+user-invocable: false
 ---
 
 # Retopologize for intended use — BUCK

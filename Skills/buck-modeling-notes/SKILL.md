@@ -1,6 +1,6 @@
 ---
 name: buck-modeling-notes
-description: Applies review notes to an existing Buck model, changing only what each note asks and keeping accepted forms, UVs and assignments. Use when the artist passes on feedback about a model's shape, proportion or detail. Not for a new model (buck-modeling-v01), alternatives (buck-modeling-variations), or an asset that shots already reference (buck-modeling-reference-update).
+description: Applies review notes to an existing Buck model, changing only what each note asks and keeping accepted forms, UVs and assignments. Use when the artist passes on feedback about a model's shape, proportion or detail. Not for a new model (buck-modeling-first-pass), alternatives (buck-modeling-variations), or an asset that shots already reference (buck-modeling-reference-update).
 ---
 
 # Address modeling notes — BUCK
