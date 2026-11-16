@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.14.1 (2026-11-15)
+
+- Versioning without stop-and-go: the agent saves locally as it sees fit, with no permission and no question. A version goes on the server only when the artist says "save" or "version up", or asks for something that needs one (a full-range render, a handoff). The agent no longer proposes a save or waits for one; it adds one line that the work is saved locally and carries on.
+- Starter `2026-11-15.4`.
+
 ## 0.14.0 (2026-11-15)
 
 - Saving a version on the server now needs the artist's go-ahead. The agent works in a local copy, shows the result, then proposes the version name and what is in it. "Save" or "version up" in the request counts as the go-ahead, for one version. One version per request; refinement rounds and experiments stay local.

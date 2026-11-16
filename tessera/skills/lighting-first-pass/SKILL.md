@@ -32,7 +32,7 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_lighting.md`. Th
 3. **Assemble the workfile:** Retain production references, organize the scene as specified below, apply the lighting template, and derive output paths from the existing shot through Buck5's Deadline setup. If the shot structure is missing, resolve that setup first.
 4. **Develop the look:** Establish direction, values, and color relationships before fine adjustments. Evaluate rendered material response in context. Treat settings donors and visual references as distinct inputs.
 5. **Refine before showing:** Run the self-refinement loop in `tessera:lighting`: test frames, compare against the look target, list the gaps, fix, repeat.
-6. **Validate and hand off:** On the artist's go-ahead (the starter's versioning rule), save the next available version with the intended delivery settings, reopen the actual deliverable, and complete the technical and visual checks below.
+6. **Validate and hand off:** Keep the scene as a local working copy. When the artist says to save (the starter's versioning rule), save the next available version with the intended delivery settings, reopen the actual deliverable, and complete the technical and visual checks below.
 
 ## Expected outcome
 

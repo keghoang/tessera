@@ -25,7 +25,7 @@ Use the Blender connection whenever it is in the session. If the tools are missi
 
 ## Working copy and versions
 
-Work in local files in the scratch folder: the Blender file, and the Maya scene it is moved into. A server version is saved once per request, at the end, on the artist's go-ahead: show the result, then propose the version name and what is in it. Refinement rounds never make a version.
+The Blender file and the Maya scene it is moved into are local working files. Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Don't ask whether to save and don't stop for it: show the result, add one line that it is saved locally, and carry on.
 
 ## 1. Find where the asset stands
 

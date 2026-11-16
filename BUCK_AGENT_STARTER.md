@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-15.3
+Version: 2026-11-15.4
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -17,7 +17,7 @@ Keep Buck5 running and start your agent.
 Read \\buck\work\current\<JOB>\Production\Common\Agents\BUCK_AGENT_STARTER.md and follow it. I'm <username>. Today: <shot or asset>, <task>.
 ```
 
-The agent works in a local copy and shows you the result. It saves a version on the server only on your go-ahead, never overwrites a file, leaves a `.trail` note beside each version, tells you before a full-range farm submit, and asks before deleting or publishing.
+The agent works and saves locally as it goes and shows you the result. It puts a version on the server only when you tell it to ("save", "version up"), never overwrites a file, leaves a `.trail` note beside each version, tells you before a full-range farm submit, and asks before deleting or publishing.
 
 ## The files
 
@@ -87,9 +87,10 @@ In/                                                       client material, read 
 ### Naming and versions
 
 - Files are named `<Shot or asset>_<task>_v###.<ext>`: `SH010_lgt_v010.mb`, `prop_tower_rig_v003.mb`. Task codes: `mdl`, `rig`, `lkdv`, `anim`, `lgt`, `comp`. Versions are always three digits; "v01" in a request means `v001`.
-- **A server version is something worth another person opening.** Work in a local copy in the scratch folder. Attempts, refinement rounds and experiments stay there; none of them is a version.
-- **One version per request, saved at the end, on the artist's go-ahead.** Show the result first, then propose it: the version name and what is in it. "Save" or "version up" in the request itself is the go-ahead, for one version.
-- If a version you saved turns out wrong, say so and ask what to do. Don't quietly save the next one over the problem.
+- **Save locally as you see fit.** Work in the scratch folder and keep as many working copies there as help you (`<Shot>_<task>_wip###.<ext>`). No permission, no announcement.
+- **The server gets a version only when the artist says so:** "save", "version up", "put it on the server", or a request that can only be done from a server version (a full-range render, a handoff). Then save one version, without asking again.
+- **Don't ask whether to save, and don't stop for it.** When you show a result, add one line: it is saved locally, and they can say "save" to version it up. Then carry on with whatever is next. Never hold work waiting for a save decision.
+- If a version you saved turns out wrong, say so in one line. A fixed version goes up the next time the artist says to save.
 - Save to the next free version number, through `save_version.py` in `buck-pipeline-trail`: it cannot overwrite a file. If you must save another way, check that the target doesn't exist immediately before saving.
 - Work from the latest version in the work folder, even if someone else saved it; coworkers re-save mid-round. Read its `.trail` and tell the artist who saved it and what changed.
 - If someone else is versioning the same file in parallel, add the suffix from `ARTIST.md` (`lgt_v023_<suffix>`).
@@ -105,6 +106,7 @@ Hard limits first, then three tiers. An action none of them covers counts as "Al
 
 - Write into `\\buck\GlobalPrefs\`, the package repository, or shared code repos.
 - Write passwords, tokens or licence details into any file, script, trail or job comment.
+- Save a version on the server that the artist didn't tell you to save. Local saves are free; the server waits for their word.
 - Open a file in a newer application version than the show uses, or open a Maya file with `ignoreVersion`. If a file was saved in a newer version, stop and tell the artist.
 
 ### Always ask: wait for a clear yes
@@ -112,7 +114,6 @@ Hard limits first, then three tiers. An action none of them covers counts as "Al
 - Deleting anything on the server, including renders that look broken. List the exact files first.
 - Overwriting any existing server file. (A farm render replacing that same version's own test frames is not an overwrite.)
 - Writing files for a shot or asset the artist did not name.
-- Saving a new version on the server, unless the request itself said to save or version up. One go-ahead, one version.
 - Publishing, or writing into a `publish` folder.
 - Opening, listing or copying another job.
 - Sending files, frames or client material to an external tool that `SHOW.md` does not list as approved. Client work is confidential, and approval on one job does not carry to another.

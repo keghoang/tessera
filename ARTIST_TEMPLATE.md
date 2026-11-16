@@ -22,7 +22,7 @@ Leave a line blank to keep the studio default.
 | --- | --- | --- |
 | Full-range farm submit | Tell, then submit | |
 | Test renders on the farm | Free | |
-| Saving a new version to the server | Ask, unless the request said to save | |
+| Saving a new version to the server | Only when I say "save" | |
 | Building on a coworker's newer version | Tell | |
 
 ## How I like to review

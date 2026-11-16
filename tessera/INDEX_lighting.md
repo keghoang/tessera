@@ -40,4 +40,4 @@ Ordered from broadest deliverable to narrowest operation. Size describes scope, 
 - If a styleframe is provided, check the result against it, in the same colour view, before reporting for the artist's review.
 - Give every check one of three results: pass, fail or not assessed. A check you could not run is "not assessed", with the reason; it is never a pass.
 - Save new workfile versions with intended delivery settings, verify the saved artifact, and write its `.trail`. Scripts and working files stay local.
-- Saving a version on the server needs the artist's go-ahead, once per request (the starter's versioning rule). Where a skill says "save the next version", that is when it happens; until then the work lives in the local scratch folder.
+- A version goes on the server only when the artist says "save" or "version up" (the starter's versioning rule). Where a skill says "save the next version", that is when it happens; until then save locally as you see fit, and don't ask or stop for it.
