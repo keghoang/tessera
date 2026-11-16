@@ -197,6 +197,35 @@ def check_skills(job):
     return "Skills", "pass", "you have the latest set"
 
 
+def check_blender():
+    """Blender is the modeling tool: the Claude-side connection, Blender itself, and its MCP add-on are all required."""
+    local, roaming = os.environ.get("LOCALAPPDATA", ""), os.environ.get("APPDATA", "")
+    ext = glob.glob(os.path.join(local, "Claude-Data", "*", "Claude Extensions", "*blender*"))
+    enabled = True
+    for path in glob.glob(os.path.join(local, "Claude-Data", "*", "Claude Extensions Settings", "*blender*.json")):
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                enabled = bool(json.load(fh).get("isEnabled", True))
+        except (OSError, ValueError):
+            pass
+    if not ext or not enabled:
+        return ("Blender", "fail", "the Blender connection isn't %s in Claude. Add \"Blender\" from the Claude app's "
+                "extensions list, restart Claude, then say \"retry\"" % ("installed" if not ext else "switched on"))
+    if not glob.glob(os.path.join(os.environ.get("PROGRAMFILES", r"C:\Program Files"), "Blender Foundation", "*", "blender.exe")):
+        return "Blender", "fail", "Blender isn't installed on this machine. Install it, then say \"retry\""
+    base = os.path.join(roaming, "Blender Foundation", "Blender", "*")
+    addon = [p for pattern in (os.path.join(base, "extensions", "*", "*"), os.path.join(base, "scripts", "addons", "*"))
+             for p in glob.glob(pattern) if "mcp" in os.path.basename(p).lower()]
+    if not addon:
+        return ("Blender", "fail", "Blender is missing its MCP add-on. In Blender: Preferences > Get Extensions > Repositories, "
+                "add `https://lab.blender.org/`, then install and enable the MCP add-on. Then say \"retry\"")
+    try:
+        socket.create_connection(("127.0.0.1", 9876), timeout=2).close()
+        return "Blender", "pass", "connected"
+    except OSError:
+        return "Blender", "pass", "installed; open Blender and start its MCP add-on when you model"
+
+
 def check_dashboard(job, user):
     folder = os.path.join(agents_dir(job), "Activity")
     probe = os.path.join(folder, "_check_%s_%s.tmp" % (re.sub(r"[^a-z0-9]+", "-", user), os.getpid()))
@@ -248,7 +277,7 @@ def check(args):
     job = check_job(args.job)
     # no folder is made for a job that isn't there
     scratch = check_scratch(args.job, args.agent) if job[1] == "pass" else ("Scratch folder", "not assessed", "waiting on the job folder")
-    results = [check_buck5(), job, scratch, check_skills(args.job), check_dashboard(args.job, user)]
+    results = [check_buck5(), job, scratch, check_skills(args.job), check_blender(), check_dashboard(args.job, user)]
     out = ["Checking this workstation.", "", "| Check | Result |", "|---|---|"]
     bad = 0
     for name, result, line in results:

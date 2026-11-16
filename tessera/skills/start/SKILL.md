@@ -20,6 +20,7 @@ If the artist opened with a request, hold it. Do the setup, then go back to it.
    - A **fail** row says what the artist should do. Stop there; when they say "retry", run the check again.
    - A **needs a pick** row is a question for the artist. Ask it, create the folder they pick, record it in their `ARTIST.md` after step 3, and carry on.
    - "not assessed" rows don't stop the setup.
+   - The **Blender** row is required: models are built in Blender. It checks the Claude-side connection, Blender itself and Blender's MCP add-on. Installing any of them is the artist's to do; don't download or install them yourself.
 3. **Brief.** Run `start.py finish --job <JOB>` and pass the output on, except lines in `[square brackets]`, which are for you. This also creates the artist's `ARTIST.md` on the job if they have none, and marks this machine as set up.
 4. **Hand over.** Read the job's `BUCK_AGENT_STARTER.md` and `SHOW.md` now if you haven't. Then go back to the request they opened with, or ask which shot or asset and what they need.
 

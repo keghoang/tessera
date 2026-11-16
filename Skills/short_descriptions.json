@@ -38,5 +38,6 @@
  "buck-pipeline-status": "Report what this session is working on.",
  "buck-start": "First-session setup and welcome.",
  "buck-pipeline-setup": "Set up a job's Agents folder and install skills.",
- "buck-pipeline-trail": "Save a version and write its .trail record."
+ "buck-pipeline-trail": "Save a version and write its .trail record.",
+ "buck-modeling-to-maya": "Move a Blender-built model into Maya."
 }

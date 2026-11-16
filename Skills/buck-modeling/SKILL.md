@@ -13,11 +13,20 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md` (sh
 
 Production quality: the standard of a delivered asset. A blockout is the first step toward it, not a lower standard: its forms, proportions and scale must already be right. Stay at a blockout only when the artist asks for one.
 
+## Where to build: Blender, delivered as Maya
+
+- **New models are built in Blender**, through the Blender connection (tools named `mcp__Blender__*`), in a live Blender session so you can look at the result after every change.
+- **Models are delivered as Maya files.** When a Blender-built model is ready to show or hand on, move it with `buck-modeling-to-maya`. The artist reviews captures of the Maya file.
+- **The Blender file stays local**, in the scratch folder as `<asset>_mdl_v###.blend`, numbered like the Maya version it produces. It never goes on the server.
+- **An asset that already exists in Maya stays in Maya**: one that has a Maya work file, or that shots, a rig or a lookdev file reference. Don't round-trip it through Blender.
+
+Use the Blender connection whenever it is in the session. If the tools are missing, or Blender isn't open and connected, say so in one line and tell the artist what is needed (`buck-start` checks it). Build in Maya instead only if the artist says to.
+
 ## 1. Find where the asset stands
 
 Before asking anything, look:
 
-- the newest file in the asset's `Modeling/maya/work/` folder and its `.trail`
+- the newest file in the asset's `Modeling/maya/work/` folder and its `.trail`, and the Blender file it names as its source, if any
 - the design reference for it
 - whether shots, a rig or a lookdev file already reference it
 
@@ -40,6 +49,7 @@ Each is its own skill. Read every one the request touches, then do the work.
 | UVs for lookdev | `buck-modeling-uvs` |
 | Pivots and placement groups | `buck-modeling-pivots` |
 | Cutting a mesh into parts, or joining parts | `buck-modeling-split-combine` |
+| A Blender-built model has to be shown or delivered | `buck-modeling-to-maya` |
 | Getting it ready for rigging | `buck-modeling-rigging` |
 | Mesh or normal defects | `buck-modeling-repair` |
 | Unsuitable topology | `buck-modeling-retopology` |
@@ -53,7 +63,7 @@ If the request fits none of these, do it under the starter's rules and say that 
 
 Never show the first thing you made. Every time you build or change something, run this loop before the artist sees it:
 
-1. **Look.** Capture the fixed review views with `maya_review_capture.py` in `buck-pipeline-launch`, from the saved file, and open them. Judge images, never parameters or a clean log.
+1. **Look.** While building in Blender, take a viewport screenshot through the connection after each change. For a Maya file, capture the fixed review views with `maya_review_capture.py` in `buck-pipeline-launch`, from the saved file. Open the images. Judge images, never parameters or a clean log.
 2. **Compare.** Put it beside the target (the design reference, matched view for view) in the same view and the same colour view.
 3. **List the gaps.** Write down every visible difference from the target and everything that falls short of the bar above, most visible first.
 4. **Fix** the gaps that matter, then go back to step 1.

@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-15.1
+Version: 2026-11-15.2
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -139,7 +139,7 @@ An ask names the exact action, the exact files or paths, and what cannot be undo
 
 One file: the versioned deliverable (`.mb`, `.ma`, `.nk`, ...), plus its `.trail`.
 
-- Build scripts, test scenes, logs, scratch renders, review images and other working files stay in the local scratch folder. Never save a working folder next to the deliverable.
+- Build scripts, test scenes, Blender files, logs, scratch renders, review images and other working files stay in the local scratch folder. Models are built in Blender and delivered as Maya files (`buck-modeling`). Never save a working folder next to the deliverable.
 - The exceptions are textures in the sourceimages folder above, and render output written by the farm.
 - If a task seems to need any other file on the server, ask first.
 

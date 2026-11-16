@@ -2,6 +2,13 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.13.0 (2026-11-15)
+
+- Modeling: new models are built in Blender through the Blender connection and delivered as Maya files. The Blender file stays in the local scratch folder. An asset that already lives in Maya stays in Maya.
+- New procedure `modeling-to-maya`: moving a Blender model into Maya, with checks for scale, axes, names, hierarchy, transforms, pivots, faces, normals, UVs and materials. Not yet production-tested.
+- The first-session check has a required Blender row: the Claude-side connection, Blender itself and Blender's MCP add-on.
+- Starter `2026-11-15.2`.
+
 ## 0.12.1 (2026-11-15)
 
 - The bar is production quality at every stage. A first pass or a blockout is the first step, not a rougher standard; a rough happens only on request.
