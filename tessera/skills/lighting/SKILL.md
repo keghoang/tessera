@@ -10,6 +10,10 @@ This is the front door for lighting and lookdev. The artist names a shot and wha
 
 Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_lighting.md` (shared conventions). This skill grants no permissions.
 
+## The bar
+
+Production quality: the standard of a delivered shot, at every stage. A first pass is the first version, not a rougher one. Go below that only when the artist asks for a rough, a blocking pass or a quick look.
+
 ## 1. Find where the shot stands
 
 Before asking anything, look:
@@ -42,8 +46,19 @@ Each is its own skill. Read every one the request touches, then do the work.
 
 If the request fits none of these, do it under the starter's rules and say that no procedure covered it.
 
-## 3. The usual order
+## 3. Refine your own work before showing it
+
+Never show the first thing you made. Every time you build or change something, run this loop before the artist sees it:
+
+1. **Look.** Get test frames with `tessera:lighting-previews` on frames that represent the shot, and open them. Judge images, never parameters or a clean log.
+2. **Compare.** Put it beside the target (the styleframe, the approved shot it should match, or the previous approved version) in the same view and the same colour view.
+3. **List the gaps.** Write down every visible difference from the target and everything that falls short of the bar above, most visible first.
+4. **Fix** the gaps that matter, then go back to step 1.
+
+Stop when a round finds nothing worth fixing, or after three rounds. Then show the artist the result with what you fixed on your own and what still falls short. A gap you saw and left is listed, never hidden. A request for a rough or a quick look skips the loop; say that it was skipped.
+
+## 4. The usual order
 
 First pass (or transfer), test frames, then notes and test frames until the artist approves. Then passes for comp, a whole-range check, and the full render. Sources, diagnose and optimize come in whenever they are needed.
 
-When a step finishes, name the usual next one in a line and let the artist choose. Don't start it unasked.
+Reaching the bar is part of the step you were asked for, so do it without being asked. A separate deliverable is different: a full-range render, a transfer to another shot or a handoff is named in a line when the step before it finishes, and started only when the artist asks.

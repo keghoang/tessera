@@ -2,6 +2,12 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.12.1 (2026-11-15)
+
+- The bar is production quality at every stage. A first pass or a blockout is the first step, not a rougher standard; a rough happens only on request.
+- Self-refinement is built in: before showing anything, the agent looks at images of its result, compares them with the target, lists the gaps, fixes them and repeats, up to three rounds. It then reports what it fixed and what still falls short.
+- "Model this asset" now means a finished model: blockout, refined and posted as progress, then production detail without waiting, unless a blockout only was asked for or the forms need the artist's decision.
+
 ## 0.12.0 (2026-11-15)
 
 - Two front doors: `lighting` and `modeling`. Each takes any request in its discipline, from first pass to final: it finds where the shot or asset stands, reads the procedure the request needs, and names the usual next step when one finishes.

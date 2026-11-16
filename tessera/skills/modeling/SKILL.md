@@ -10,6 +10,10 @@ This is the front door for modeling. The artist names an asset and what they nee
 
 Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md` (shared conventions, the polygon budget and handoff rules). This skill grants no permissions.
 
+## The bar
+
+Production quality: the standard of a delivered asset. A blockout is the first step toward it, not a lower standard: its forms, proportions and scale must already be right. Stay at a blockout only when the artist asks for one.
+
 ## 1. Find where the asset stands
 
 Before asking anything, look:
@@ -46,8 +50,21 @@ Each is its own skill. Read every one the request touches, then do the work.
 
 If the request fits none of these, do it under the starter's rules and say that no procedure covered it.
 
-## 3. The usual order
+## 3. Refine your own work before showing it
+
+Never show the first thing you made. Every time you build or change something, run this loop before the artist sees it:
+
+1. **Look.** Capture the fixed review views with `maya_review_capture.py` in `tessera:pipeline-launch`, from the saved file, and open them. Judge images, never parameters or a clean log.
+2. **Compare.** Put it beside the target (the design reference, matched view for view) in the same view and the same colour view.
+3. **List the gaps.** Write down every visible difference from the target and everything that falls short of the bar above, most visible first.
+4. **Fix** the gaps that matter, then go back to step 1.
+
+Stop when a round finds nothing worth fixing, or after three rounds. Then show the artist the result with what you fixed on your own and what still falls short. A gap you saw and left is listed, never hidden. A request for a rough or a quick look skips the loop; say that it was skipped.
+
+## 4. The usual order
 
 First blockout, a check against the reference, then notes until the artist approves the forms. Then production detail, the finishing passes it needs (edges, UVs, pivots), and a readiness check before it goes to rigging, lookdev or lighting.
 
-When a step finishes, name the usual next one in a line and let the artist choose. Don't start it unasked.
+"Model this asset" means a finished model. Block out first, refine the blockout with the loop above, and post it as progress. Then carry on into production detail without waiting, unless the artist asked for a blockout only, or the design leaves a choice about the forms that is theirs to make.
+
+A separate deliverable is different: rigging preparation, a kit, a handoff or a change to an asset that shots already use is named in a line when the step before it finishes, and started only when the artist asks.

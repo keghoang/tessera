@@ -7,7 +7,7 @@ description: Builds the primary forms of a new Buck model for design review, bef
 
 ## Definition
 
-Create primary forms for design review before production finishing.
+Create the primary forms of a new model. This is the first step toward a production model, not a lower standard: silhouette, proportions and scale must be right before any detail goes on. Production finishing follows in `buck-modeling-production`.
 
 ## Ingredients
 
@@ -32,7 +32,8 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md`. Th
 1. Match primary silhouette and proportions before adding detail.
 2. Separate meaningful assemblies and label inferred hidden construction.
 3. Capture neutral matched views and save a recoverable work version.
-4. For edits, save and reopen the intended deliverable in the project environment. Review the saved model rather than relying only on the live session. For inspection-only tasks, keep the source unchanged.
+4. Refine before showing: run the self-refinement loop in `buck-modeling` against the reference, view for view, until the forms hold up.
+5. For edits, save and reopen the intended deliverable in the project environment. Review the saved model rather than relying only on the live session. For inspection-only tasks, keep the source unchanged.
 
 ## Expected outcome
 

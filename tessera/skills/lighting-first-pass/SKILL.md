@@ -9,7 +9,7 @@ user-invocable: false
 
 ## Definition
 
-Create the shot's first lighting workfile in its Buck5 environment, ready for visual review and continued artist work. V01 is a first-pass milestone, not permission to overwrite an existing version.
+Create the shot's first lighting workfile in its Buck5 environment, ready for visual review and continued artist work. A first pass is the first version, built to the same standard as a final; it is not a rough. It never overwrites an existing version.
 
 ## Ingredients
 
@@ -31,7 +31,8 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_lighting.md`. Th
 2. **Use the project environment:** Work through Buck5 or its resolved Rez context. Assert the show's required runtime and plugins; retain its OCIO configuration. Do not substitute another version silently.
 3. **Assemble the workfile:** Retain production references, organize the scene as specified below, apply the lighting template, and derive output paths from the existing shot through Buck5's Deadline setup. If the shot structure is missing, resolve that setup first.
 4. **Develop the look:** Establish direction, values, and color relationships before fine adjustments. Evaluate rendered material response in context. Treat settings donors and visual references as distinct inputs.
-5. **Validate and hand off:** Save the next available version with the intended delivery settings, reopen the actual deliverable, and complete the technical and visual checks below.
+5. **Refine before showing:** Run the self-refinement loop in `tessera:lighting`: test frames, compare against the look target, list the gaps, fix, repeat.
+6. **Validate and hand off:** Save the next available version with the intended delivery settings, reopen the actual deliverable, and complete the technical and visual checks below.
 
 ## Expected outcome
 
