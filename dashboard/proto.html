@@ -75,13 +75,17 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
 .item:hover>div{background:var(--hover)}
 .item[aria-expanded=true]>div{background:var(--sel)}
 .item .name{font-weight:650}
-.cell{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.cell{display:flex;flex-direction:column;align-items:stretch;gap:4px}
+.cell .l1{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.cell .l1 .person{flex:0 1 auto;min-width:0}
 .cell .v{font-weight:600}
 .cell.empty{color:var(--faint)}
 .cell.dim{opacity:.35}
-.cell .doing{font-size:12px;line-height:17px;display:flex;gap:6px;align-items:flex-start;margin-top:2px}
-.cell .doing .dot{margin-top:5px}
-.cell .doing span:last-child{overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.now{margin-top:4px}
+.now .st{display:flex;align-items:center;gap:6px;font-size:11px;line-height:16px;font-weight:650;text-transform:uppercase;letter-spacing:.05em;color:color-mix(in srgb,var(--c) 70%,var(--text))}
+.now .st .t{margin-left:auto;font-weight:500;letter-spacing:0;text-transform:none;color:var(--faint);font-size:12px}
+.now .doing{font-size:12.5px;line-height:17px;margin-top:2px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.detail .now{max-width:520px;margin-top:6px}.detail .now .doing{-webkit-line-clamp:unset}
 .age{color:var(--faint);font-size:12px}
 .detail{grid-column:1/-1;border-top:1px solid var(--line);padding:4px var(--inset) 12px;background:var(--hover)}
 .ver{padding:12px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:calc(var(--namecol) - var(--inset)) 1fr;gap:0 12px}
@@ -153,14 +157,19 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
     return low(item + " " + versionsOf(item).map((v) => v.artist + " " + v.task).join(" ") + " " + liveOf(item).map((l) => l.person).join(" ")).includes(q);
   };
 
+  // What is happening on a task right now: the state and for how long, then the one line of what.
+  const LABEL = { waiting: "Needs you", working: "Working", farm: "On the farm", idle: "Idle" };
+  const status = (l) => `<div class="now"><div class="st" style="--c:var(--${l.state})"><span class="dot ${l.state}"></span>${LABEL[l.state] || esc(l.state)}<span class="t num">${age(l.updated)}</span></div><div class="doing">${esc(l.doing)}</div></div>`;
+
   const detail = (item) => {
+    const lv = liveOf(item).map((l) => `<div class="ver"><div class="task">${esc(l.task)}</div><div><div class="top">${actor(l.person, l.agent)}</div>${status(l)}</div></div>`).join("");
     const vs = versionsOf(item).map((v) => `<div class="ver"><div class="task">${esc(v.task)}</div><div>
       <div class="top"><span class="v num">${vnum(v.version)}</span>${actor(v.artist, agentOf(v))}<span class="age">${age(v.date)} ago</span></div>
       ${v.request ? `<p class="req">${esc(v.request)}</p>` : ""}
       ${v.changes && v.changes.length ? `<ul>${v.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
       ${v.has_trail ? "" : `<div class="hist">No notes recorded with this version.</div>`}
       ${v.history && v.history.length ? `<div class="hist">Earlier: ${v.history.map((h) => vnum(h.version) + " " + esc(h.artist)).join(" · ")}</div>` : ""}</div></div>`).join("");
-    return `<div class="detail">${vs || `<div class="nothing">Nothing saved yet.</div>`}</div>`;
+    return `<div class="detail">${lv}${vs || (lv ? "" : `<div class="nothing">Nothing saved yet.</div>`)}</div>`;
   };
 
   const block = (b) => {
@@ -173,8 +182,8 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
         const v = vs.find((x) => x.task === t), l = lv.find((x) => x.task === t);
         if (!v && !l) return `<div class="cell empty">–</div>`;
         const dim = person && !((v && low(v.artist) === person) || (l && low(l.person) === person)) ? " dim" : "";
-        return `<div class="cell${dim}">${v ? `<span class="v num">${vnum(v.version)}</span>${actor(v.artist, agentOf(v))}` : ""}
-          ${l ? `${v && agentOf(v) && low(v.artist) === low(l.person) ? "" : actor(l.person, l.agent)}<div class="doing"><span class="dot ${l.state}"></span><span>${esc(l.doing)}</span></div>` : ""}</div>`;
+        return `<div class="cell${dim}">${v ? `<div class="l1"><span class="v num">${vnum(v.version)}</span>${actor(v.artist, agentOf(v))}</div>` : ""}
+          ${l ? `${v && agentOf(v) && low(v.artist) === low(l.person) ? "" : `<div class="l1"><span></span>${actor(l.person, l.agent)}</div>`}${status(l)}` : ""}</div>`;
       }).join("");
       return `<button class="item" data-open="${esc(item)}" aria-expanded="${open === item}"><div class="name">${esc(item)}</div>${cells}${pad}<div class="age num">${vs[0] ? age(vs[0].date) : ""}</div></button>` + (open === item ? detail(item) : "");
     }).join("");
