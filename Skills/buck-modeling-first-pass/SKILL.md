@@ -29,11 +29,13 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md`. Th
 
 ## Execution
 
-1. Match primary silhouette and proportions before adding detail.
-2. Separate meaningful assemblies and label inferred hidden construction.
-3. Capture neutral matched views and keep a recoverable working copy in the scratch folder.
-4. Refine before showing: run the self-refinement loop in `buck-modeling` against the reference, view for view, until the forms hold up.
-5. For edits, save and reopen the intended deliverable in the project environment. Review the saved model rather than relying only on the live session. For inspection-only tasks, keep the source unchanged.
+1. Work from the design document (`buck-modeling-design-doc`); write it first if there is none. Set up its comparison cameras and review lighting before building.
+2. Block out every part as simple volumes at the document's sizes, in the comparison cameras' framing, and check that against the reference before shaping anything.
+3. Match primary silhouette and proportions before adding detail. Capture from the comparison cameras after every stage.
+4. Separate meaningful assemblies and label inferred hidden construction.
+5. Capture neutral matched views and keep a recoverable working copy in the scratch folder.
+6. Refine before showing: run the self-refinement loop in `buck-modeling`, including the inspection (`buck-modeling-inspect`), until the forms hold up.
+7. For edits, save and reopen the intended deliverable in the project environment. Review the saved model rather than relying only on the live session. For inspection-only tasks, keep the source unchanged.
 
 ## Expected outcome
 

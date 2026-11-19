@@ -2,6 +2,13 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.16.0 (2026-11-19)
+
+- Modeling now starts from a short design document (new skill `buck-modeling-design-doc`): references first, real dimensions, parts in build order, comparison cameras, budgets and an acceptance checklist. It decides instead of asking: at most three open questions, each with a default the agent carries on with.
+- A Blender-built model is built from a script that can rebuild it, boxes first and then one part at a time, with cameras and review light set before any detail and a comparison sheet against the reference after every stage.
+- The agent no longer passes its own work. New skill `buck-modeling-inspect` and a read-only `model-inspector` sub-agent check the model against the design document: measured checks by script first (sizes, overlaps, floating parts, counts, names), then the fewest images needed. An item that couldn't be confirmed is never a pass.
+- When a correction points at the procedure, the agent proposes the change to the skill instead of only remembering it.
+
 ## 0.15.0 (2026-11-15)
 
 - Reporting to the dashboard is now the first step of every task: the agent reports the shot or asset, the task and what it is about to do before it opens a file, launches an application or submits anything, and again at the start of every later request.

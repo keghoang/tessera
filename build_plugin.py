@@ -113,6 +113,19 @@ def main():
             text = rename(text)
         (plugin / extra.name).write_text(text, encoding="utf-8", newline="\n")
 
+    # sub-agents that come with the plugin (a read-only inspector, for one)
+    agents = 0
+    for src in sorted((HERE / "SubAgents").glob("*.md")):
+        text = src.read_text(encoding="utf-8")
+        if strip:
+            text = rename(text)
+        m = re.search(r"(?m)^description: .*$", text)
+        if not m or re.search(r"(?i)buck", m.group(0).replace(PLUGIN + ":", "")):
+            sys.exit("sub-agent %s: missing description, or the studio name is in it" % src.name)
+        (plugin / "agents").mkdir(exist_ok=True)
+        (plugin / "agents" / src.name).write_text(text, encoding="utf-8", newline="\n")
+        agents += 1
+
     # hooks keep a session's reported state true: working / idle / waiting, and clear it at the end
     status = "%s/skills/%s/scripts/status.py" % ("${CLAUDE_PLUGIN_ROOT}", "pipeline-status" if strip else "buck-pipeline-status")
 
@@ -144,7 +157,8 @@ def main():
         "plugins": [{"name": PLUGIN, "source": "./" + PLUGIN,
                      "description": "Working notes and skills for 3D tasks.", "version": args.version}],
     }, indent=2) + "\n", encoding="utf-8")
-    print("built %s %s: %d skills (%d with scripts, %d hidden from the menu) -> %s" % (PLUGIN, args.version, count, scripts, hidden, out))
+    print("built %s %s: %d skills (%d with scripts, %d hidden from the menu), %d sub-agents -> %s"
+          % (PLUGIN, args.version, count, scripts, hidden, agents, out))
 
 
 if __name__ == "__main__":
