@@ -1,6 +1,8 @@
 """Agent Dashboard: who is on which shot, what agents are doing now, and the last changes.
 
-Entry point. Run it from Galt inside a Buck5 host (Maya, Nuke, Houdini), or from a terminal:
+Entry point. Run it from Galt inside a Buck5 host (Maya, Nuke, Houdini), double-click
+"Agent Dashboard.bat" with no host open, or use a terminal. It runs as its own process and its
+own window: closing the host does not close it.
 
     python main.py                 the job of the current Buck5 environment
     python main.py --job <JOB>     another job
@@ -182,8 +184,25 @@ def open_job(job):
             state = read_state()
             if server_alive(state):
                 break
+    show("http://127.0.0.1:%d/index.html#%s" % (state.get("port") or PORT, slug(job)))
+
+
+def show(url):
+    """Open the page as its own window (no tabs, no address bar, its own taskbar button), else as a browser tab."""
+    roots = [os.environ.get(k, "") for k in ("ProgramFiles(x86)", "ProgramFiles", "LOCALAPPDATA")]
+    for rel in (r"Microsoft\Edge\Application\msedge.exe", r"Google\Chrome\Application\chrome.exe"):
+        for root in roots:
+            exe = os.path.join(root, rel) if root else ""
+            if exe and os.path.isfile(exe):
+                try:
+                    subprocess.Popen([exe, "--app=" + url, "--window-size=1500,950"], close_fds=True,
+                                     stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                     creationflags=0x00000008 | 0x00000200 if os.name == "nt" else 0)
+                    return
+                except OSError:
+                    pass
     import webbrowser
-    webbrowser.open("http://127.0.0.1:%d/index.html#%s" % (state.get("port") or PORT, slug(job)))
+    webbrowser.open(url)
 
 
 def serve():
