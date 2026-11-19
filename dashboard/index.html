@@ -7,13 +7,13 @@
 <style>
 :root{
   --bg:#f5f5f7;--panel:#ffffff;--line:rgba(0,0,0,.08);--text:#1d1d1f;--sub:#6e6e73;--faint:#a1a1a6;
-  --accent:#0a84ff;--hover:rgba(0,0,0,.045);--sel:rgba(10,132,255,.13);
+  --accent:#0a84ff;--hover:rgba(0,0,0,.045);--sel:rgba(10,132,255,.13);--raised:#f2f2f5;
   --working:#30a46c;--waiting:#f5a524;--farm:#3b82f6;--idle:#a1a1a6;
   --r:12px;--inset:16px;--shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.05);
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#161617;--panel:#1f1f21;--line:rgba(255,255,255,.09);--text:#f5f5f7;--sub:#a1a1a6;--faint:#6e6e73;
-  --hover:rgba(255,255,255,.06);--sel:rgba(10,132,255,.22);--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
+  --hover:rgba(255,255,255,.06);--sel:rgba(10,132,255,.22);--raised:#29292c;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);
 }}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:14px/20px -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI Variable Text","Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -72,18 +72,20 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
 .item{display:contents}
 .item>div{border-top:1px solid var(--line);padding:6px 0 6px 6px;min-width:0}
 .item>div:last-child{padding-right:6px}
-.item:hover>div{background:var(--hover)}
-.item[aria-expanded=true]>div{background:var(--sel)}
 /* the name sits on the same line as the version inside the tiles: 6 + 10 down */
 .item .name{font-size:15px;line-height:24px;font-weight:650;letter-spacing:-.01em;padding:16px 12px 16px var(--inset)}
 
 /* a task tile. Three levels: the version, who saved it and when, then what is happening now. */
-.tile{border-radius:10px;padding:10px 12px}
+.tile{display:block;width:100%;border-radius:10px;padding:10px 12px}
+button.tile{transition:background .12s}
+button.tile:hover{background:color-mix(in srgb,var(--text) 8%,transparent)}
+button.tile.live:hover{background:color-mix(in srgb,var(--c) 15%,transparent)}
+button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
 .tile.has{background:color-mix(in srgb,var(--text) 4%,transparent)}
 .tile.live{background:color-mix(in srgb,var(--c) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 32%,transparent)}
 .tile.dim{opacity:.35}
 .tile.none{color:var(--faint);line-height:24px}
-.tile .l1{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;height:24px}
+.tile .l1{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 10px;min-width:0;min-height:24px}
 .tile .v{font-size:16px;line-height:24px;font-weight:650;letter-spacing:-.01em}
 .tile .v.no{font-size:13px;font-weight:500;color:var(--sub);letter-spacing:0}
 .tile .l1 .person{flex:0 1 auto;min-width:0}
@@ -94,17 +96,29 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
 .now .st .t::before{content:"\00b7";margin-right:6px;color:var(--faint)}
 .now .st .person{margin-left:auto;flex:0 1 auto;min-width:0;text-transform:none;letter-spacing:0}
 .now .doing{font-size:13px;line-height:18px;margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.detail .now{max-width:560px;margin-top:8px;padding-top:0;border-top:0}.detail .now .doing{-webkit-line-clamp:unset}
 .age{color:var(--faint);font-size:12px}
-.detail{grid-column:1/-1;border-top:1px solid var(--line);padding:4px var(--inset) 12px;background:var(--hover)}
-.ver{padding:12px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:calc(var(--namecol) - var(--inset)) 1fr;gap:0 12px}
-.ver:first-child{border-top:0}
-.ver .task{font-size:11px;line-height:20px;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);font-weight:600}
-.ver .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.ver .v{font-weight:650}
-.ver .req{margin:6px 0 0}
-.ver ul{margin:4px 0 0;padding-left:18px;color:var(--sub)}
-.ver .hist{margin-top:6px;font-size:12.5px;color:var(--faint)}
+
+/* the detail of one task: a popover that floats over the page and points at the tile that was clicked */
+.pop{position:absolute;z-index:20;width:min(460px,calc(100vw - 32px));filter:drop-shadow(0 12px 32px rgba(0,0,0,.35)) drop-shadow(0 0 1px rgba(0,0,0,.4))}
+.pop .arrow{position:absolute;width:16px;height:16px;transform:rotate(45deg);background:var(--raised);border-radius:3px}
+.pop.below .arrow{top:-7px}.pop.above .arrow{bottom:-7px}
+.panelbox{position:relative;border-radius:14px;background:var(--raised);padding:16px 18px 18px;max-height:min(560px,calc(100vh - 48px));overflow:auto}
+.panelbox .phead{display:flex;align-items:center;gap:8px;font-size:11px;line-height:16px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--sub)}
+.panelbox .phead b{color:var(--text);font-weight:700}
+.panelbox .close{margin-left:auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:var(--sub);font-size:14px;letter-spacing:0}
+.panelbox .close:hover{background:var(--hover);color:var(--text)}
+.panelbox .now{margin-top:12px;padding:10px 12px;border-top:0;border-radius:10px;background:color-mix(in srgb,var(--c) 10%,transparent)}
+.panelbox .now .doing{-webkit-line-clamp:unset}
+.panelbox .latest{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.panelbox .latest .v{font-size:20px;line-height:26px;font-weight:700;letter-spacing:-.02em}
+.panelbox .req{margin:8px 0 0;font-size:14px;line-height:21px;max-width:720px}
+.panelbox ul{margin:8px 0 0;padding-left:18px;color:var(--sub);max-width:720px}
+.panelbox li{margin-top:3px}
+.panelbox .none{margin-top:8px;color:var(--faint);font-size:12.5px}
+.panelbox .earlier{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.panelbox .earlier .lab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--faint);margin-bottom:6px}
+.panelbox .earlier .e{display:flex;align-items:center;gap:10px;height:26px;font-size:13px}
+.panelbox .earlier .e .v{font-weight:600;min-width:44px}
 .nothing{padding:14px var(--inset);color:var(--faint)}
 @media (max-width:860px){.page{grid-template-columns:1fr}.outline{position:static;max-height:none}}
 </style>
@@ -159,6 +173,8 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
   let q = "", open = "", only = "", group = "", person = "";
   // what the viewer had open survives the page redrawing itself when the job changes
   try { const s = JSON.parse(sessionStorage.getItem("view:" + name) || "{}"); q = s.q || ""; open = s.open || ""; only = s.only || ""; group = s.group || ""; person = s.person || ""; } catch (e) {}
+  // index.html#<job>/<item>|<task> opens that task's detail
+  { const want = decodeURIComponent(location.hash.slice(1).split("/").slice(1).join("/")); if (want.includes("|")) open = want; }
   const remember = () => { try { sessionStorage.setItem("view:" + name, JSON.stringify({ q, open, only, group, person, y: window.scrollY })); } catch (e) {} };
 
   const involves = (item, p) => versionsOf(item).some((v) => low(v.artist) === p) || liveOf(item).some((l) => low(l.person) === p);
@@ -173,15 +189,18 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
   const LABEL = { waiting: "Needs you", working: "Working", farm: "On the farm", idle: "Idle" };
   const status = (l, tag) => `<div class="now" style="--c:var(--${l.state})"><div class="st"><span class="dot ${l.state}"></span>${LABEL[l.state] || esc(l.state)}<span class="t num">${age(l.updated)}</span>${tag || ""}</div><div class="doing">${esc(l.doing)}</div></div>`;
 
-  const detail = (item) => {
-    const lv = liveOf(item).map((l) => `<div class="ver"><div class="task">${esc(l.task)}</div><div><div class="top">${actor(l.person, l.agent)}</div>${status(l)}</div></div>`).join("");
-    const vs = versionsOf(item).map((v) => `<div class="ver"><div class="task">${esc(v.task)}</div><div>
-      <div class="top"><span class="v num">${vnum(v.version)}</span>${actor(v.artist, agentOf(v))}<span class="age">${age(v.date)} ago</span></div>
+  // The detail of one task of one shot or asset. `at` is where its tile sits across the task columns (0 to 1).
+  const detail = (item, task) => {
+    const v = versionsOf(item).find((x) => x.task === task), l = liveOf(item).find((x) => x.task === task);
+    const latest = v ? `<div class="latest"><span class="v num">${vnum(v.version)}</span>${actor(v.artist, agentOf(v))}<span class="age">${age(v.date)} ago</span></div>
       ${v.request ? `<p class="req">${esc(v.request)}</p>` : ""}
       ${v.changes && v.changes.length ? `<ul>${v.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
-      ${v.has_trail ? "" : `<div class="hist">No notes recorded with this version.</div>`}
-      ${v.history && v.history.length ? `<div class="hist">Earlier: ${v.history.map((h) => vnum(h.version) + " " + esc(h.artist)).join(" · ")}</div>` : ""}</div></div>`).join("");
-    return `<div class="detail">${lv}${vs || (lv ? "" : `<div class="nothing">Nothing saved yet.</div>`)}</div>`;
+      ${v.has_trail ? "" : `<div class="none">No notes were recorded with this version.</div>`}` : `<div class="none">No version saved yet.</div>`;
+    const earlier = v && v.history && v.history.length ? `<div class="earlier"><div class="lab">Earlier versions</div>${v.history.map((h) =>
+      `<div class="e"><span class="v num">${vnum(h.version)}</span>${actor(h.artist, h.made_by === "agent" ? h.agent || "agent" : "")}<span class="age">${h.date ? age(h.date) + " ago" : ""}</span></div>`).join("")}</div>` : "";
+    return `<span class="arrow"></span><div class="panelbox">
+      <div class="phead"><b>${esc(item)}</b><span>${esc(task)}</span><button class="close" data-open="${esc(item + "|" + task)}" aria-label="Close">✕</button></div>
+      ${l ? status(l) : ""}${latest}${earlier}</div>`;
   };
 
   const block = (b) => {
@@ -198,9 +217,10 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
         const sameActor = v && l && agentOf(v) && low(v.artist) === low(l.person);
         const top = v ? `<div class="l1"><span class="v num">${vnum(v.version)}</span>${actor(v.artist, agentOf(v))}</div><div class="meta num">${age(v.date)} ago</div>`
                       : `<div class="l1"><span class="v no">No version yet</span>${actor(l.person, l.agent)}</div>`;
-        return `<div><div class="tile has${l ? " live" : ""}${dim}"${l ? ` style="--c:var(--${l.state})"` : ""}>${top}${l ? status(l, v && !sameActor ? actor(l.person, l.agent) : "") : ""}</div></div>`;
+        const id = item + "|" + t;
+        return `<div><button class="tile has${l ? " live" : ""}${dim}" data-open="${esc(id)}" aria-expanded="${open === id}"${l ? ` style="--c:var(--${l.state})"` : ""}>${top}${l ? status(l, v && !sameActor ? actor(l.person, l.agent) : "") : ""}</button></div>`;
       }).join("");
-      return `<button class="item" data-open="${esc(item)}" aria-expanded="${open === item}"><div class="name">${esc(item)}</div>${cells}${pad}</button>` + (open === item ? detail(item) : "");
+      return `<div class="item"><div class="name">${esc(item)}</div>${cells}${pad}</div>`;
     }).join("");
     return `<div class="blockhead"><h3>${esc(b.name)}</h3><span class="faint num">${list.length}${list.length !== b.items.length ? " of " + b.items.length : ""}</span></div>
       <div class="card"><div class="grid"><div class="head"><div>${b.kind === "Shots" ? "Shot" : "Asset"}</div>${tasks.map((t) => `<div>${esc(t)}</div>`).join("")}${pad}</div>${rows}</div></div>`;
@@ -228,9 +248,31 @@ h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.02em;margin:
       <main><div class="bar"><label class="search"><span class="faint">⌕</span><input id="q" placeholder="Search shots, assets, people" value="${esc(q)}"></label><span class="space"></span>${pills}</div>${who}
       ${body || `<div class="card nothing" style="margin-top:20px">Nothing matches.</div>`}</main>`;
     if (keepFocus) { const i = document.getElementById("q"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+    place();
   }
+  // The popover sits under its tile, or above it when there is no room below, and never leaves the window.
+  function place() {
+    let pop = document.getElementById("pop");
+    const tile = open && [...document.querySelectorAll("button.tile")].find((b) => b.dataset.open === open);
+    if (!tile) { if (pop) pop.remove(); if (open) open = ""; return; }
+    if (!pop) { pop = document.createElement("div"); pop.id = "pop"; document.body.append(pop); }
+    const cut = open.indexOf("|");
+    pop.className = "pop below";
+    pop.innerHTML = detail(open.slice(0, cut), open.slice(cut + 1));
+    const r = tile.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, gap = 10;
+    const below = r.bottom + gap + h <= window.innerHeight || r.top - gap - h < 0;
+    const left = Math.max(16, Math.min(r.left, window.innerWidth - w - 16));
+    pop.className = "pop " + (below ? "below" : "above");
+    pop.style.left = left + window.scrollX + "px";
+    pop.style.top = (below ? r.bottom + gap : r.top - gap - h) + window.scrollY + "px";
+    pop.querySelector(".arrow").style.left = Math.max(18, Math.min(r.left + Math.min(r.width / 2, 40) - left - 8, w - 34)) + "px";
+  }
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && open) { open = ""; draw(); remember(); } });
+  window.addEventListener("resize", place);
   document.addEventListener("click", (e) => {
-    const b = e.target.closest("button"); if (!b) return;
+    const b = e.target.closest("button");
+    // a click anywhere outside the popover closes it
+    if (!b) { if (open && !e.target.closest("#pop")) { open = ""; draw(); remember(); } return; }
     if ("only" in b.dataset) only = only === b.dataset.only ? "" : b.dataset.only;
     else if ("group" in b.dataset) { group = b.dataset.group; window.scrollTo({ top: 0 }); }
     else if ("person" in b.dataset) person = b.dataset.person;
