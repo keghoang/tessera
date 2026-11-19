@@ -2,7 +2,8 @@
 
 Entry point. Run it from Galt inside a Buck5 host (Maya, Nuke, Houdini), double-click
 "Agent Dashboard.bat" with no host open, or use a terminal. It runs as its own process and its
-own window: closing the host does not close it.
+own window: closing the host does not close it. Only one dashboard window is open at a time;
+launching it again closes the one that is open and opens a fresh one.
 
     python main.py                 the job of the current Buck5 environment
     python main.py --job <JOB>     another job
@@ -187,16 +188,49 @@ def open_job(job):
     show("http://127.0.0.1:%d/index.html#%s" % (state.get("port") or PORT, slug(job)))
 
 
+WINDOW_PROFILE = "tessera-dashboard-window"   # the dashboard's own browser profile; also how its window is found again
+
+
+def close_window():
+    """Close the dashboard window that is already open, so there is only ever one.
+
+    The window runs in its own browser profile, so its processes can be told apart from the
+    artist's own browser by that profile's folder on their command line. Nothing else is touched.
+    """
+    if os.name != "nt":
+        return
+    find = ("$p = Get-CimInstance Win32_Process | Where-Object { ($_.Name -eq 'msedge.exe' -or $_.Name -eq 'chrome.exe') "
+            "-and $_.CommandLine -like '*%s*' }; " % WINDOW_PROFILE)
+    script = (find +
+              # ask the window to close, the way clicking its close button would
+              "$p | Where-Object { $_.CommandLine -notlike '*--type=*' } | ForEach-Object { "
+              "$w = Get-Process -Id $_.ProcessId -ErrorAction SilentlyContinue; if ($w) { [void]$w.CloseMainWindow() } }; "
+              "for ($i = 0; $i -lt 12; $i++) { " + find + "if (-not $p) { break }; Start-Sleep -Milliseconds 150 }; "
+              # anything still there is stopped
+              "$p | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }")
+    try:
+        subprocess.run(["powershell", "-NoProfile", "-NonInteractive", "-Command", script], timeout=20,
+                       stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=NO_WINDOW)
+    except (OSError, subprocess.SubprocessError):
+        pass
+
+
 def show(url):
-    """Open the page as its own window (no tabs, no address bar, its own taskbar button), else as a browser tab."""
+    """Open the page as its own window (no tabs, no address bar, its own taskbar button), else as a browser tab.
+
+    Only one dashboard window exists at a time: opening it again closes the one that is open.
+    """
+    close_window()
+    profile = os.path.join(local_dir(), WINDOW_PROFILE)
     roots = [os.environ.get(k, "") for k in ("ProgramFiles(x86)", "ProgramFiles", "LOCALAPPDATA")]
     for rel in (r"Microsoft\Edge\Application\msedge.exe", r"Google\Chrome\Application\chrome.exe"):
         for root in roots:
             exe = os.path.join(root, rel) if root else ""
             if exe and os.path.isfile(exe):
                 try:
-                    subprocess.Popen([exe, "--app=" + url, "--window-size=1500,950"], close_fds=True,
-                                     stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                    subprocess.Popen([exe, "--app=" + url, "--user-data-dir=" + profile, "--no-first-run",
+                                      "--no-default-browser-check", "--hide-crash-restore-bubble", "--window-size=1500,950"],
+                                     close_fds=True, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                                      creationflags=0x00000008 | 0x00000200 if os.name == "nt" else 0)
                     return
                 except OSError:

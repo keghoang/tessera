@@ -104,24 +104,28 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
 .pop{position:absolute;z-index:20;width:min(460px,calc(100vw - 32px));filter:drop-shadow(0 12px 32px rgba(0,0,0,.35)) drop-shadow(0 0 1px rgba(0,0,0,.4))}
 .pop .arrow{position:absolute;width:16px;height:16px;transform:rotate(45deg);background:var(--raised);border-radius:3px}
 .pop.below .arrow{top:-7px}.pop.above .arrow{bottom:-7px}
-.panelbox{position:relative;border-radius:14px;background:var(--raised);padding:16px 18px 18px;max-height:min(560px,calc(100vh - 48px));overflow:auto}
-.panelbox .phead{display:flex;align-items:center;gap:8px;font-size:11px;line-height:16px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--sub)}
+.panelbox{position:relative;border-radius:14px;background:var(--raised);padding:14px 18px 16px}
+.panelbox .phead{display:flex;align-items:center;gap:8px;height:24px;font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--sub)}
 .panelbox .phead b{color:var(--text);font-weight:700}
 .panelbox .close{margin-left:auto;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;color:var(--sub);font-size:14px;letter-spacing:0}
 .panelbox .close:hover{background:var(--hover);color:var(--text)}
-.panelbox .now{margin-top:12px;padding:10px 12px;border-top:0;border-radius:10px;background:color-mix(in srgb,var(--c) 10%,transparent)}
+.panelbox .now{margin-top:10px;padding:10px 12px;border-top:0;border-radius:10px;background:color-mix(in srgb,var(--c) 10%,transparent)}
 .panelbox .now .doing{-webkit-line-clamp:unset}
-.panelbox .latest{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
-.panelbox .latest .v{font-size:20px;line-height:26px;font-weight:700;letter-spacing:-.02em}
-.panelbox .req{margin:8px 0 0;font-size:14px;line-height:21px;max-width:720px}
-.panelbox ul{margin:8px 0 0;padding-left:18px;color:var(--sub);max-width:720px}
-.panelbox li{margin-top:3px}
-.panelbox .none{margin-top:8px;color:var(--faint);font-size:12.5px}
-.panelbox .earlier{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
-.panelbox .earlier .lab{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--faint);margin-bottom:6px}
-.panelbox .earlier .e{display:flex;align-items:center;gap:10px;height:26px;font-size:13px}
-.panelbox .earlier .e .v{font-weight:600;min-width:44px}
-.panelbox .earlier .e .age{min-width:130px}
+/* every section is a label and its content; every version is the same row: number, who, when */
+.panelbox .sec{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.panelbox .lab{font-size:11px;line-height:16px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--faint);margin-bottom:6px}
+.panelbox .vrow{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px;height:28px;font-size:13px}
+.panelbox .vrow .v{font-weight:650;font-size:14px}
+.panelbox .vrow .who{display:flex;min-width:0}
+.panelbox .vrow .age{white-space:nowrap}
+/* the notes are the only part that scrolls */
+.panelbox .notes{max-height:min(190px,28vh);overflow-y:auto;padding-right:8px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--text) 22%,transparent) transparent}
+.panelbox .notes::-webkit-scrollbar{width:6px}
+.panelbox .notes::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--text) 22%,transparent);border-radius:3px}
+.panelbox .notes p{margin:0;font-size:13.5px;line-height:20px}
+.panelbox .notes ul{margin:6px 0 0;padding-left:18px;color:var(--sub);font-size:13px;line-height:19px}
+.panelbox .notes li{margin-top:3px}
+.panelbox .none{color:var(--faint);font-size:13px;line-height:20px}
 .nothing{padding:14px var(--inset);color:var(--faint)}
 /* every state moves in its own way, so a glance tells them apart:
    working = level bars, needs you = a tapping "!", on the farm = pixels filling in like render buckets, idle = a slow breath.
@@ -250,17 +254,21 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   const status = (l, tag) => `<div class="now" style="--c:var(--${l.state})"><div class="st">${ind(l.state)}${LABEL[l.state] || esc(l.state)}<span class="t num">${when(l.updated).replace(" ago", "")}</span>${tag || ""}</div><div class="doing">${esc(l.doing)}</div></div>`;
 
   // The detail of one task of one shot or asset. `at` is where its tile sits across the task columns (0 to 1).
+  // The detail of one task. Always the same sections in the same order: what is happening now (only if an agent
+  // is on it), the latest version, its notes, the earlier versions. Only the notes scroll.
+  const vrow = (x) => `<div class="vrow"><span class="v num">${vnum(x.version)}</span><span class="who">${actor(x.artist, x.made_by === "agent" ? x.agent || "agent" : "")}</span><span class="age num">${when(x.date)}</span></div>`;
   const detail = (item, task) => {
     const v = versionsOf(item).find((x) => x.task === task), l = liveOf(item).find((x) => x.task === task);
-    const latest = v ? `<div class="latest"><span class="v num">${vnum(v.version)}</span><span class="age num">${when(v.date)}</span>${actor(v.artist, agentOf(v))}</div>
-      ${v.request ? `<p class="req">${esc(v.request)}</p>` : ""}
-      ${v.changes && v.changes.length ? `<ul>${v.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}
-      ${v.has_trail ? "" : `<div class="none">No notes were recorded with this version.</div>`}` : `<div class="none">No version saved yet.</div>`;
-    const earlier = v && v.history && v.history.length ? `<div class="earlier"><div class="lab">Earlier versions</div>${v.history.map((h) =>
-      `<div class="e"><span class="v num">${vnum(h.version)}</span><span class="age num">${when(h.date)}</span>${actor(h.artist, h.made_by === "agent" ? h.agent || "agent" : "")}</div>`).join("")}</div>` : "";
+    const notes = v && (v.request || (v.changes && v.changes.length))
+      ? `${v.request ? `<p>${esc(v.request)}</p>` : ""}${v.changes && v.changes.length ? `<ul>${v.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}`
+      : `<div class="none">${v ? "No notes were recorded with this version." : "Nothing to show yet."}</div>`;
+    const earlier = v && v.history && v.history.length ? v.history.map(vrow).join("") : `<div class="none">None.</div>`;
     return `<span class="arrow"></span><div class="panelbox">
       <div class="phead"><b>${esc(item)}</b><span>${esc(task)}</span><button class="close" data-open="${esc(item + "|" + task)}" aria-label="Close">✕</button></div>
-      ${l ? status(l) : ""}${latest}${earlier}</div>`;
+      ${l ? status(l, actor(l.person, l.agent)) : ""}
+      <div class="sec"><div class="lab">Latest version</div>${v ? vrow(v) : `<div class="none">No version saved yet.</div>`}</div>
+      <div class="sec"><div class="lab">Notes</div><div class="notes">${notes}</div></div>
+      <div class="sec"><div class="lab">Earlier versions</div>${earlier}</div></div>`;
   };
 
   const block = (b) => {
