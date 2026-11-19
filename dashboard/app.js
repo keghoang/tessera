@@ -2,7 +2,12 @@
 // Reads data/<name>.json (default: sample). Address: index.html#<name>/<shots|assets>
 (async function () {
   const name = (location.hash || "#sample").slice(1).split("/")[0].replace(/[^A-Za-z0-9_-]/g, "") || "sample";
-  const data = await fetch("data/" + name + ".json").then((r) => r.json());
+  const load = () => fetch("data/" + name + ".json", { cache: "no-store" }).then((r) => r.json());
+  const data = await load();
+  // The job is read again every minute (main.py). Redraw when what it found has changed.
+  const print = (d) => JSON.stringify(Object.assign({}, d, { collected: 0, now: 0 }));
+  const shown = print(data);
+  if (!data.sample) setInterval(() => load().then((d) => { if (print(d) !== shown) location.reload(); }).catch(() => {}), 30000);
   const $ = (id) => document.getElementById(id);
   const el = (tag, cls, text) => {
     const e = document.createElement(tag);
