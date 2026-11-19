@@ -11,8 +11,8 @@ launching it again closes the one that is open and opens a fresh one.
 
 What it does: copies the page to a local folder, reads the job (folder listings, the newest
 work file per task, the .trail beside it, and the agents' status files), serves the page on
-this machine only, and opens it in the browser. The job is read again every minute and the
-page refreshes itself. Everything it writes is local: %LOCALAPPDATA%\\tessera\\dashboard.
+this machine only, and opens it in its own window. Agent status is watched every couple of
+seconds and pushed to the page as it changes; the whole job is read again once a minute. Everything it writes is local: %LOCALAPPDATA%\\tessera\\dashboard.
 It only reads the job. Python 3.7+, standard library only.
 """
 from __future__ import print_function
@@ -32,7 +32,9 @@ PAGE_FILES = ["index.html"]   # the page is one file: its styles and script are 
 PYTHON = r"c:\opt\rez\Scripts\python.exe"   # on every BUCK workstation; a host's own executable is not a Python
 WORK_ROOT = r"\\buck\work\current"
 PORT = 8765
-EVERY = 60            # seconds between reads of the job
+EVERY = 60            # seconds between full reads of the job (folders, versions, notes)
+WATCH = 2             # seconds between looks at the agents' status files, which is one small folder
+SERVER = "2"          # raised when the server changes, so an older one still running is replaced
 IDLE_EXIT = 45 * 60   # the server stops when no page has asked for anything this long
 NO_WINDOW = 0x08000000
 DETACHED = 0x00000008 | 0x00000200 | NO_WINDOW
@@ -114,9 +116,21 @@ def server_alive(state):
     try:
         from urllib.request import urlopen
         with urlopen("http://127.0.0.1:%d/alive.txt" % port, timeout=2) as r:
-            return r.read().strip() == b"tessera-dashboard"
+            return r.read().strip() == ("tessera-dashboard " + SERVER).encode()
     except Exception:
         return False
+
+
+def stop_old_server(state):
+    """A server from an earlier version of this tool may still be running: stop it so the current one can start."""
+    pid = state.get("pid")
+    if pid and os.name == "nt":
+        try:
+            subprocess.run(["taskkill", "/PID", str(pid), "/T", "/F"], timeout=10, stdin=subprocess.DEVNULL,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=NO_WINDOW)
+        except (OSError, subprocess.SubprocessError):
+            pass
+        time.sleep(0.5)
 
 
 def copy_page():
@@ -126,8 +140,6 @@ def copy_page():
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         shutil.copyfile(os.path.join(HERE, rel), dst)
     os.makedirs(os.path.join(out, "data"), exist_ok=True)
-    with open(os.path.join(out, "alive.txt"), "w") as fh:
-        fh.write("tessera-dashboard")
 
 
 def collect(job):
@@ -170,6 +182,7 @@ def open_job(job):
         jobs.append(job)
     alive = server_alive(state)
     if not alive:
+        stop_old_server(state)
         state = {"port": 0, "jobs": jobs}
     state["jobs"] = jobs
     write_state(state)
@@ -239,19 +252,114 @@ def show(url):
     webbrowser.open(url)
 
 
+def read_live(folder, job, seen):
+    """The agent sessions on this job, from the status files in the job's Agents/Activity folder.
+
+    One directory listing per call. A file is only opened again when its size or time changed, so on a
+    quiet job this costs one listing of a small folder. `seen` is the cache, kept between calls.
+    """
+    import datetime
+    out, here = [], {}
+    try:
+        entries = [e for e in os.scandir(folder) if e.name.endswith(".json")]
+    except OSError:
+        return out
+    now = datetime.datetime.now()
+    for e in entries:
+        try:
+            st = e.stat()
+        except OSError:
+            continue
+        stamp = (st.st_mtime_ns, st.st_size)
+        got = seen.get(e.name)
+        if not got or got[0] != stamp:
+            try:
+                with open(e.path, "r", encoding="utf-8") as fh:
+                    got = (stamp, json.load(fh))
+            except (OSError, ValueError):
+                continue
+        here[e.name] = got
+        s = got[1]
+        try:
+            updated = datetime.datetime.strptime(s["updated"], "%Y-%m-%d %H:%M")
+        except (KeyError, ValueError, TypeError):
+            continue
+        # an idle session leaves the page after half an hour; a working or waiting one stays until it is cleared
+        limit = 30 if s.get("state") == "idle" else 720
+        if s.get("job") != job or (now - updated).total_seconds() > limit * 60:
+            continue
+        out.append({k: s.get(k, "") for k in ("person", "agent", "shot", "task", "doing", "state", "since", "updated")})
+    seen.clear()
+    seen.update(here)
+    out.sort(key=lambda s: (s["shot"], s["task"], s["person"]))
+    return out
+
+
 def serve():
-    """The local server: this machine only, re-reads the listed jobs every minute, stops when unused."""
+    """The local server, on this machine only.
+
+    It looks at the agents' status files every couple of seconds and pushes a change to the open page the
+    moment it sees one. The full read of the job (folders, versions, notes) runs once a minute, and at once
+    when an agent's status changes, since that is when a version is likely to have been saved.
+    It stops by itself when no page has been open for a while.
+    """
+    import datetime
     import functools
+    import queue
     import socket
     from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+    from urllib.parse import parse_qs, urlparse
 
     last = [time.time()]
+    clients, lock = {}, threading.Lock()       # data name -> the queues of the pages showing it
+
+    def push(name, event, payload):
+        with lock:
+            waiting = list(clients.get(name, ()))
+        for q in waiting:
+            q.put((event, payload))
 
     class Handler(SimpleHTTPRequestHandler):
         def do_GET(self):
-            if not self.path.startswith("/alive.txt"):
-                last[0] = time.time()
+            if self.path.startswith("/alive.txt"):
+                body = ("tessera-dashboard " + SERVER).encode()
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            last[0] = time.time()
+            if self.path.startswith("/events"):
+                return self.events()
             SimpleHTTPRequestHandler.do_GET(self)
+
+        def events(self):
+            """One open page. The connection stays open and changes are written to it as they happen."""
+            name = (parse_qs(urlparse(self.path).query).get("job") or [""])[0]
+            q = queue.Queue()
+            with lock:
+                clients.setdefault(name, set()).add(q)
+            try:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream")
+                self.end_headers()
+                self.wfile.write(b": connected\n\n")
+                self.wfile.flush()
+                while True:
+                    try:
+                        event, payload = q.get(timeout=15)
+                        message = "event: %s\ndata: %s\n\n" % (event, json.dumps(payload))
+                    except queue.Empty:
+                        message = ": still here\n\n"
+                    self.wfile.write(message.encode("utf-8"))
+                    self.wfile.flush()
+                    last[0] = time.time()
+            except (OSError, ValueError):
+                pass
+            finally:
+                with lock:
+                    clients.get(name, set()).discard(q)
 
         def end_headers(self):
             self.send_header("Cache-Control", "no-store")
@@ -260,34 +368,66 @@ def serve():
         def log_message(self, *args):
             pass
 
+    class Server(ThreadingHTTPServer):
+        # On Windows the default lets a second server bind a port that is already in use, and the
+        # older one keeps getting the requests. Refuse instead, so the next free port is taken.
+        allow_reuse_address = False
+
     handler = functools.partial(Handler, directory=local_dir())
     server = None
     for port in [PORT] + list(range(PORT + 1, PORT + 20)):
         try:
-            server = ThreadingHTTPServer(("127.0.0.1", port), handler)
+            server = Server(("127.0.0.1", port), handler)
             break
         except (OSError, socket.error):
             continue
     if server is None:
         return
+    server.daemon_threads = True
     state = read_state()
     state["port"] = server.server_address[1]
     state["pid"] = os.getpid()
     write_state(state)
 
-    def refresh():
+    def data_file(job):
+        return os.path.join(local_dir(), "data", slug(job) + ".json")
+
+    def watch():
+        shown, seen, full_at = {}, {}, {}
         while True:
-            time.sleep(EVERY)
-            if time.time() - last[0] > IDLE_EXIT or read_state().get("pid") != os.getpid():
+            time.sleep(WATCH)
+            current = read_state()
+            if time.time() - last[0] > IDLE_EXIT or current.get("pid") != os.getpid():
                 server.shutdown()
                 return
-            for job in read_state().get("jobs", []):
+            for job in current.get("jobs", []):
+                name = slug(job)
                 try:
-                    collect(job)
+                    live = read_live(os.path.join(job_root(job), "Production", "Common", "Agents", "Activity"),
+                                     job, seen.setdefault(job, {}))
+                    if job in shown and live != shown[job]:
+                        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+                        push(name, "live", {"live": live, "now": now})
+                        try:          # keep the stored copy true too, for a page that opens right now
+                            with open(data_file(job), "r", encoding="utf-8") as fh:
+                                data = json.load(fh)
+                            data["live"], data["now"] = live, now
+                            data["people"] = sorted(set(data.get("people", [])) | {s["person"] for s in live})
+                            with open(data_file(job) + ".tmp", "w", encoding="utf-8") as fh:
+                                json.dump(data, fh)
+                            os.replace(data_file(job) + ".tmp", data_file(job))
+                        except (OSError, ValueError):
+                            pass
+                        full_at[job] = time.time() + 3      # a status change often means a version was just saved
+                    shown[job] = live
+                    if time.time() >= full_at.setdefault(job, time.time() + EVERY):
+                        full_at[job] = time.time() + EVERY
+                        if not collect(job):
+                            push(name, "data", {})
                 except Exception:
                     pass
 
-    threading.Thread(target=refresh, daemon=True).start()
+    threading.Thread(target=watch, daemon=True).start()
     server.serve_forever()
 
 

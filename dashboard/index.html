@@ -180,8 +180,8 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
 <script>
 (async function () {
   const name = (location.hash.slice(1).split("/")[0] || "sample").replace(/[^A-Za-z0-9_-]/g, "") || "sample";
-  const d = await fetch("data/" + name + ".json", { cache: "no-store" }).then((r) => r.json());
-  const now = new Date(d.now.replace(" ", "T"));
+  let d = await fetch("data/" + name + ".json", { cache: "no-store" }).then((r) => r.json());
+  let now = new Date(d.now.replace(" ", "T"));
   const age = (s) => {
     if (!s) return "";
     const m = Math.max(0, Math.round((now - new Date(s.replace(" ", "T"))) / 60000));
@@ -204,7 +204,7 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   const STATE = { waiting: "Need input", working: "Working", farm: "On the farm" };
 
   // One colour per person, never repeated within a job, on the part of the wheel the states don't use.
-  const people = d.people.map(low);
+  let people = d.people.map(low);
   const SLOT = [0, 4, 2, 6, 1, 5, 3, 7], TIER = [[72, 62], [58, 78], [62, 45]];
   const colourOf = (person) => {
     const i = people.indexOf(low(person));
@@ -225,13 +225,19 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
 
   const versionsOf = (item) => d.versions.filter((v) => v.shot === item).sort((a, b) => (b.date || "").localeCompare(a.date || ""));
   const liveOf = (item) => d.live.filter((l) => l.shot === item);
-  const count = {};
-  d.live.forEach((l) => (count[l.state] = (count[l.state] || 0) + 1));
-  const kinds = ["Shots", "Assets"].filter((k) => d.structure.some((b) => b.kind === k));
+  let count = {}, kinds = [], NCOL = 1;
   const blocksOf = (k) => d.structure.filter((b) => b.kind === k);
   const key = (b) => b.kind + "/" + b.name;
   const tasksOf = (b) => (b.tasks && b.tasks.length ? b.tasks : [...new Set(d.versions.filter((v) => b.items.includes(v.shot)).map((v) => v.task))]);
-  const NCOL = Math.max(1, ...d.structure.map((b) => tasksOf(b).length));
+  // everything worked out from the data, done again whenever new data arrives
+  const derive = () => {
+    people = d.people.map(low);
+    count = {};
+    d.live.forEach((l) => (count[l.state] = (count[l.state] || 0) + 1));
+    kinds = ["Shots", "Assets"].filter((k) => d.structure.some((b) => b.kind === k));
+    NCOL = Math.max(1, ...d.structure.map((b) => tasksOf(b).length));
+  };
+  derive();
   const NAMECOL = 190;
   let q = "", open = "", only = "", group = "", person = "";
   // what the viewer had open survives the page redrawing itself when the job changes
@@ -294,6 +300,7 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
       <div class="card"><div class="grid"><div class="head"><div>${b.kind === "Shots" ? "Shot" : "Asset"}</div>${tasks.map((t) => `<div>${esc(t)}</div>`).join("")}${pad}</div>${rows}</div></div>`;
   };
 
+  let drawn = "", popped = "";
   function draw(keepFocus) {
     const total = d.structure.reduce((n, b) => n + b.items.length, 0);
     const outline = `<button class="all" data-group="" aria-current="${group === ""}">Everything<span class="c num">${total}</span></button>` + kinds.map((k) =>
@@ -312,9 +319,10 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
     const app = document.getElementById("app");
     app.style.setProperty("--cols", `${NAMECOL}px repeat(${NCOL},minmax(0,1fr))`);
     app.style.setProperty("--namecol", NAMECOL + "px");
-    app.innerHTML = `<aside class="outline"><div class="proj">${esc(d.job).replace(/([_-])/g, "$1<wbr>")}</div><div class="read">Read ${esc(d.collected)}${d.sample ? " · sample data" : ""}</div>${outline}</aside>
+    const html = `<aside class="outline"><div class="proj">${esc(d.job).replace(/([_-])/g, "$1<wbr>")}</div>${d.sample ? `<div class="read">Sample data</div>` : ""}${outline}</aside>
       <main><div class="bar"><label class="search"><span class="faint">⌕</span><input id="q" placeholder="Search shots, assets, people" value="${esc(q)}"></label><span class="space"></span>${pills}</div>${who}
       ${body || `<div class="card nothing" style="margin-top:20px">Nothing matches.</div>`}</main>`;
+    if (html !== drawn) { app.innerHTML = drawn = html; } else keepFocus = false;
     if (keepFocus) { const i = document.getElementById("q"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
     place();
   }
@@ -322,11 +330,12 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   function place() {
     let pop = document.getElementById("pop");
     const tile = open && [...document.querySelectorAll("button.tile")].find((b) => b.dataset.open === open);
-    if (!tile) { if (pop) pop.remove(); if (open) open = ""; return; }
+    if (!tile) { if (pop) pop.remove(); popped = ""; if (open) open = ""; return; }
     if (!pop) { pop = document.createElement("div"); pop.id = "pop"; document.body.append(pop); }
     const cut = open.indexOf("|");
     pop.className = "pop below";
-    pop.innerHTML = detail(open.slice(0, cut), open.slice(cut + 1));
+    const inside = detail(open.slice(0, cut), open.slice(cut + 1));
+    if (inside !== popped || !pop.firstChild) pop.innerHTML = popped = inside;
     const r = tile.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, gap = 10;
     const below = r.bottom + gap + h <= window.innerHeight || r.top - gap - h < 0;
     const left = Math.max(16, Math.min(r.left, window.innerWidth - w - 16));
@@ -351,11 +360,24 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   document.addEventListener("input", (e) => { if (e.target.id === "q") { q = e.target.value.trim().toLowerCase(); draw(true); remember(); } });
   draw();
   try { window.scrollTo(0, JSON.parse(sessionStorage.getItem("view:" + name) || "{}").y || 0); } catch (e) {}
-  // The job is read again every minute (main.py). Redraw when what it found has changed.
-  const print = (x) => JSON.stringify(Object.assign({}, x, { collected: 0, now: 0 }));
-  const shownData = print(d);
-  if (!d.sample) setInterval(() => fetch("data/" + name + ".json", { cache: "no-store" }).then((r) => r.json())
-    .then((x) => { if (print(x) !== shownData && document.activeElement.id !== "q") { remember(); location.reload(); } }).catch(() => {}), 30000);
+  // Live updates. The server watches the job and sends what changed the moment it changes; the page redraws
+  // in place, so what you have open stays open. Nothing is polled from here.
+  let skew = now - Date.now();
+  const stamp = (s) => new Date(s.replace(" ", "T"));
+  const refresh = () => { now = new Date(Date.now() + skew); draw(document.activeElement && document.activeElement.id === "q"); };
+  if (!d.sample && window.EventSource) {
+    const feed = new EventSource("events?job=" + encodeURIComponent(name));
+    feed.addEventListener("live", (e) => {
+      const x = JSON.parse(e.data);
+      d.live = x.live;
+      x.live.forEach((l) => { if (!d.people.some((p) => low(p) === low(l.person))) d.people.push(l.person); });
+      skew = stamp(x.now) - Date.now();
+      derive(); refresh();
+    });
+    feed.addEventListener("data", () => fetch("data/" + name + ".json", { cache: "no-store" }).then((r) => r.json())
+      .then((x) => { d = x; skew = stamp(x.now) - Date.now(); derive(); refresh(); }).catch(() => {}));
+    setInterval(refresh, 30000);      // keeps "38 min ago" true between changes
+  }
 })();
 </script>
 </body>
