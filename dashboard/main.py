@@ -27,7 +27,7 @@ import threading
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PAGE_FILES = ["index.html", "app.css", "app.js", os.path.join("opendesigner", "build", "css", "tokens.css")]
+PAGE_FILES = ["index.html"]   # the page is one file: its styles and script are inside it
 PYTHON = r"c:\opt\rez\Scripts\python.exe"   # on every BUCK workstation; a host's own executable is not a Python
 WORK_ROOT = r"\\buck\work\current"
 PORT = 8765
