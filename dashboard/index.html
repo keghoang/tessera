@@ -228,13 +228,28 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   let count = {}, kinds = [], NCOL = 1;
   const blocksOf = (k) => d.structure.filter((b) => b.kind === k);
   const key = (b) => b.kind + "/" + b.name;
-  const tasksOf = (b) => (b.tasks && b.tasks.length ? b.tasks : [...new Set(d.versions.filter((v) => b.items.includes(v.shot)).map((v) => v.task))]);
+  // A session may name its task the long way ("Modeling") or the short way ("mdl"). The page uses the short one.
+  const SHORT = { animation: "anim", anim: "anim", layout: "lyt", lighting: "lgt", light: "lgt", comp: "comp", compositing: "comp", fx: "fx",
+    previs: "prev", modeling: "mdl", modelling: "mdl", model: "mdl", rigging: "rig", lookdev: "lkdv", "look dev": "lkdv", styleframe: "style" };
+  const taskName = (s) => SHORT[low(s).trim()] || low(s).trim();
+  // a group's columns: its own tasks, plus any task an agent is on that has no column yet
+  const tasksOf = (b) => {
+    const own = b.tasks && b.tasks.length ? b.tasks : [...new Set(d.versions.filter((v) => b.items.includes(v.shot)).map((v) => v.task))];
+    const extra = d.live.filter((l) => b.items.includes(l.shot) && !own.includes(l.task)).map((l) => l.task);
+    return [...own, ...new Set(extra)];
+  };
   // everything worked out from the data, done again whenever new data arrives
   const derive = () => {
     people = d.people.map(low);
+    d.live.forEach((l) => (l.task = taskName(l.task)));
+    // no session is ever dropped: one on a shot or asset that has no folder yet gets a group of its own
+    d.structure = d.structure.filter((b) => !b.made);
+    const known = new Set(d.structure.flatMap((b) => b.items));
+    const loose = [...new Set(d.live.filter((l) => !known.has(l.shot)).map((l) => l.shot))];
+    if (loose.length) d.structure.push({ kind: "Other", name: "No folder on the job yet", tasks: [], items: loose, made: true });
     count = {};
     d.live.forEach((l) => (count[l.state] = (count[l.state] || 0) + 1));
-    kinds = ["Shots", "Assets"].filter((k) => d.structure.some((b) => b.kind === k));
+    kinds = ["Shots", "Assets", "Other"].filter((k) => d.structure.some((b) => b.kind === k));
     NCOL = Math.max(1, ...d.structure.map((b) => tasksOf(b).length));
   };
   derive();
@@ -297,7 +312,7 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
       return `<div class="item"><div class="name">${esc(item)}</div>${cells}${pad}</div>`;
     }).join("");
     return `<div class="blockhead"><h3>${esc(b.name)}</h3><span class="faint num">${list.length}${list.length !== b.items.length ? " of " + b.items.length : ""}</span></div>
-      <div class="card"><div class="grid"><div class="head"><div>${b.kind === "Shots" ? "Shot" : "Asset"}</div>${tasks.map((t) => `<div>${esc(t)}</div>`).join("")}${pad}</div>${rows}</div></div>`;
+      <div class="card"><div class="grid"><div class="head"><div>${b.kind === "Shots" ? "Shot" : b.kind === "Assets" ? "Asset" : "Name"}</div>${tasks.map((t) => `<div>${esc(t)}</div>`).join("")}${pad}</div>${rows}</div></div>`;
   };
 
   let drawn = "", popped = "";

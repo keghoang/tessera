@@ -2,6 +2,10 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.16.1 (2026-11-19)
+
+- The status report now stores the short task name. An agent that reports the task as "Modeling" or "Lighting" is recorded as `mdl` or `lgt`, so the dashboard can place it in the right column. Before, such a session was counted but shown nowhere.
+
 ## 0.16.0 (2026-11-19)
 
 - Modeling now starts from a short design document (new skill `buck-modeling-design-doc`): references first, real dimensions, parts in build order, comparison cameras, budgets and an acceptance checklist. It decides instead of asking: at most three open questions, each with a default the agent carries on with.

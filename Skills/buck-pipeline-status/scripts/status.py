@@ -89,6 +89,17 @@ def line_problem(state, text):
     return None
 
 
+# The short task names used in file names. A session that gives the department's name gets the short one.
+TASKS = {"animation": "anim", "anim": "anim", "layout": "lyt", "lighting": "lgt", "light": "lgt", "comp": "comp",
+         "compositing": "comp", "fx": "fx", "previs": "prev", "modeling": "mdl", "modelling": "mdl", "model": "mdl",
+         "rigging": "rig", "lookdev": "lkdv", "look dev": "lkdv", "styleframe": "style"}
+
+
+def short_task(text):
+    key = text.strip().lower()
+    return TASKS.get(key, key)
+
+
 def check_line(state, text):
     problem = line_problem(state, text)
     if problem:
@@ -276,6 +287,8 @@ def main():
         return 2
     sid = session_id(args.session)
 
+    if args.cmd == "set":
+        args.task = short_task(args.task)
     if args.cmd in ("set", "state") and not check_line(args.state, args.doing):
         return 4
 
