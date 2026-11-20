@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.18.2 (2026-11-20)
+
+- Agent sessions on the same computer message each other freely; that is now written into the starter's "Free" tier. The announcements skill says it has nothing to do with that: announcements are only the team-wide notice posted from the dashboard, and an agent no longer brings them up when its artist only wants their own agents told.
+- Starter `2026-11-20.3`.
+
 ## 0.18.1 (2026-11-20)
 
 - Announcements are posted and taken down from the dashboard ("Announcements" button), not by an agent. The skill is now for reading and acting on them; an agent asked to announce something points the artist at the dashboard and offers the wording.

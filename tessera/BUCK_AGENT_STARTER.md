@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-20.2
+Version: 2026-11-20.3
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -141,6 +141,7 @@ An ask names the exact action, the exact files or paths, and what cannot be undo
 - Run an application headless in the job's Buck5 environment (`tessera:pipeline-launch`), after checking free RAM.
 - Submit test renders to the farm (`tessera:pipeline-farm`). Tell the artist before releasing the first farm job on a show.
 - Make preview images, viewport captures and comparisons.
+- Message the artist's other agent sessions on the same computer: tell them things, ask them things, hand work over. Team-wide announcements are a separate thing (`tessera:pipeline-announce`).
 
 ### What goes on the server
 
