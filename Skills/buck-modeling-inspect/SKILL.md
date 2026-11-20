@@ -17,7 +17,7 @@ Follow `BUCK_AGENT_STARTER.md`, the show's `SHOW.md` and `INDEX_modeling.md`. Th
 
 ## Who inspects
 
-- **In Claude Code with the plugin:** hand the inspection to the `model-inspector` sub-agent. It has only reading and capture tools, so it cannot change the scene. Give it the design document's path, where the model is (the open Blender session or the Maya file), the images that already exist, and what changed since the last inspection.
+- **In Claude Code with the plugin:** hand the inspection to the `model-inspector` sub-agent. Give it the design document's path, where the model is, the images that already exist, and what changed since the last inspection. "Where the model is" has to be exact, or it inspects the wrong scene: for your own Blender instance, the port and the full command it runs a read-only script with (from `SHOW.md`); for the single shared Blender, say "the shared Blender connection"; for Maya, the file path. Through the shared connection it has only reading and capture tools. Through a port it runs scripts, so reading only is a rule it follows, not a lock.
 - **Anywhere else:** run the inspection as its own pass, after the building is finished for the stage. Change nothing while inspecting. Write the verdict down before touching the scene again.
 
 Only one thing changes the scene at a time. Never build and inspect in parallel on the same scene.

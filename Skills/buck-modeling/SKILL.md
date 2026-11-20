@@ -15,12 +15,13 @@ Production quality: the standard of a delivered asset. A blockout is the first s
 
 ## Where to build: Blender, delivered as Maya
 
-- **New models are built in Blender**, through the Blender connection (tools named `mcp__Blender__*`), in a live Blender session so you can look at the result after every change.
+- **New models are built in Blender**, in a live Blender session of your own, so you can look at the result after every change.
+- **One Blender per agent session.** The Blender connection's scene tools (`mcp__Blender__*`) all reach the one Blender on port 9876, whichever session calls them, so two sessions using them work in each other's scene. If `SHOW.md` gives a way to start your own Blender instance, use it: start yours, note its port, do everything through that port, and stop it when the task is done. Use the `mcp__Blender__*` scene tools only when `SHOW.md` gives no other way and no other session on this computer is using Blender. The documentation tools (`search_api_docs`, `get_python_api_docs`, `search_manual_docs`) are fine either way.
 - **Models are delivered as Maya files.** When a Blender-built model is ready to show or hand on, move it with `buck-modeling-to-maya`. The artist reviews captures of the Maya file.
 - **The Blender file stays local**, in the scratch folder as `<asset>_mdl_v###.blend`, numbered like the Maya version it produces. It never goes on the server.
 - **An asset that already exists in Maya stays in Maya**: one that has a Maya work file, or that shots, a rig or a lookdev file reference. Don't round-trip it through Blender.
 
-Use the Blender connection whenever it is in the session. If the tools are missing, or Blender isn't open and connected, say so in one line and tell the artist what is needed (`buck-start` checks it). Build in Maya instead only if the artist says to.
+If you can reach no Blender at all (no instance of your own and no connection), say so in one line and tell the artist what is needed (`buck-start` checks it). Build in Maya instead only if the artist says to.
 
 ## Working copy and versions
 
@@ -89,7 +90,7 @@ If the request fits none of these, do it under the starter's rules and say that 
 
 Never show the first thing you made. Every time you build or change something, run this loop before the artist sees it:
 
-1. **Look.** While building in Blender, take a viewport screenshot through the connection after each change. For a Maya file, capture the fixed review views with `maya_review_capture.py` in `buck-pipeline-launch`, from the local working scene. Open the images. Judge images, never parameters or a clean log.
+1. **Look.** While building in Blender, capture the viewport of your own Blender after each change. For a Maya file, capture the fixed review views with `maya_review_capture.py` in `buck-pipeline-launch`, from the local working scene. Open the images. Judge images, never parameters or a clean log.
 2. **Compare.** Put it beside the target (the design reference, matched view for view) in the same view and the same colour view. For a model with a design document, that is the comparison sheet from each comparison camera.
 3. **Inspect.** Have it inspected with `buck-modeling-inspect`: measured checks by script first, then the images, by an inspector that cannot change the scene. You don't pass your own work.
 4. **List the gaps.** The inspection's failed and not-confirmed items, plus everything that falls short of the bar above, most visible first.

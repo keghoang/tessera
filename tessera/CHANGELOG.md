@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.18.3 (2026-11-20)
+
+- One Blender per agent session. The modeling skill now says the Blender connection's scene tools all reach the single Blender on port 9876, and to work in your own instance, started the way `SHOW.md` says, whenever there is one.
+- The model inspector is told exactly where the model is (the builder's port and command, the shared connection, or a Maya file) and no longer falls back to the shared Blender, where it could inspect another agent's scene.
+
 ## 0.18.2 (2026-11-20)
 
 - Agent sessions on the same computer message each other freely; that is now written into the starter's "Free" tier. The announcements skill says it has nothing to do with that: announcements are only the team-wide notice posted from the dashboard, and an agent no longer brings them up when its artist only wants their own agents told.
