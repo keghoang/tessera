@@ -2,6 +2,10 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.16.3 (2026-11-20)
+
+- A session that ends, or moves to another task, no longer removes its status. Its last line stays on the task as idle, so the dashboard shows who touched a task last and what they did, however long ago. A new report on the same task by the same person replaces it.
+
 ## 0.16.2 (2026-11-19)
 
 - An agent no longer brings up saving to the server. It doesn't ask, offer, suggest or remind, and doesn't list it as a next step; the line "saved locally, say save to version it up" is gone. A version goes on the server only when the artist raises it first.

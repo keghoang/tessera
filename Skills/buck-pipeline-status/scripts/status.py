@@ -169,6 +169,35 @@ def remove(path):
         pass
 
 
+def leave(path):
+    """The session is done with this task: keep its last line, as idle, so the dashboard still shows who touched it last."""
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+        data["state"], data["ended"] = "idle", True
+        write_json(path, data)
+    except (OSError, ValueError):
+        pass
+
+
+def tidy(folder, keep, person, host, job, shot, task):
+    """Remove this person's own ended files for the same task on this machine: the newest report replaces them."""
+    start = "_".join(slug(x) for x in (person, host)) + "_"
+    try:
+        names = [n for n in os.listdir(folder) if n.startswith(start) and n.endswith(".json") and n != keep]
+    except OSError:
+        return
+    for n in names:
+        p = os.path.join(folder, n)
+        try:
+            with open(p, "r", encoding="utf-8") as fh:
+                d = json.load(fh)
+        except (OSError, ValueError):
+            continue
+        if d.get("ended") and (d.get("job"), d.get("shot"), d.get("task")) == (job, shot, task):
+            remove(p)
+
+
 def activity_dir(args):
     """The job's activity folder. Created if the job's Agents folder exists; never anything above it."""
     if args.dir:
@@ -249,7 +278,7 @@ def hook(event):
     elif event == "end":
         path = read_pointer(sid)
         if path:
-            remove(path)
+            leave(path)
         remove(pointer_path(sid))
 
 
@@ -302,7 +331,7 @@ def main():
     if args.cmd == "clear":
         path = read_pointer(sid)
         if path:
-            remove(path)
+            leave(path)
         remove(pointer_path(sid))
         print("cleared")
         return 0
@@ -325,11 +354,12 @@ def main():
     except (OSError, ValueError):
         pass
     if previous and os.path.normcase(os.path.normpath(previous)) != os.path.normcase(os.path.normpath(path)):
-        remove(previous)
+        leave(previous)
     write_json(path, {"person": args.person, "machine": host, "agent": args.agent, "job": args.job,
                       "shot": args.shot, "task": args.task, "doing": args.doing[:160], "state": args.state,
                       "since": since, "updated": now()})
     write_pointer(sid, path)
+    tidy(folder, name, args.person, host, args.job, args.shot, args.task)
     print("reported", name)
     return 0
 

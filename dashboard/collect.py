@@ -154,27 +154,49 @@ def scan(root, kind, tree):
     return versions
 
 
+def settle(sessions, now, stale_idle=30, stale_active=720):
+    """What the page shows for each task, from every session file of the job.
+
+    A session that is current is shown as it is. One that ended, or stopped reporting long ago, is not
+    dropped: it stays as the task's last state, idle, with its last line and time. A task keeps only
+    the newest of those, and only while no current session is on it.
+    """
+    out, last = [], {}
+    for s in sessions:
+        try:
+            seen = datetime.datetime.strptime(s["updated"], "%Y-%m-%d %H:%M")
+        except (KeyError, ValueError, TypeError):
+            continue
+        row = {k: s.get(k, "") for k in ("person", "agent", "shot", "task", "doing", "state", "since", "updated")}
+        limit = stale_idle if row["state"] == "idle" else stale_active
+        if s.get("ended") or (now - seen).total_seconds() > limit * 60:
+            row["state"], row["past"] = "idle", True
+            key = (row["shot"], str(row["task"]).lower())
+            if key not in last or row["updated"] > last[key]["updated"]:
+                last[key] = row
+        else:
+            out.append(row)
+    on = {(r["shot"], str(r["task"]).lower()) for r in out}
+    out += [r for k, r in last.items() if k not in on]
+    out.sort(key=lambda r: (r["shot"], r["task"], r["person"]))
+    return out
+
+
 def live_sessions(folder, job, stale_idle, stale_active):
-    out = []
+    found = []
     if not folder or not os.path.isdir(folder):
-        return out
-    now = datetime.datetime.now()
+        return found
     for e in os.scandir(folder):
         if not e.name.endswith(".json"):
             continue
         try:
             with open(e.path, "r", encoding="utf-8") as fh:
                 s = json.load(fh)
-            seen = datetime.datetime.strptime(s["updated"], "%Y-%m-%d %H:%M")
-        except (OSError, ValueError, KeyError):
+        except (OSError, ValueError):
             continue
-        # an idle session leaves the page soon; a working or waiting one stays until it is cleared,
-        # and the long limit only catches sessions that died without clearing
-        limit = stale_idle if s.get("state") == "idle" else stale_active
-        if s.get("job") != job or (now - seen).total_seconds() > limit * 60:
-            continue
-        out.append({k: s.get(k, "") for k in ("person", "agent", "shot", "task", "doing", "state", "since", "updated")})
-    return out
+        if isinstance(s, dict) and s.get("job") == job:
+            found.append(s)
+    return settle(found, datetime.datetime.now(), stale_idle, stale_active)
 
 
 def main():

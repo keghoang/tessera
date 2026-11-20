@@ -25,7 +25,7 @@ In Claude Code with the plugin, every message from the artist comes with a note 
 | `status.py state farm --doing "<what is rendering>"` | You submitted a farm job and are waiting for it. |
 | `status.py state working --doing "<what you are doing now>"` | You carry on after a wait. |
 | `status.py state idle --doing "<the outcome>"` | The task is finished and the session stays open. |
-| `status.py clear` | The artist moves you off the job, or the session is ending. |
+| `status.py clear` | The artist moves you off the job, or the session is ending. The last line stays on the task, as idle. |
 
 - `--task` is the short task name used in file names: `lgt`, `comp`, `anim`, `lyt`, `mdl`, `rig`, `lkdv`, `fx`.
 - `--shot` is the shot or asset folder name, spelled as on disk.
@@ -61,7 +61,7 @@ One small JSON file per session in `<job>/Production/Common/Agents/Activity/`: p
 
 - Never put client-sensitive detail, a name the artist didn't give, or anything from the chat in `--doing` beyond what is being done to the shot.
 - If the script says `NOT ASSESSED` (the job has no `Agents` folder, or the server is out of reach), carry on with the task. Reporting never blocks work.
-- In Claude Code with the plugin installed, the state moves by itself: a new message from the artist sets `working`, the end of a turn sets `idle`, a permission prompt sets `waiting`, closing the session clears it. You still call `set` as the first step of every task, `state working` with a new line as the first step of every later request, `state waiting` or `state farm` when that is the truth at the end of your turn, and `state idle` with the outcome line when the task is finished: the end-of-turn hook changes the state but cannot write the outcome. In any other agent, set every state yourself.
+- In Claude Code with the plugin installed, the state moves by itself: a new message from the artist sets `working`, the end of a turn sets `idle`, a permission prompt sets `waiting`, closing the session leaves its last line on the task as idle, so the dashboard still shows who touched it last. You still call `set` as the first step of every task, `state working` with a new line as the first step of every later request, `state waiting` or `state farm` when that is the truth at the end of your turn, and `state idle` with the outcome line when the task is finished: the end-of-turn hook changes the state but cannot write the outcome. In any other agent, set every state yourself.
 
 ## Where the scripts are
 

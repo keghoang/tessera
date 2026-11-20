@@ -34,7 +34,7 @@ WORK_ROOT = r"\\buck\work\current"
 PORT = 8765
 EVERY = 60            # seconds between full reads of the job (folders, versions, notes)
 WATCH = 2             # seconds between looks at the agents' status files, which is one small folder
-SERVER = "2"          # raised when the server changes, so an older one still running is replaced
+SERVER = "3"          # raised when the server changes, so an older one still running is replaced
 IDLE_EXIT = 45 * 60   # the server stops when no page has asked for anything this long
 NO_WINDOW = 0x08000000
 DETACHED = 0x00000008 | 0x00000200 | NO_WINDOW
@@ -259,12 +259,13 @@ def read_live(folder, job, seen):
     quiet job this costs one listing of a small folder. `seen` is the cache, kept between calls.
     """
     import datetime
-    out, here = [], {}
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from collect import settle
+    found, here = [], {}
     try:
         entries = [e for e in os.scandir(folder) if e.name.endswith(".json")]
     except OSError:
-        return out
-    now = datetime.datetime.now()
+        return found
     for e in entries:
         try:
             st = e.stat()
@@ -279,20 +280,12 @@ def read_live(folder, job, seen):
             except (OSError, ValueError):
                 continue
         here[e.name] = got
-        s = got[1]
-        try:
-            updated = datetime.datetime.strptime(s["updated"], "%Y-%m-%d %H:%M")
-        except (KeyError, ValueError, TypeError):
-            continue
-        # an idle session leaves the page after half an hour; a working or waiting one stays until it is cleared
-        limit = 30 if s.get("state") == "idle" else 720
-        if s.get("job") != job or (now - updated).total_seconds() > limit * 60:
-            continue
-        out.append({k: s.get(k, "") for k in ("person", "agent", "shot", "task", "doing", "state", "since", "updated")})
+        if isinstance(got[1], dict) and got[1].get("job") == job:
+            found.append(got[1])
     seen.clear()
     seen.update(here)
-    out.sort(key=lambda s: (s["shot"], s["task"], s["person"]))
-    return out
+    # nothing is dropped for being old: an ended or silent session stays as its task's last state, idle
+    return settle(found, datetime.datetime.now())
 
 
 def serve():
