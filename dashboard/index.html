@@ -114,12 +114,18 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
 /* every section is a label and its content; every version is the same row: number, who, when */
 .panelbox .sec{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
 .panelbox .lab{font-size:11px;line-height:16px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--faint);margin-bottom:6px}
-.panelbox .vrow{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:10px;height:28px;font-size:13px}
+/* a version is a row you can click: the one that is open shows its notes under it, the others stay closed */
+.panelbox .vrow{display:grid;grid-template-columns:48px minmax(0,1fr) auto 10px;align-items:center;gap:10px;height:30px;font-size:13px;width:calc(100% + 16px);margin:0 -8px;padding:0 8px;border-radius:7px;text-align:left;color:inherit}
+.panelbox .vrow:hover{background:var(--hover)}
+.panelbox .vrow.on{background:var(--hover)}
+.panelbox .vrow .chev{width:6px;height:6px;border-right:1.5px solid var(--faint);border-bottom:1.5px solid var(--faint);transform:rotate(-45deg);transition:transform .15s}
+.panelbox .vrow.on .chev{transform:rotate(45deg) translate(-1px,-1px)}
+.panelbox .vrow .tag{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;color:var(--faint);margin-left:8px;align-self:center}
 .panelbox .vrow .v{font-weight:650;font-size:14px}
 .panelbox .vrow .who{display:flex;min-width:0}
 .panelbox .vrow .age{white-space:nowrap}
 /* the notes are the only part that scrolls */
-.panelbox .notes{max-height:min(190px,28vh);overflow-y:auto;padding-right:8px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--text) 22%,transparent) transparent}
+.panelbox .notes{margin:6px 0 8px;padding-left:2px;max-height:min(190px,28vh);overflow-y:auto;padding-right:8px;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--text) 22%,transparent) transparent}
 .panelbox .notes::-webkit-scrollbar{width:6px}
 .panelbox .notes::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--text) 22%,transparent);border-radius:3px}
 .panelbox .notes p{margin:0;font-size:13.5px;line-height:20px}
@@ -254,7 +260,7 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   };
   derive();
   const NAMECOL = 190;
-  let q = "", open = "", only = "", group = "", person = "";
+  let q = "", open = "", only = "", group = "", person = "", ver = "";
   // what the viewer had open survives the page redrawing itself when the job changes
   try { const s = JSON.parse(sessionStorage.getItem("view:" + name) || "{}"); q = s.q || ""; open = s.open || ""; only = s.only || ""; group = s.group || ""; person = s.person || ""; } catch (e) {}
   // index.html#<job>/<item>|<task> opens that task's detail
@@ -274,22 +280,21 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
   const ind = (s) => `<span class="ind ${s}">${s === "working" ? "<s></s><s></s><s></s>" : s === "waiting" ? "!" : s === "farm" ? "<i></i>".repeat(9) : ""}</span>`;
   const status = (l, tag) => `<div class="now" style="--c:var(--${l.state})"><div class="st">${ind(l.state)}${LABEL[l.state] || esc(l.state)}<span class="t num">${when(l.updated).replace(" ago", "")}</span>${tag || ""}</div><div class="doing">${esc(l.doing)}</div></div>`;
 
-  // The detail of one task of one shot or asset. `at` is where its tile sits across the task columns (0 to 1).
-  // The detail of one task. Always the same sections in the same order: what is happening now (only if an agent
-  // is on it), the latest version, its notes, the earlier versions. Only the notes scroll.
-  const vrow = (x) => `<div class="vrow"><span class="v num">${vnum(x.version)}</span><span class="who">${actor(x.artist, x.made_by === "agent" ? x.agent || "agent" : "")}</span><span class="age num">${when(x.date)}</span></div>`;
+  // The detail of one task: what is happening now (only if an agent is on it), then every version, newest first.
+  // One version is open at a time and shows its notes; clicking another opens that one and closes the rest.
+  // Only the notes scroll.
+  const notesOf = (x) => x.request || (x.changes && x.changes.length)
+    ? `${x.request ? `<p>${esc(x.request)}</p>` : ""}${x.changes && x.changes.length ? `<ul>${x.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}`
+    : `<div class="none">No notes were recorded with this version.</div>`;
+  const vrow = (x, on, latest) => `<button class="vrow${on ? " on" : ""}" data-ver="${esc(x.version)}" aria-expanded="${on}"><span class="v num">${vnum(x.version)}</span><span class="who">${actor(x.artist, x.made_by === "agent" ? x.agent || "agent" : "")}${latest ? `<span class="tag">Latest</span>` : ""}</span><span class="age num">${when(x.date)}</span><span class="chev"></span></button>${on ? `<div class="notes">${notesOf(x)}</div>` : ""}`;
   const detail = (item, task) => {
     const v = versionsOf(item).find((x) => x.task === task), l = liveOf(item).find((x) => x.task === task);
-    const notes = v && (v.request || (v.changes && v.changes.length))
-      ? `${v.request ? `<p>${esc(v.request)}</p>` : ""}${v.changes && v.changes.length ? `<ul>${v.changes.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}`
-      : `<div class="none">${v ? "No notes were recorded with this version." : "Nothing to show yet."}</div>`;
-    const earlier = v && v.history && v.history.length ? v.history.map(vrow).join("") : `<div class="none">None.</div>`;
+    const all = v ? [v, ...(v.history || [])] : [];
+    const shown = ver === "none" ? "" : all.some((x) => String(x.version) === ver) ? ver : v ? String(v.version) : "";
     return `<span class="arrow"></span><div class="panelbox">
       <div class="phead"><b>${esc(item)}</b><span>${esc(task)}</span><button class="close" data-open="${esc(item + "|" + task)}" aria-label="Close">✕</button></div>
       ${l ? status(l, actor(l.person, l.agent)) : ""}
-      <div class="sec"><div class="lab">Latest version</div>${v ? vrow(v) : `<div class="none">No version saved yet.</div>`}</div>
-      <div class="sec"><div class="lab">Notes</div><div class="notes">${notes}</div></div>
-      <div class="sec"><div class="lab">Earlier versions</div>${earlier}</div></div>`;
+      <div class="sec"><div class="lab">Versions</div>${all.length ? all.map((x, i) => vrow(x, String(x.version) === shown, i === 0)).join("") : `<div class="none">No version saved yet.</div>`}</div></div>`;
   };
 
   const block = (b) => {
@@ -368,7 +373,8 @@ button.tile[aria-expanded=true]{box-shadow:inset 0 0 0 2px var(--accent)}
     if ("only" in b.dataset) only = only === b.dataset.only ? "" : b.dataset.only;
     else if ("group" in b.dataset) { group = b.dataset.group; window.scrollTo({ top: 0 }); }
     else if ("person" in b.dataset) person = b.dataset.person;
-    else if ("open" in b.dataset) open = open === b.dataset.open ? "" : b.dataset.open;
+    else if ("open" in b.dataset) { open = open === b.dataset.open ? "" : b.dataset.open; ver = ""; }
+    else if ("ver" in b.dataset) ver = b.classList.contains("on") ? "none" : b.dataset.ver;
     else return;
     draw(); remember();
   });
