@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.16.2 (2026-11-19)
+
+- An agent no longer brings up saving to the server. It doesn't ask, offer, suggest or remind, and doesn't list it as a next step; the line "saved locally, say save to version it up" is gone. A version goes on the server only when the artist raises it first.
+- Starter `2026-11-19.1`.
+
 ## 0.16.1 (2026-11-19)
 
 - The status report now stores the short task name. An agent that reports the task as "Modeling" or "Lighting" is recorded as `mdl` or `lgt`, so the dashboard can place it in the right column. Before, such a session was counted but shown nowhere.

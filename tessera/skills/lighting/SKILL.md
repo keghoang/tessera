@@ -16,7 +16,7 @@ Production quality: the standard of a delivered shot, at every stage. A first pa
 
 ## Working copy and versions
 
-Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Don't ask whether to save and don't stop for it: show the result, add one line that it is saved locally, and carry on. Refinement rounds and test renders never make a version; farm tests run from a test scene in the artist's own folder (the starter's "Farm test scenes").
+Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Never bring up saving to the server: don't ask, offer, suggest or remind, and don't list it as a next step. The artist raises it first. Show the result and carry on. Refinement rounds and test renders never make a version; farm tests run from a test scene in the artist's own folder (the starter's "Farm test scenes").
 
 ## 0. Report what you're on, first
 

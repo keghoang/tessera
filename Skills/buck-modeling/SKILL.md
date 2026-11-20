@@ -24,7 +24,7 @@ Use the Blender connection whenever it is in the session. If the tools are missi
 
 ## Working copy and versions
 
-The Blender file and the Maya scene it is moved into are local working files. Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Don't ask whether to save and don't stop for it: show the result, add one line that it is saved locally, and carry on.
+The Blender file and the Maya scene it is moved into are local working files. Save locally as you see fit: working copies in the scratch folder need no permission. The server gets a version only when the artist says "save" or "version up", or asks for something that needs one. Never bring up saving to the server: don't ask, offer, suggest or remind, and don't list it as a next step. The artist raises it first. Show the result and carry on.
 
 ## 0. Report what you're on, first
 

@@ -117,4 +117,4 @@ Scale validation to the receiving workflow:
 - **Referenced revisions:** Test in a consuming scene before claiming compatibility with existing rigging, animation, or lookdev.
 
 Every saved version gets a `.trail` identifying the workfile, source version, changes, checks performed, and unresolved issues. Preserve the agreed ownership of model, rig, and lookdev changes.
-- A version goes on the server only when the artist says "save" or "version up" (the starter's versioning rule). Where a skill says "save the next version", that is when it happens; until then save locally as you see fit, and don't ask or stop for it.
+- A version goes on the server only when the artist says "save" or "version up" (the starter's versioning rule). Where a skill says "save the next version", that is when it happens; until then save locally as you see fit, and never ask, offer or suggest a server save.

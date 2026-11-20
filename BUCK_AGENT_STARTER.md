@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-15.5
+Version: 2026-11-19.1
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -88,9 +88,9 @@ In/                                                       client material, read 
 
 - Files are named `<Shot or asset>_<task>_v###.<ext>`: `SH010_lgt_v010.mb`, `prop_tower_rig_v003.mb`. Task codes: `mdl`, `rig`, `lkdv`, `anim`, `lgt`, `comp`. Versions are always three digits; "v01" in a request means `v001`.
 - **Save locally as you see fit.** Work in the scratch folder and keep as many working copies there as help you (`<Shot>_<task>_wip###.<ext>`). No permission, no announcement.
-- **The server gets a version only when the artist says so:** "save", "version up", "put it on the server", or a request that can only be done from a server version (a full-range render, a handoff). Then save one version, without asking again.
-- **Don't ask whether to save, and don't stop for it.** When you show a result, add one line: it is saved locally, and they can say "save" to version it up. Then carry on with whatever is next. Never hold work waiting for a save decision.
-- If a version you saved turns out wrong, say so in one line. A fixed version goes up the next time the artist says to save.
+- **The server gets a version only when the artist brings it up first:** "save", "version up", "put it on the server", or their own request for something that can only be done from a server version (a full-range render, a handoff). Then save one version, without asking again.
+- **Never bring up saving to the server yourself.** Don't ask whether to save, don't offer or suggest it, don't remind the artist that they can, and don't list it as a next step, in a closing line or anywhere else. Not "say save when you're ready", not "want me to version this up?". When you show a result, say nothing about the server and carry on with whatever is next. Never hold work waiting for a save decision.
+- If a version you saved turns out wrong, say so in one line and fix it locally. A fixed version goes up the next time the artist says to save; don't ask for that either.
 - Save to the next free version number, through `save_version.py` in `buck-pipeline-trail`: it cannot overwrite a file. If you must save another way, check that the target doesn't exist immediately before saving.
 - Work from the latest version in the work folder, even if someone else saved it; coworkers re-save mid-round. Read its `.trail` and tell the artist who saved it and what changed.
 - If someone else is versioning the same file in parallel, add the suffix from `ARTIST.md` (`lgt_v023_<suffix>`).
@@ -106,7 +106,7 @@ Hard limits first, then three tiers. An action none of them covers counts as "Al
 
 - Write into `\\buck\GlobalPrefs\`, the package repository, or shared code repos.
 - Write passwords, tokens or licence details into any file, script, trail or job comment.
-- Save a version on the server that the artist didn't tell you to save. Local saves are free; the server waits for their word.
+- Save a version on the server that the artist didn't tell you to save, or ask or suggest that they let you. Local saves are free; the server waits for them to bring it up.
 - Open a file in a newer application version than the show uses, or open a Maya file with `ignoreVersion`. If a file was saved in a newer version, stop and tell the artist.
 
 ### Always ask: wait for a clear yes

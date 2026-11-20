@@ -52,7 +52,7 @@ A failed check is fixed in Blender and exported again, not patched in Maya, so t
 
 1. Capture the fixed review views from the local Maya scene (`maya_review_capture.py` in `tessera:pipeline-launch`). The artist reviews the Maya captures, not Blender screenshots.
 2. Compare the Maya captures with the same views in Blender. A visible difference is a failed check.
-3. Show the captures and say in one line that the Maya scene is saved locally. When the artist says to save, save the next free `<asset>_mdl_v###.mb` in the asset's `Modeling/maya/work/` folder with `save_version.py` (`tessera:pipeline-trail`), and write its `.trail`: name the Blender file it came from, the checks and their results.
+3. Show the captures. Don't mention saving to the server. If the artist says to save, save the next free `<asset>_mdl_v###.mb` in the asset's `Modeling/maya/work/` folder with `save_version.py` (`tessera:pipeline-trail`), and write its `.trail`: name the Blender file it came from, the checks and their results.
 
 ## Completion and boundaries
 
