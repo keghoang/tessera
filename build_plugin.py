@@ -96,7 +96,7 @@ def main():
             text = rename(text)
             text = re.sub(r"(?m)^name: .*$", "name: " + name, text, count=1)
         text = re.sub(r"(?m)^description: .*$", lambda m: split_description(neutral(m.group(0)), src.name), text, count=1)
-        if re.match(r"(buck-)?(lighting|modeling)-.+", src.name):
+        if re.match(r"(buck-)?((lighting|modeling)-.+|pipeline-announce$)", src.name):
             # a procedure behind a front door: the agent still loads it, the artist's menu doesn't list it
             text = re.sub(r"(?m)^when_to_use: .*$", lambda m: m.group(0) + "\nuser-invocable: false", text, count=1)
             hidden += 1

@@ -34,7 +34,7 @@ WORK_ROOT = r"\\buck\work\current"
 PORT = 8765
 EVERY = 60            # seconds between full reads of the job (folders, versions, notes)
 WATCH = 2             # seconds between looks at the agents' status files, which is one small folder
-SERVER = "4"          # raised when the server changes, so an older one still running is replaced
+SERVER = "5"          # raised when the server changes, so an older one still running is replaced
 IDLE_EXIT = 45 * 60   # the server stops when no page has asked for anything this long
 NO_WINDOW = 0x08000000
 DETACHED = 0x00000008 | 0x00000200 | NO_WINDOW
@@ -252,6 +252,83 @@ def show(url):
     webbrowser.open(url)
 
 
+# ---------------------------------------------------------------- announcements
+# One small text file per announcement in the job's Agents/Announcements folder: header lines, a blank
+# line, the text. Every agent session on the job is shown each one once (the plugin does that part).
+# They are posted and taken down from this dashboard.
+
+ANN_STAMP = "%Y-%m-%d %H:%M"
+
+
+def ann_folder(job, create=False):
+    agents = os.path.join(job_root(job), "Production", "Common", "Agents")
+    if not os.path.isdir(agents):
+        return None
+    folder = os.path.join(agents, "Announcements")
+    if not os.path.isdir(folder):
+        if not create:
+            return None
+        os.mkdir(folder)
+    return folder
+
+
+def ann_list(job):
+    import datetime
+    folder, out, now = ann_folder(job), [], datetime.datetime.now()
+    if not folder:
+        return out
+    for name in sorted(os.listdir(folder), reverse=True):
+        if not name.endswith(".md"):
+            continue
+        try:
+            with open(os.path.join(folder, name), "r", encoding="utf-8") as fh:
+                head, _, text = fh.read().lstrip("\ufeff").partition("\n\n")
+        except OSError:
+            continue
+        item = {"name": name, "text": " ".join(text.split())}
+        for line in head.splitlines():
+            key, _, value = line.partition(":")
+            item[key.strip().lower()] = value.strip()
+        try:
+            if datetime.datetime.strptime(item.get("until", ""), ANN_STAMP) <= now or not item["text"]:
+                continue
+        except ValueError:
+            continue
+        out.append(item)
+    return out
+
+
+def ann_post(job, text, days):
+    import datetime
+    import getpass
+    text = " ".join(str(text).split())
+    if not 12 <= len(text) <= 600:
+        return "An announcement is one to three plain sentences (12 to 600 characters)."
+    days = max(1, min(int(days or 14), 90))
+    folder = ann_folder(job, create=True)
+    if not folder:
+        return "This job has no Agents folder, or the server is out of reach."
+    now, person = datetime.datetime.now(), getpass.getuser().lower()
+    path = os.path.join(folder, "%s_%s.md" % (now.strftime("%Y%m%d-%H%M%S"), re.sub(r"[^a-z0-9]+", "-", person).strip("-")))
+    if os.path.exists(path):
+        return "Try again in a second."
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("from: %s\nposted: %s\nuntil: %s\n\n%s\n" % (
+            person, now.strftime(ANN_STAMP), (now + datetime.timedelta(days=days)).strftime(ANN_STAMP), text))
+    return ""
+
+
+def ann_remove(job, name):
+    """Take down one announcement. Only your own, and only a file of the announcements folder."""
+    import getpass
+    folder = ann_folder(job)
+    mine = [a for a in ann_list(job) if a["name"] == name and a.get("from", "").lower() == getpass.getuser().lower()]
+    if not folder or os.path.basename(name) != name or not mine:
+        return "Only the person who posted an announcement can take it down."
+    os.remove(os.path.join(folder, name))
+    return ""
+
+
 def read_live(folder, job, seen):
     """The agent sessions on this job, from the status files in the job's Agents/Activity folder.
 
@@ -325,7 +402,54 @@ def serve():
             last[0] = time.time()
             if self.path.startswith("/events"):
                 return self.events()
+            if self.path.startswith("/announcements"):
+                import getpass
+                job = self.job_of((parse_qs(urlparse(self.path).query).get("job") or [""])[0])
+                try:
+                    items = ann_list(job) if job else []
+                except OSError:
+                    items = []
+                return self.reply({"items": items, "me": getpass.getuser().lower()})
             SimpleHTTPRequestHandler.do_GET(self)
+
+        def job_of(self, name):
+            """The job a page is showing. Only jobs this dashboard has open."""
+            for job in read_state().get("jobs", []):
+                if slug(job) == name:
+                    return job
+            return ""
+
+        def reply(self, data, code=200):
+            body = json.dumps(data).encode("utf-8")
+            self.send_response(code)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def do_POST(self):
+            """Post or take down an announcement. Only from this dashboard's own page.
+
+            Any web page open on this machine can send a request to a local port, so a request is refused
+            unless it says it comes from this page (Origin) and is JSON, which another site cannot send here.
+            """
+            here = "http://127.0.0.1:%d" % self.server.server_address[1]
+            if self.headers.get("Origin") != here or "application/json" not in (self.headers.get("Content-Type") or ""):
+                return self.reply({"error": "refused"}, 403)
+            try:
+                data = json.loads(self.rfile.read(min(int(self.headers.get("Content-Length") or 0), 8192)).decode("utf-8"))
+                job = self.job_of(str(data.get("job", "")))
+                if not job:
+                    return self.reply({"error": "This job is not open in the dashboard."}, 400)
+                if self.path == "/announce":
+                    error = ann_post(job, data.get("text", ""), data.get("days", 14))
+                elif self.path == "/announce/remove":
+                    error = ann_remove(job, str(data.get("name", "")))
+                else:
+                    return self.reply({"error": "unknown"}, 404)
+            except (OSError, ValueError, TypeError) as err:
+                return self.reply({"error": "Could not do that: %s" % err}, 500)
+            self.reply({"error": error, "items": ann_list(job)}, 400 if error else 200)
 
         def events(self):
             """One open page. The connection stays open and changes are written to it as they happen."""

@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.18.1 (2026-11-20)
+
+- Announcements are posted and taken down from the dashboard ("Announcements" button), not by an agent. The skill is now for reading and acting on them; an agent asked to announce something points the artist at the dashboard and offers the wording.
+- Starter `2026-11-20.2`.
+
 ## 0.18.0 (2026-11-20)
 
 - Announcements to every agent on a job (new skill `buck-pipeline-announce`). An artist asks their agent to announce something; it is saved in the job's `Agents/Announcements` folder and shown once to every session on the job at its next message, for 14 days unless told otherwise. While active it wins over `SHOW.md`. It cannot loosen a permission.

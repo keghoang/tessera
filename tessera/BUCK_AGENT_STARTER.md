@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-20.1
+Version: 2026-11-20.2
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -211,7 +211,7 @@ Each is a folder in `Agents/Skills/` with a `SKILL.md`. Read the ones the task n
 | `tessera:pipeline-farm` | Submit a test or full-range render to the farm and check the result. |
 | `tessera:pipeline-trail` | Write or update a version's `.trail`. |
 | `tessera:pipeline-status` | Report which shot and task this session is on, and its state. |
-| `tessera:pipeline-announce` | Post, list or remove an announcement to every agent on the job. |
+| `tessera:pipeline-announce` | Read the announcements to every agent on the job, and act on them. Artists post them from the dashboard. |
 | `tessera:pipeline-setup` | Set up the `Agents` folder on a new job, create or refresh `SHOW.md`, or install the skills. |
 | `tessera:start` | Welcome an artist on their first session: confirm who and which job, check the workstation, brief them. |
 | `tessera:lighting` | Do any lighting or lookdev task, from first pass to final. It picks the `tessera:lighting-*` procedure the request needs. |

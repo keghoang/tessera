@@ -1,20 +1,17 @@
 #!/usr/bin/env python
-"""Announcements for every agent on a job.
+"""Announcements for every agent on a job: reading them.
 
-    announce.py post --text "<what every agent must know>" [--job <JOB>] [--days 14]
     announce.py list [--job <JOB>]
-    announce.py remove <file name> [--job <JOB>]
     announce.py hook                 (called by the plugin on every new message)
 
-An announcement is one small text file in the job's Agents/Announcements folder.
-Every session on the job is shown each announcement once, at its next message,
-until the announcement runs out. It holds what the poster wrote and nothing else.
+An announcement is one small text file in the job's Agents/Announcements folder,
+posted and taken down from the team dashboard. Every session on the job is shown
+each announcement once, at its next message, until the announcement runs out.
 """
 from __future__ import print_function
 
 import argparse
 import datetime
-import getpass
 import glob
 import json
 import os
@@ -62,16 +59,9 @@ def detect_job(sid=None):
     return ""
 
 
-def folder_of(job, create=False):
-    agents = os.path.join(WORK_ROOT, job, "Production", "Common", "Agents")
-    if not job or not os.path.isdir(agents):
-        return None
-    folder = os.path.join(agents, "Announcements")
-    if not os.path.isdir(folder):
-        if not create:
-            return None
-        os.mkdir(folder)
-    return folder
+def folder_of(job):
+    folder = os.path.join(WORK_ROOT, job, "Production", "Common", "Agents", "Announcements")
+    return folder if job and os.path.isdir(folder) else None
 
 
 def read_one(path):
@@ -138,15 +128,7 @@ def hook():
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd")
-    p = sub.add_parser("post")
-    p.add_argument("--text", required=True)
-    p.add_argument("--job")
-    p.add_argument("--days", type=int, default=14, help="how long sessions keep being shown it")
-    p.add_argument("--person", default=getpass.getuser().lower())
     p = sub.add_parser("list")
-    p.add_argument("--job")
-    p = sub.add_parser("remove")
-    p.add_argument("name")
     p.add_argument("--job")
     sub.add_parser("hook")
     args = ap.parse_args()
@@ -157,54 +139,15 @@ def main():
         except Exception:
             pass
         return 0
-    if args.cmd not in ("post", "list", "remove"):
+    if args.cmd != "list":
         ap.print_help()
         return 2
     job = args.job or detect_job(session_id())
-    folder = folder_of(job, create=args.cmd == "post")
-    if not folder:
-        if args.cmd == "list":
-            print("no announcements on %s" % (job or "(no job found)"))
-            return 0
-        print("NOT ASSESSED: no Agents folder for %s (wrong job name, or the server is out of reach)." % (job or "(no job found)"),
-              file=sys.stderr)
-        return 3
-
-    if args.cmd == "post":
-        text = " ".join(args.text.split())
-        if len(text) < 12 or len(text) > 600:
-            print("REJECTED: an announcement is one to three plain sentences (12 to 600 characters).", file=sys.stderr)
-            return 4
-        now = datetime.datetime.now()
-        name = "%s_%s.md" % (now.strftime("%Y%m%d-%H%M%S"), slug(args.person))
-        path = os.path.join(folder, name)
-        if os.path.exists(path):
-            print("REJECTED: %s already exists; try again in a second." % name, file=sys.stderr)
-            return 4
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write("from: %s\nposted: %s\nuntil: %s\n\n%s\n" % (
-                args.person, now.strftime(STAMP), (now + datetime.timedelta(days=args.days)).strftime(STAMP), text))
-        print("posted %s on %s, shown to every session for %d days" % (name, job, args.days))
-        return 0
-
-    if args.cmd == "list":
-        items = active(job)
-        if not items:
-            print("no announcements on %s" % job)
-        for a in items:
-            print("%s | from %s, %s, until %s | %s" % (a["name"], a.get("from", "?"), a.get("posted", "?"), a.get("until", "?"), a["text"]))
-        return 0
-
-    # remove: only a file in the announcements folder, by its exact name
-    if os.path.basename(args.name) != args.name or not args.name.endswith(".md"):
-        print("REJECTED: give the announcement's file name, as 'list' prints it.", file=sys.stderr)
-        return 4
-    path = os.path.join(folder, args.name)
-    if not os.path.isfile(path):
-        print("NOT ASSESSED: no announcement named %s on %s." % (args.name, job), file=sys.stderr)
-        return 3
-    os.remove(path)
-    print("removed", args.name)
+    items = active(job)
+    if not items:
+        print("no announcements on %s" % (job or "(no job found)"))
+    for a in items:
+        print("%s | from %s, %s, until %s | %s" % (a["name"], a.get("from", "?"), a.get("posted", "?"), a.get("until", "?"), a["text"]))
     return 0
 
 
