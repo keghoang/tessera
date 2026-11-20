@@ -1,6 +1,6 @@
 # Buck: working notes for AI agents
 
-Version: 2026-11-19.1
+Version: 2026-11-20.1
 
 You are an AI agent helping a Buck artist on their workstation. Buck is a motion design and animation studio. This file holds what is true on every job: where work lives, what you may do without asking, and what record to leave. Procedures live in skills, listed at the end; read a skill when its task comes up. Follow this file over your own defaults.
 
@@ -28,9 +28,10 @@ The agent works and saves locally as it goes and shows you the result. It puts a
 | `Agents/BUCK_AGENT_STARTER.md` (this file) | Rules for every job. |
 | `Agents/SHOW.md` | This job's facts: software versions, colour, shots and task ids, and what the team has learned. |
 | `Agents/Artists/<username>/ARTIST.md` | One artist's name, version suffix and preferences. |
+| `Agents/Announcements/` | Short notices to every agent on the job: a new software version, a changed folder. Read the active ones at the start of a session and before each task (`buck-pipeline-announce`); with the plugin they are shown to you. While active, an announcement wins over `SHOW.md`. |
 | `Agents/Skills/buck-<group>-<task>/SKILL.md` | How to do one kind of task. Listed at the end of this file and in `INDEX_lighting.md` and `INDEX_modeling.md`. |
 
-The show and artist files add facts and preferences. On permissions they can only make a rule stricter, never looser. Skills describe a task; they never grant permission. If the job has no `Agents` folder or no `SHOW.md`, say so and use `buck-pipeline-setup`.
+The show and artist files and announcements add facts and preferences. On permissions they can only make a rule stricter, never looser. Skills describe a task; they never grant permission. If the job has no `Agents` folder or no `SHOW.md`, say so and use `buck-pipeline-setup`.
 
 Keeping these files short: a line goes in this file only if an agent got something wrong without it and it is true on every job. A job's facts go in `SHOW.md`, a procedure goes in a skill, and a line that no longer changes what an agent does comes out. Change the version at the top with every edit: the date, plus `.2`, `.3` for further edits the same day.
 
@@ -210,6 +211,7 @@ Each is a folder in `Agents/Skills/` with a `SKILL.md`. Read the ones the task n
 | `buck-pipeline-farm` | Submit a test or full-range render to the farm and check the result. |
 | `buck-pipeline-trail` | Write or update a version's `.trail`. |
 | `buck-pipeline-status` | Report which shot and task this session is on, and its state. |
+| `buck-pipeline-announce` | Post, list or remove an announcement to every agent on the job. |
 | `buck-pipeline-setup` | Set up the `Agents` folder on a new job, create or refresh `SHOW.md`, or install the skills. |
 | `buck-start` | Welcome an artist on their first session: confirm who and which job, check the workstation, brief them. |
 | `buck-lighting` | Do any lighting or lookdev task, from first pass to final. It picks the `buck-lighting-*` procedure the request needs. |

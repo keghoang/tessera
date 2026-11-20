@@ -138,10 +138,16 @@ def main():
     session_start = [{"hooks": [{"type": "command", "timeout": 10,
                                  "command": 'c:/opt/rez/Scripts/python.exe "%s" hook' % start}]}]
 
+    # on every new message: show the session the job's announcements it has not seen
+    announce = "%s/skills/%s/scripts/announce.py" % ("${CLAUDE_PLUGIN_ROOT}", "pipeline-announce" if strip else "buck-pipeline-announce")
+    prompt = hook("prompt")
+    prompt[0]["hooks"].append({"type": "command", "timeout": 15,
+                               "command": 'c:/opt/rez/Scripts/python.exe "%s" hook' % announce})
+
     (plugin / "hooks").mkdir()
     (plugin / "hooks" / "hooks.json").write_text(json.dumps({"hooks": {
         "SessionStart": session_start,
-        "UserPromptSubmit": hook("prompt"), "PreToolUse": hook("tool"), "Stop": hook("stop"),
+        "UserPromptSubmit": prompt, "PreToolUse": hook("tool"), "Stop": hook("stop"),
         "Notification": hook("notify"), "SessionEnd": hook("end"),
     }}, indent=2) + "\n", encoding="utf-8")
 

@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.18.0 (2026-11-20)
+
+- Announcements to every agent on a job (new skill `buck-pipeline-announce`). An artist asks their agent to announce something; it is saved in the job's `Agents/Announcements` folder and shown once to every session on the job at its next message, for 14 days unless told otherwise. While active it wins over `SHOW.md`. It cannot loosen a permission.
+- Starter `2026-11-20.1`.
+
 ## 0.17.1 (2026-11-20)
 
 - Fixed sessions vanishing from the dashboard when they went from working to idle. The job share left zero bytes behind a status file rewritten with less text, and the file was then rejected as unreadable. Status files are now a fixed length, and every reader ignores anything after the JSON.
