@@ -35,6 +35,7 @@
  "buck-pipeline-aquarium": "Look up job facts and task ids in the tracker.",
  "buck-pipeline-farm": "Write, submit and check farm render jobs.",
  "buck-pipeline-launch": "Run Maya or Nuke headless in the job's environment.",
+ "buck-pipeline-announce": "Announce something to every agent on the job.",
  "buck-pipeline-status": "Report what this session is working on.",
  "buck-start": "First-session setup and welcome.",
  "buck-pipeline-setup": "Set up a job's Agents folder and install skills.",

@@ -1,0 +1,75 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 10,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/start/scripts/start.py\" hook"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-status/scripts/status.py\" hook prompt"
+          },
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-announce/scripts/announce.py\" hook"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-status/scripts/status.py\" hook tool"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-status/scripts/status.py\" hook stop"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-status/scripts/status.py\" hook notify"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-status/scripts/status.py\" hook end"
+          }
+        ]
+      }
+    ]
+  }
+}

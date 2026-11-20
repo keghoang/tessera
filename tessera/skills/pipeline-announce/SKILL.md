@@ -1,6 +1,7 @@
 ---
-name: buck-pipeline-announce
-description: Posts, lists or removes an announcement that every agent session on a job is shown once - a new software version, a changed folder, a deadline, a rule for the week. Use when the artist asks to announce, broadcast or tell all agents something, or asks what announcements are active. Not for one session's own status (buck-pipeline-status) or for a lasting job fact with nothing new to tell (edit SHOW.md).
+name: pipeline-announce
+description: Announce something to every agent on the job.
+when_to_use: Posts, lists or removes an announcement that every agent session on a job is shown once - a new software version, a changed folder, a deadline, a rule for the week. Use when the artist asks to announce, broadcast or tell all agents something, or asks what announcements are active. Not for one session's own status (tessera:pipeline-status) or for a lasting job fact with nothing new to tell (edit SHOW.md).
 ---
 
 # Announce to every agent on the job
@@ -37,3 +38,7 @@ In Claude Code with the plugin installed, new announcements are printed to you w
 ## Status
 
 Posting, listing, removing and the once-per-session display ran against a throwaway job folder on 2026-11-20. Not yet used on a production job.
+
+## Where the scripts are
+
+This skill's folder is `${CLAUDE_SKILL_DIR}`; its scripts are in `${CLAUDE_SKILL_DIR}/scripts/`.
