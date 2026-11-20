@@ -34,7 +34,7 @@ WORK_ROOT = r"\\buck\work\current"
 PORT = 8765
 EVERY = 60            # seconds between full reads of the job (folders, versions, notes)
 WATCH = 2             # seconds between looks at the agents' status files, which is one small folder
-SERVER = "3"          # raised when the server changes, so an older one still running is replaced
+SERVER = "4"          # raised when the server changes, so an older one still running is replaced
 IDLE_EXIT = 45 * 60   # the server stops when no page has asked for anything this long
 NO_WINDOW = 0x08000000
 DETACHED = 0x00000008 | 0x00000200 | NO_WINDOW
@@ -255,8 +255,8 @@ def show(url):
 def read_live(folder, job, seen):
     """The agent sessions on this job, from the status files in the job's Agents/Activity folder.
 
-    One directory listing per call. A file is only opened again when its size or time changed, so on a
-    quiet job this costs one listing of a small folder. `seen` is the cache, kept between calls.
+    One directory listing and one look at each file per call. A file is only opened again when its size
+    or time changed. `seen` is the cache, kept between calls.
     """
     import datetime
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -268,7 +268,7 @@ def read_live(folder, job, seen):
         return found
     for e in entries:
         try:
-            st = e.stat()
+            st = os.stat(e.path)      # asked of the file itself: the folder listing's times can be minutes behind
         except OSError:
             continue
         stamp = (st.st_mtime_ns, st.st_size)
@@ -276,7 +276,7 @@ def read_live(folder, job, seen):
         if not got or got[0] != stamp:
             try:
                 with open(e.path, "r", encoding="utf-8") as fh:
-                    got = (stamp, json.load(fh))
+                    got = (stamp, json.JSONDecoder().raw_decode(fh.read().lstrip("\ufeff"))[0])
             except (OSError, ValueError):
                 continue
         here[e.name] = got

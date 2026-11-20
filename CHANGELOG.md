@@ -2,6 +2,11 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.17.1 (2026-11-20)
+
+- Fixed sessions vanishing from the dashboard when they went from working to idle. The job share left zero bytes behind a status file rewritten with less text, and the file was then rejected as unreadable. Status files are now a fixed length, and every reader ignores anything after the JSON.
+- The automatic report only fires on a versioned work file (`<name>_<task>_v###`, `_wip###`, `_test###`), not on listing a folder or reading a `.trail`.
+
 ## 0.17.0 (2026-11-20)
 
 - A session that skips its status report still shows on the dashboard. The first file it touches in a shot's or asset's department folder, or a versioned file in the local scratch folder, reports it on that shot or asset and task with the line "Working on this task (reported automatically)". The agent's own report replaces it.

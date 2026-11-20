@@ -133,7 +133,7 @@ def pointer_path(sid):
 def read_pointer(sid):
     try:
         with open(pointer_path(sid), "r", encoding="utf-8") as fh:
-            return json.load(fh).get("file", "")
+            return load(fh).get("file", "")
     except (OSError, ValueError):
         return ""
 
@@ -154,10 +154,21 @@ def write_pointer(sid, path):
             pass
 
 
+def load(fh):
+    """Read one JSON value and ignore anything after it.
+
+    The job share does not always shorten a file that is rewritten with less text: the old tail stays
+    behind as zero bytes, and a plain json.load then rejects the whole file.
+    """
+    return json.JSONDecoder().raw_decode(fh.read().lstrip("\ufeff"))[0]
+
+
 def write_json(path, data):
     # Written in place: the job share refuses a rename onto an existing file.
     # A reader that catches the file half-written skips it until the next read.
+    # Padded with spaces to a fixed length, so a rewrite never has to shorten the file (see load).
     text = json.dumps(data)
+    text += " " * (-len(text.encode("utf-8")) % 512)
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(text)
 
@@ -173,7 +184,7 @@ def leave(path):
     """The session is done with this task: keep its last line, as idle, so the dashboard still shows who touched it last."""
     try:
         with open(path, "r", encoding="utf-8") as fh:
-            data = json.load(fh)
+            data = load(fh)
         data["state"], data["ended"] = "idle", True
         write_json(path, data)
     except (OSError, ValueError):
@@ -191,7 +202,7 @@ def tidy(folder, keep, person, host, job, shot, task):
         p = os.path.join(folder, n)
         try:
             with open(p, "r", encoding="utf-8") as fh:
-                d = json.load(fh)
+                d = load(fh)
         except (OSError, ValueError):
             continue
         if d.get("ended") and (d.get("job"), d.get("shot"), d.get("task")) == (job, shot, task):
@@ -220,7 +231,7 @@ def change_state(sid, state, doing=None, only_from=None):
         return False
     try:
         with open(path, "r", encoding="utf-8") as fh:
-            data = json.load(fh)
+            data = load(fh)
     except (OSError, ValueError):
         return False
     if only_from and data.get("state") not in only_from:
@@ -239,12 +250,12 @@ DEPTS = {"modeling": "mdl", "rigging": "rig", "lookdev": "lkdv", "animation": "a
          "lighting": "lgt", "comp": "comp", "previs": "prev", "styleframe": "style", "fx": "fx"}
 SEP = r"[\\/]+"
 NAME = r"[^\\/\"'\s]+"
-# <share>/work/current/<JOB>/Production/Shots|Assets/<sequence or category>/<shot or asset>/<Department>
-IN_JOB = re.compile(SEP + "work" + SEP + "current" + SEP + "(" + NAME + ")" + SEP + "Production" + SEP + "(?:Shots|Assets)"
-                    + SEP + NAME + SEP + "(" + NAME + ")" + SEP + "([A-Za-z]+)", re.I)
-# the local scratch folder: Agents/<agent>/<JOB>/.../<shot or asset>_<task>_v### or _wip###
-IN_SCRATCH = re.compile("Agents" + SEP + NAME + SEP + "(" + NAME + ")" + SEP + r"[^\"'\s]*?([A-Za-z0-9]+(?:_[A-Za-z0-9]+)*?)_("
-                        + "|".join(sorted(set(DEPTS.values()))) + r")_(?:v|wip|test)\d{3}", re.I)
+# Only a versioned work file counts, never a folder: <shot or asset>_<task>_v###, _wip### or _test###,
+# under the job on the server or under the job's local scratch folder (Agents/<agent>/<JOB>/).
+WORK_FILE = re.compile(r"([A-Za-z0-9]+(?:_[A-Za-z0-9]+)*?)_(" + "|".join(sorted(set(DEPTS.values())))
+                       + r")_(?:v|wip|test)\d{3}\.[A-Za-z0-9]+", re.I)
+IN_JOB = re.compile(SEP + "work" + SEP + "current" + SEP + "(" + NAME + ")" + SEP + "Production" + SEP, re.I)
+IN_SCRATCH = re.compile("Agents" + SEP + NAME + SEP + "(" + NAME + ")" + SEP, re.I)
 
 
 def strings(value):
@@ -261,14 +272,15 @@ def strings(value):
 
 
 def touched(tool_input):
-    """The job, shot or asset and task named by the paths in one tool call, or None."""
+    """The job, shot or asset and task of the work file named in one tool call, or None.
+
+    Listing a folder or reading a note is not work on a task, so only a versioned work file counts.
+    """
     for text in strings(tool_input):
-        m = IN_JOB.search(text)
-        if m and m.group(3).lower() in DEPTS:
-            return m.group(1), m.group(2), DEPTS[m.group(3).lower()]
-        m = IN_SCRATCH.search(text)
-        if m:
-            return m.group(1), m.group(2), m.group(3).lower()
+        job = IN_JOB.search(text) or IN_SCRATCH.search(text)
+        name = WORK_FILE.search(text)
+        if job and name and not name.group(0).lower().endswith(".trail"):
+            return job.group(1), name.group(1), name.group(2).lower()
     return None
 
 
@@ -298,7 +310,7 @@ def first_step_note(sid):
     if path:
         try:
             with open(path, "r", encoding="utf-8") as fh:
-                data = json.load(fh)
+                data = load(fh)
         except (OSError, ValueError):
             data = {}
     if data:
@@ -411,7 +423,7 @@ def main():
     since = now()
     try:
         with open(previous, "r", encoding="utf-8") as fh:
-            old = json.load(fh)
+            old = load(fh)
         if (old.get("job"), old.get("shot"), old.get("task")) == (args.job, args.shot, args.task):
             since = old.get("since", since)
     except (OSError, ValueError):

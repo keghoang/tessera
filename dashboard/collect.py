@@ -191,7 +191,8 @@ def live_sessions(folder, job, stale_idle, stale_active):
             continue
         try:
             with open(e.path, "r", encoding="utf-8") as fh:
-                s = json.load(fh)
+                # anything after the JSON is ignored: the share can leave zero bytes behind a rewritten file
+                s = json.JSONDecoder().raw_decode(fh.read().lstrip("\ufeff"))[0]
         except (OSError, ValueError):
             continue
         if isinstance(s, dict) and s.get("job") == job:
