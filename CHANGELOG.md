@@ -2,6 +2,10 @@
 
 One entry per release. Newest first. Say what an agent will now do differently.
 
+## 0.17.0 (2026-11-20)
+
+- A session that skips its status report still shows on the dashboard. The first file it touches in a shot's or asset's department folder, or a versioned file in the local scratch folder, reports it on that shot or asset and task with the line "Working on this task (reported automatically)". The agent's own report replaces it.
+
 ## 0.16.3 (2026-11-20)
 
 - A session that ends, or moves to another task, no longer removes its status. Its last line stays on the task as idle, so the dashboard shows who touched a task last and what they did, however long ago. A new report on the same task by the same person replaces it.

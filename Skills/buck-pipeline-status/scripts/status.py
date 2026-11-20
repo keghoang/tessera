@@ -229,8 +229,65 @@ def change_state(sid, state, doing=None, only_from=None):
     data["updated"] = now()
     if doing:
         data["doing"] = doing[:160]
+        data.pop("auto", None)
     write_json(path, data)
     return True
+
+
+# The safety net. If a session never reports, the first job file it touches reports for it.
+DEPTS = {"modeling": "mdl", "rigging": "rig", "lookdev": "lkdv", "animation": "anim", "layout": "lyt",
+         "lighting": "lgt", "comp": "comp", "previs": "prev", "styleframe": "style", "fx": "fx"}
+SEP = r"[\\/]+"
+NAME = r"[^\\/\"'\s]+"
+# <share>/work/current/<JOB>/Production/Shots|Assets/<sequence or category>/<shot or asset>/<Department>
+IN_JOB = re.compile(SEP + "work" + SEP + "current" + SEP + "(" + NAME + ")" + SEP + "Production" + SEP + "(?:Shots|Assets)"
+                    + SEP + NAME + SEP + "(" + NAME + ")" + SEP + "([A-Za-z]+)", re.I)
+# the local scratch folder: Agents/<agent>/<JOB>/.../<shot or asset>_<task>_v### or _wip###
+IN_SCRATCH = re.compile("Agents" + SEP + NAME + SEP + "(" + NAME + ")" + SEP + r"[^\"'\s]*?([A-Za-z0-9]+(?:_[A-Za-z0-9]+)*?)_("
+                        + "|".join(sorted(set(DEPTS.values()))) + r")_(?:v|wip|test)\d{3}", re.I)
+
+
+def strings(value):
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for v in value.values():
+            for s in strings(v):
+                yield s
+    elif isinstance(value, list):
+        for v in value:
+            for s in strings(v):
+                yield s
+
+
+def touched(tool_input):
+    """The job, shot or asset and task named by the paths in one tool call, or None."""
+    for text in strings(tool_input):
+        m = IN_JOB.search(text)
+        if m and m.group(3).lower() in DEPTS:
+            return m.group(1), m.group(2), DEPTS[m.group(3).lower()]
+        m = IN_SCRATCH.search(text)
+        if m:
+            return m.group(1), m.group(2), m.group(3).lower()
+    return None
+
+
+def auto_report(sid, job, shot, task):
+    """Report for a session that has not reported itself. The agent's own report replaces this."""
+    agents = os.path.join(WORK_ROOT, job, "Production", "Common", "Agents")
+    folder = os.path.join(agents, "Activity")
+    if not os.path.isdir(agents):
+        return
+    if not os.path.isdir(folder):
+        os.mkdir(folder)
+    person, host = getpass.getuser().lower(), socket.gethostname()
+    name = "_".join(slug(x) for x in (person, host, "Claude Code", sid[:8])) + ".json"
+    path = os.path.join(folder, name)
+    write_json(path, {"person": person, "machine": host, "agent": "Claude Code", "job": job, "shot": shot, "task": task,
+                      "doing": "Working on this task (reported automatically)", "state": "working",
+                      "since": now(), "updated": now(), "auto": True})
+    write_pointer(sid, path)
+    tidy(folder, name, person, host, job, shot, task)
 
 
 def first_step_note(sid):
@@ -270,6 +327,12 @@ def hook(event):
     if event == "prompt":
         change_state(sid, "working")
         print(first_step_note(sid))
+    elif event == "tool":
+        # only a session that has not reported: once it has, this costs one local file check
+        if sid != "nosession" and not read_pointer(sid):
+            hit = touched(payload.get("tool_input"))
+            if hit:
+                auto_report(sid, *hit)
     elif event == "stop":
         change_state(sid, "idle", only_from=("working",))
     elif event == "notify":
@@ -302,7 +365,7 @@ def main():
     p = sub.add_parser("clear")
     p.add_argument("--session")
     p = sub.add_parser("hook")
-    p.add_argument("event", choices=("prompt", "stop", "notify", "end"))
+    p.add_argument("event", choices=("prompt", "tool", "stop", "notify", "end"))
     args = ap.parse_args()
 
     if args.cmd == "hook":

@@ -141,7 +141,7 @@ def main():
     (plugin / "hooks").mkdir()
     (plugin / "hooks" / "hooks.json").write_text(json.dumps({"hooks": {
         "SessionStart": session_start,
-        "UserPromptSubmit": hook("prompt"), "Stop": hook("stop"),
+        "UserPromptSubmit": hook("prompt"), "PreToolUse": hook("tool"), "Stop": hook("stop"),
         "Notification": hook("notify"), "SessionEnd": hook("end"),
     }}, indent=2) + "\n", encoding="utf-8")
 

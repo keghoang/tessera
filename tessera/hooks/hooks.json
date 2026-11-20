@@ -22,6 +22,17 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 15,
+            "command": "c:/opt/rez/Scripts/python.exe \"${CLAUDE_PLUGIN_ROOT}/skills/pipeline-status/scripts/status.py\" hook tool"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
